@@ -3,6 +3,7 @@ import Home from "./pages/Home";
 import LoginPage from "./pages/LoginPage";
 import NavBar from "./components/Navbar";
 import EventPage from "./pages/Event";
+import User from "./pages/Users";
 
 export const router = createBrowserRouter([
     {
@@ -20,6 +21,10 @@ export const router = createBrowserRouter([
     {
         path : "/event",
         element : <EventPage />
-    }
+    },
+    {
+        path : "/user",
+        element : <User />
+    },
 ])
 
