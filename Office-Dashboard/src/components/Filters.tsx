@@ -1,7 +1,10 @@
+import type React from "react";
+import type { EventStatus } from "../pages/event/event.type";
+
 interface FilterComponentProps {
     filters: string[];
-    filter:  "Active" | "Completed" | "Draft" | "All" | "Admin" | "SuperAdmin" | "Member";
-    setFilter: (filter: string) => void;
+    filter:  EventStatus | "All";
+    setFilter: React.Dispatch<React.SetStateAction<"All" | EventStatus>>
 }
 
 export default function FilterComponent({ filters, filter, setFilter }: FilterComponentProps) {

@@ -40,11 +40,9 @@ export default function UserPage() {
   const [users, setUsers] = useState<UserInfo[]>(INITIAL_USERS);
   const userRole: string = "SuperAdmin";
 
-  // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const usersPerPage = 10;
 
-  // Filtered users
   const filteredUsers =
     filter === "All" ? users : users.filter((user) => user.role === filter);
 
