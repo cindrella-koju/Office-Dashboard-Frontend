@@ -59,6 +59,11 @@ export default function Table({ tablename, tabledata, isEventTable = false }) {
                                     <p>{selectedRow.Discription}</p>
                                     <p>{selectedRow.StartDate}</p>
                                     <p>{selectedRow.EndDate}</p>
+                                    <div>
+                                        <button type="button" className="bg-orange-100">Participate</button>
+                                        <button>Edit</button>
+                                        <button>Delete</button>
+                                    </div>
                                 </>
                             )
                         }
