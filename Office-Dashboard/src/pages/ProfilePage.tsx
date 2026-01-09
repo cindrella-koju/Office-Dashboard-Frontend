@@ -1,6 +1,7 @@
 import NavBar from "../components/Navbar";
 import { HiUser } from "react-icons/hi";
 import { useState } from "react";
+import Table from "../components/Tables";
 
 type EventStatus = "Active" | "Completed" | "Draft";
 
@@ -8,8 +9,8 @@ type Event = {
   id: number;
   title: string;
   discription: string;
-  startsat: string;
-  endsat: string;
+  startdate: string;
+  enddate : string;
   status: EventStatus;
 };
 
@@ -18,23 +19,23 @@ const INITIAL_EVENTS: Event[] = [
     id: 1,
     title: "Tech Conference 2026",
     discription: "San Francisco",
-    startsat : "Jan 15 ",
-    endsat : "Jan 17, 2026",
+    startdate : "Jan 15 ",
+    enddate : "Jan 17, 2026",
     status: "Active",
   },
   {
     id: 2,
     title: "Product Launch Webinar",
     discription: "Online",
-    startsat : "Jan 15 ",
-    endsat : "Jan 17, 2026",
+    startdate : "Jan 15 ",
+    enddate : "Jan 17, 2026",
     status: "Active",
   },
 ]
 
 export default function ProfilePage() {
     const [event,setEvent] = useState<Event[]>(INITIAL_EVENTS)
-
+  const tablehead : string[] = ["title", "startdate","enddate","status"]
   const user = {
     username: "John Doe",
     fullname: "Johndoe",
@@ -107,28 +108,7 @@ export default function ProfilePage() {
             {
                 event.length > 0 ? (
                     <div className="overflow-x-auto">
-                      <table className="min-w-full bg-white border border-gray-200 rounded-lg">
-                        <thead className="bg-gray-100">
-                          <tr>
-                            <th className="py-3 px-6 text-left font-medium text-gray-700">Event Title</th>
-                            <th className="py-3 px-6 text-left font-medium text-gray-700">Statrt Date</th>
-                            <th className="py-3 px-6 text-left font-medium text-gray-700">End Date</th>
-                            <th className="py-3 px-6 text-left font-medium text-gray-700">Status</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {event.map((event, index) => (
-                            <tr key={index} className="border-t hover:bg-gray-50">
-                              <td className="py-3 px-6">{event.title}</td>
-                              <td className="py-3 px-6">{event.startsat}</td>
-                              <td className="py-3 px-6">{event.endsat}</td>
-                              <td className={`py-3 px-6 font-semibold ${getStatusColor(event.status)}`}>
-                                {event.status}
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
+                      <Table tabledata={INITIAL_EVENTS} tablehead={tablehead} resource="profile"/>
                     </div>
 
                 ) : (
