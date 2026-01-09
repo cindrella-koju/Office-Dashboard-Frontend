@@ -2,9 +2,11 @@ import { createBrowserRouter } from "react-router-dom";
 import Home from "./pages/Home";
 import LoginPage from "./pages/LoginPage";
 import NavBar from "./components/Navbar";
-import User from "./pages/Users";
 import ProfilePage from "./pages/ProfilePage";
 import EventPage from "./pages/event/event";
+import ScoreBoard from "./pages/event/scoreboard";
+import DetailEvent from "./pages/event/detailEvent";
+import UserPage from "./pages/users/user";
 
 export const router = createBrowserRouter([
     {
@@ -25,11 +27,19 @@ export const router = createBrowserRouter([
     },
     {
         path : "/user",
-        element : <User />
+        element : <UserPage/>
     },
     {
         path : "/profile",
         element: <ProfilePage/>
+    },
+    {
+        path : "/scoreboard",
+        element : <ScoreBoard/>
+    },
+    {
+        path : "event/detail",
+        element : <DetailEvent/>
     }
 ])
 

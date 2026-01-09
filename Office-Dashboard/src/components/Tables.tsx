@@ -1,76 +1,100 @@
-import { useState } from "react";
+import { usePermissions } from "../hooks/userPermission";
 
-export default function Table({ tablename, tabledata, isEventTable = false }) {
-  const [selectedRow, setSelectedRow] = useState(null);
+type UserRole = "Admin" | "Superadmin" | "Member";
+
+const statusStyles: Record<UserRole, string> = {
+  Admin : "bg-green-100 text-green-700",
+  Superadmin : "bg-blue-100 text-blue-700",
+  Member: "bg-gray-200 text-gray-600",
+};
+
+export default function Table({
+  tablehead,
+  tabledata,
+  resource
+}: {
+  tablehead: string[];
+  tabledata: Record<string, any>[];
+  resource : "user" | "event" | "profile" | null
+}) {
+    const permissions = usePermissions(resource)
 
   return (
-    <>
-        <div>
-            <table className="table-auto border-collapse w-full">
-                <thead className="bg-gray-300 sticky top-0">
-                    <tr>
-                        {tablename.map((col:string) => (
-                            <th
-                            key={col}
-                            className="text-left px-6 py-3 text-gray-700 font-semibold uppercase tracking-wider border-b border-gray-300"
-                            >
-                            {col}
-                            </th>
-                        ))}
-                    </tr>
-                </thead>
-                <tbody>
-                    {tabledata.map((row, index) => (
-                         <tr
-                            key={index}
-                            className={`${
-                            index % 2 === 0 ? "bg-white" : "bg-gray-50"
-                            } hover:bg-gray-200 transition-colors duration-200 cursor-pointer`}
-                            onClick={isEventTable ? () => setSelectedRow(row) : undefined}
+    <table className="w-full">
+      <thead className="bg-gray-50">
+        <tr>
+          {tablehead.map((head, index) => (
+            <th
+              key={index}
+              className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase"
+            >
+              {head}
+            </th>
+          ))}
+          {(permissions.canEdit || permissions.canDelete) && (
+              <th
+            className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase"
+          >
+            Actions
+          </th>
+          )}
+        </tr>
+      </thead>
+
+      <tbody>
+        {tabledata.map((user) => (
+            <tr key={user.id} className="border-t hover:bg-gray-50">
+            {tablehead.map((head) => (
+                <td key={head} className="px-6 py-4">
+                {head === "role" ? (
+                    <span
+                    className={`px-4 py-1 rounded-full text-xs font-bold uppercase ${
+                        statusStyles[user[head] as UserRole]
+                    }`}
+                    >
+                        {/* {head} */}
+                    {user[head]}
+                    </span>
+                ) : (
+                    user[head]
+                )}
+                </td>
+            ))}
+
+            {(permissions.canEdit || permissions.canDelete || resource === "event") && (
+                <td className="px-6 py-4">
+                    <div className="flex gap-2">
+                    {resource === "event" && (
+                        <button
+                        className="px-3 py-1.5 bg-green-100 rounded-lg hover:bg-green-600 hover:text-white text-sm"
                         >
-                            <td className="px-6 py-4">{isEventTable ? row.Name : row.Username}</td>
-                            <td className="px-6 py-4">{isEventTable ? row.Status : row.Fullname}</td>
-                            {!isEventTable && (
-                                <td className="px-6 py-4">{row.Email}</td>
-                            )}
-                            {!isEventTable && (
-                                <td className="px-6 py-4">{row.Role}</td>
-                            )}
-                            {isEventTable && (
-                                <td className="px-6 py-4">{row.StartDate} : {row.EndDate}</td>
-                            )}
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-        </div>
-        {   
-            selectedRow && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-10 z-50">
-                    <div className="bg-white w-4/6 h-4/6 p-6 rounded-lg shadow-lg relative overflow-y-auto">
-                        <button onClick={() => setSelectedRow(null)}
-                            className="absolute top-8 right-8 text-white bg-red-500 hover:bg-red-600 rounded-full w-6 h-6 flex items-center justify-center font-bold">
-                                X
+                        View
                         </button>
-                        {
-                            isEventTable && (
-                                <>
-                                    <h1 className="text-center">{selectedRow.Name}</h1>
-                                    <p>{selectedRow.Discription}</p>
-                                    <p>{selectedRow.StartDate}</p>
-                                    <p>{selectedRow.EndDate}</p>
-                                    <div>
-                                        <button type="button" className="bg-orange-100">Participate</button>
-                                        <button>Edit</button>
-                                        <button>Delete</button>
-                                    </div>
-                                </>
-                            )
-                        }
+                    )}
+
+                    {permissions.canEdit && (
+                        <button
+                        className="px-3 py-1.5 bg-gray-100 rounded-lg hover:bg-indigo-600 hover:text-white text-sm"
+                        >
+                        Edit
+                        </button>
+                    )}
+
+                    {permissions.canDelete && (
+                        <button
+                        className="px-3 py-1.5 bg-red-100 rounded-lg hover:bg-red-600 hover:text-white text-sm"
+                        >
+                        Delete
+                        </button>
+                    )}
                     </div>
-                </div>
-            )
-        }
-    </>
+                </td>
+                )}
+
+            </tr>
+        ))}
+        </tbody>
+
+    </table>
   );
 }

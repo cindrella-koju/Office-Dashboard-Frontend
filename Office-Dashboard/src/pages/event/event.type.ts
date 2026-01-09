@@ -16,3 +16,4 @@ export type EventDetail = {
 }
 export type EventAction = "edit" | "create"
 export type EventViewAction = "delete" | "view"
+// export type DisplayType = 'overalltiesheet' | 'history' | 'todaysgame'| 'ongoinggame' | 'eventimage'
