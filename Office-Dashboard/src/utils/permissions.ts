@@ -9,7 +9,9 @@ export interface Permission {
   canEditByOwn : boolean;
 }
 
-export const getPermissions = (role: string | null, resource: 'user' | 'event' | 'profile' | 'scoreboard' | null): Permission => {
+export type ResourceType = 'user' | 'event' | 'profile' | 'scoreboard' | 'eventdetail' | null
+
+export const getPermissions = (role: string | null, resource: ResourceType): Permission => {
   if (!role) {
     return { canView: false, canCreate: false, canEdit: false, canDelete: false, canEditByOwn: false };
   }
@@ -41,7 +43,16 @@ export const getPermissions = (role: string | null, resource: 'user' | 'event' |
         return { canView: true, canCreate: false, canEdit: false, canDelete: false , canEditByOwn: false };
       }
       return { canView: false, canCreate: false, canEdit: false, canDelete: false , canEditByOwn: false };
-
+    
+    case 'eventdetail':
+      if (role === 'superadmin' || role === 'admin') {
+        return { canView: true, canCreate: true, canEdit: true, canDelete: true , canEditByOwn: false };
+      }
+      if (role === 'member') {
+        return { canView: true, canCreate: false, canEdit: false, canDelete: false , canEditByOwn: false };
+      }
+      return { canView: false, canCreate: false, canEdit: false, canDelete: false , canEditByOwn: false };
+      
     case 'profile':
       return { canView: true, canCreate: false, canEdit: false, canDelete: false, canEditByOwn : true };
 

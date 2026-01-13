@@ -6,8 +6,37 @@ import FilterComponent from "../../components/Filters";
 import React from "react";
 import { usePermissions } from "../../hooks/userPermission";
 import Table from "../../components/Tables";
+import { DynamicInserPopUp } from "../../components/popup";
 
+// const eventPage = {
+//     "title" : "string",
+//     "description" : "string",
+//     "note" : "string",
+//     "start date" : new Date(),
+//     "end date" : new Date(),
+//     "status" : ["completed","upcoming","Draft"],
+//     "participants": [
+//         { id: 1, name: "user1" },
+//         { id: 2, name: "user2" },
+//         { id: 3, name: "user3" },
+//         { id: 4, name: "user4" },
+//         { id: 5, name: "user5" },
+//     ]
+// }
 
+const eventPage = {
+  title: "",
+  startDate: new Date(),
+  speakers: [
+    { id: 1, name: "Alice" },
+    { id: 2, name: "Bob" },
+  ],
+  attendees: [
+    { id: 1, name: "Alice" },
+    { id: 4, name: "Dana" },
+    { id: 2, name: "Bob" },
+  ],
+};
 
 export default function EventPage() {
     const permissions = usePermissions('event')
@@ -58,127 +87,131 @@ export default function EventPage() {
 
                 {
                     eventName != null && (
-                            <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-                                <div className="bg-white rounded-2xl shadow-lg p-6 w-full max-w-lg">
-                                    <h2 className="text-2xl font-bold mb-6 text-gray-800">
-                                        {eventName === "create"
-                                            ? "Create Event"
-                                            : eventName === "edit"
-                                            ? "Edit Event"
-                                            : "Event"
-                                        }
-                                    </h2>
-                                    <div className="space-y-5">
-                                        <div>
-                                            <label className="block text-sm font-semibold text-gray-700 mb-1">
-                                                Event Title
-                                            </label>
-                                            <input
-                                                name="title"
-                                                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-400 focus:outline-none"
-                                                placeholder="Enter event title"
-                                            />
-                                        </div>
-                                        <div>
-                                            <label className="block text-sm font-semibold text-gray-700 mb-1">
-                                                Description
-                                            </label>
-                                            <input
-                                                name="title"
-                                                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-400 focus:outline-none"
-                                                placeholder="Enter event Description"
-                                            />
-                                        </div>
-                                        <div>
-                                            <label className="block text-sm font-semibold text-gray-700 mb-1">
-                                                Note
-                                            </label>
-                                            <textarea
-                                                name="note"
-                                                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-400 focus:outline-none resize-none"
-                                                placeholder="Add a note"
-                                                rows={2}
-                                            />
-                                        </div>
-                                        <div className="grid grid-cols-2 gap-4">
-                                            <div>
-                                                <label className="block text-sm font-semibold text-gray-700 mb-1">
-                                                Start Date
-                                                </label>
-                                                <input
-                                                name="startdate"
-                                                type="date"
-                                                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-400 focus:outline-none"
-                                                />
-                                            </div>
-                                            <div>
-                                                <label className="block text-sm font-semibold text-gray-700 mb-1">
-                                                End Date
-                                                </label>
-                                                <input
-                                                name="enddate"
-                                                type="date"
-                                                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-400 focus:outline-none"
-                                                />
-                                            </div>
-                                        </div>
+                        <>
+                            <DynamicInserPopUp eventPage={eventPage} title="Create Event"/>
+                        
+                        </>
+                            // <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+                            //     <div className="bg-white rounded-2xl shadow-lg p-6 w-full max-w-lg">
+                            //         <h2 className="text-2xl font-bold mb-6 text-gray-800">
+                            //             {eventName === "create"
+                            //                 ? "Create Event"
+                            //                 : eventName === "edit"
+                            //                 ? "Edit Event"
+                            //                 : "Event"
+                            //             }
+                            //         </h2>
+                            //         <div className="space-y-5">
+                            //             <div>
+                            //                 <label className="block text-sm font-semibold text-gray-700 mb-1">
+                            //                     Event Title
+                            //                 </label>
+                            //                 <input
+                            //                     name="title"
+                            //                     className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-400 focus:outline-none"
+                            //                     placeholder="Enter event title"
+                            //                 />
+                            //             </div>
+                            //             <div>
+                            //                 <label className="block text-sm font-semibold text-gray-700 mb-1">
+                            //                     Description
+                            //                 </label>
+                            //                 <input
+                            //                     name="title"
+                            //                     className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-400 focus:outline-none"
+                            //                     placeholder="Enter event Description"
+                            //                 />
+                            //             </div>
+                            //             <div>
+                            //                 <label className="block text-sm font-semibold text-gray-700 mb-1">
+                            //                     Note
+                            //                 </label>
+                            //                 <textarea
+                            //                     name="note"
+                            //                     className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-400 focus:outline-none resize-none"
+                            //                     placeholder="Add a note"
+                            //                     rows={2}
+                            //                 />
+                            //             </div>
+                            //             <div className="grid grid-cols-2 gap-4">
+                            //                 <div>
+                            //                     <label className="block text-sm font-semibold text-gray-700 mb-1">
+                            //                     Start Date
+                            //                     </label>
+                            //                     <input
+                            //                     name="startdate"
+                            //                     type="date"
+                            //                     className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-400 focus:outline-none"
+                            //                     />
+                            //                 </div>
+                            //                 <div>
+                            //                     <label className="block text-sm font-semibold text-gray-700 mb-1">
+                            //                     End Date
+                            //                     </label>
+                            //                     <input
+                            //                     name="enddate"
+                            //                     type="date"
+                            //                     className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-400 focus:outline-none"
+                            //                     />
+                            //                 </div>
+                            //             </div>
 
-                                        <div>
-                                            <label className="block text-sm font-semibold text-gray-700 mb-1">
-                                                Status
-                                            </label>
-                                            <select
-                                                name="status"
-                                                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-400 focus:outline-none"
-                                            >
-                                                <option value="draft">Draft</option>
-                                                <option value="active">Active</option>
-                                                <option value="completed">Completed</option>
-                                            </select>
-                                        </div>
+                            //             <div>
+                            //                 <label className="block text-sm font-semibold text-gray-700 mb-1">
+                            //                     Status
+                            //                 </label>
+                            //                 <select
+                            //                     name="status"
+                            //                     className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-400 focus:outline-none"
+                            //                 >
+                            //                     <option value="draft">Draft</option>
+                            //                     <option value="active">Active</option>
+                            //                     <option value="completed">Completed</option>
+                            //                 </select>
+                            //             </div>
 
-                                        <div>
-                                            <label className="block text-sm font-semibold text-gray-700 mb-1">
-                                                Participants
-                                            </label>
-                                            <select
-                                                multiple
-                                                name="participants"
-                                                value={selectedUsers}
-                                                onChange={handleChange}
-                                                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-400 focus:outline-none"
-                                            >
-                                                {
-                                                    allMember.map((participant) => (
-                                                        <option
-                                                            value={participant}
-                                                        >
-                                                            {participant}
-                                                        </option>
-                                                    ))
-                                                }
-                                            </select>
-                                            <p className="mt-2 text-sm text-gray-500">
-                                                Selected: {selectedUsers.join(", ") || "None"}
-                                            </p>
-                                        </div>
-                                        <div className="flex justify-end gap-3 mt-6">
-                                            <button
-                                            onClick={() => setEventName(null)}
-                                            className="px-5 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition"
-                                            >
-                                            Cancel
-                                            </button>
-                                            <button
-                                            // onClick={handleSubmit}
-                                            className="px-5 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
-                                            >
-                                            Save
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            //             <div>
+                            //                 <label className="block text-sm font-semibold text-gray-700 mb-1">
+                            //                     Participants
+                            //                 </label>
+                            //                 <select
+                            //                     multiple
+                            //                     name="participants"
+                            //                     value={selectedUsers}
+                            //                     onChange={handleChange}
+                            //                     className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-400 focus:outline-none"
+                            //                 >
+                            //                     {
+                            //                         allMember.map((participant) => (
+                            //                             <option
+                            //                                 value={participant}
+                            //                             >
+                            //                                 {participant}
+                            //                             </option>
+                            //                         ))
+                            //                     }
+                            //                 </select>
+                            //                 <p className="mt-2 text-sm text-gray-500">
+                            //                     Selected: {selectedUsers.join(", ") || "None"}
+                            //                 </p>
+                            //             </div>
+                            //             <div className="flex justify-end gap-3 mt-6">
+                            //                 <button
+                            //                 onClick={() => setEventName(null)}
+                            //                 className="px-5 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition"
+                            //                 >
+                            //                 Cancel
+                            //                 </button>
+                            //                 <button
+                            //                 // onClick={handleSubmit}
+                            //                 className="px-5 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
+                            //                 >
+                            //                 Save
+                            //                 </button>
+                            //             </div>
+                            //         </div>
+                            //     </div>
+                            // </div>
                         )
                 }
 

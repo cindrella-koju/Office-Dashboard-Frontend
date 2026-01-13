@@ -5,7 +5,7 @@ import NavBar from "./components/Navbar";
 import ProfilePage from "./pages/ProfilePage";
 import EventPage from "./pages/event/event";
 import ScoreBoard from "./pages/event/scoreboard/scoreboard";
-import DetailEvent from "./pages/event/detailEvent";
+import DetailEvent from "./pages/event/eacheventdetail/detailEvent";
 import UserPage from "./pages/users/user";
 
 export const router = createBrowserRouter([

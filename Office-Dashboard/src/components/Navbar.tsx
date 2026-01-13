@@ -1,4 +1,4 @@
-import { FaHome, FaTrophy,FaUsers , FaSignOutAlt, FaBars, FaTimes  } from "react-icons/fa";
+import { FaHome, FaTrophy,FaUsers , FaSignOutAlt, FaBars } from "react-icons/fa";
 import { useState } from "react";
 // import teslaTechLogo from "../assets/teslatech.png";
 import { NavLink } from "react-router-dom";

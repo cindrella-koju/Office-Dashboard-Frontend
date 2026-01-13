@@ -1,7 +1,7 @@
-import { getPermissions, type Permission } from '../utils/permissions';
+import { getPermissions, type Permission, type ResourceType } from '../utils/permissions';
 
 
-export function usePermissions(resource: 'user' | 'event' | 'profile'| 'scoreboard' | null): Permission {
+export function usePermissions(resource: ResourceType ): Permission {
   const auth = {
     token : "SDfdsfS",
     role: "admin",
@@ -15,11 +15,3 @@ export function usePermissions(resource: 'user' | 'event' | 'profile'| 'scoreboa
   const { role } = auth;
   return getPermissions(role, resource);
 }
-
-// export interface AuthContextType{
-//     token :  string;
-//     role : Role;
-//     isAuthenticated : boolean;
-//     login : (token:string, role : Role) => void;
-//     logout : () => void;
-// }
