@@ -1,7 +1,7 @@
 import { getPermissions, type Permission } from '../utils/permissions';
 
 
-export function usePermissions(resource: 'user' | 'event' | 'profile' | null): Permission {
+export function usePermissions(resource: 'user' | 'event' | 'profile'| 'scoreboard' | null): Permission {
   const auth = {
     token : "SDfdsfS",
     role: "admin",
@@ -9,7 +9,7 @@ export function usePermissions(resource: 'user' | 'event' | 'profile' | null): P
   }
   
   if (!auth || !auth.isAuthenticated) {
-    return { canView: true, canCreate: false, canEdit: false, canDelete: false };
+    return { canView: true, canCreate: false, canEdit: false, canDelete: false, canEditByOwn: false };
   }
   
   const { role } = auth;

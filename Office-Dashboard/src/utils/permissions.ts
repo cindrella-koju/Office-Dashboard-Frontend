@@ -6,37 +6,47 @@ export interface Permission {
   canCreate: boolean;
   canEdit: boolean;
   canDelete: boolean;
+  canEditByOwn : boolean;
 }
 
-export const getPermissions = (role: string | null, resource: 'user' | 'event' | 'profile' | null): Permission => {
+export const getPermissions = (role: string | null, resource: 'user' | 'event' | 'profile' | 'scoreboard' | null): Permission => {
   if (!role) {
-    return { canView: false, canCreate: false, canEdit: false, canDelete: false };
+    return { canView: false, canCreate: false, canEdit: false, canDelete: false, canEditByOwn: false };
   }
 
   switch (resource) {
     case 'user':
       if (role === 'superadmin') {
-        return { canView: true, canCreate: true, canEdit: true, canDelete: true };
+        return { canView: true, canCreate: true, canEdit: true, canDelete: true , canEditByOwn: false };
       }
       if (role === 'admin') {
-        return { canView: true, canCreate: false, canEdit: false, canDelete: false };
+        return { canView: true, canCreate: false, canEdit: false, canDelete: false, canEditByOwn: false  };
       }
-      return { canView: false, canCreate: false, canEdit: false, canDelete: false };
+      return { canView: false, canCreate: false, canEdit: false, canDelete: false , canEditByOwn: false };
 
     case 'event':
       if (role === 'superadmin' || role === 'admin') {
-        return { canView: true, canCreate: true, canEdit: true, canDelete: true };
+        return { canView: true, canCreate: true, canEdit: true, canDelete: true , canEditByOwn: false };
       }
       if (role === 'member') {
-        return { canView: true, canCreate: false, canEdit: false, canDelete: false };
+        return { canView: true, canCreate: false, canEdit: false, canDelete: false , canEditByOwn: false };
       }
-      return { canView: false, canCreate: false, canEdit: false, canDelete: false };
+      return { canView: false, canCreate: false, canEdit: false, canDelete: false , canEditByOwn: false };
+
+    case 'scoreboard':
+      if (role === 'superadmin' || role === 'admin') {
+        return { canView: true, canCreate: true, canEdit: true, canDelete: true , canEditByOwn: false };
+      }
+      if (role === 'member') {
+        return { canView: true, canCreate: false, canEdit: false, canDelete: false , canEditByOwn: false };
+      }
+      return { canView: false, canCreate: false, canEdit: false, canDelete: false , canEditByOwn: false };
 
     case 'profile':
-      return { canView: true, canCreate: false, canEdit: true, canDelete: false };
+      return { canView: true, canCreate: false, canEdit: false, canDelete: false, canEditByOwn : true };
 
     default:
-      return { canView: false, canCreate: false, canEdit: false, canDelete: false };
+      return { canView: false, canCreate: false, canEdit: false, canDelete: false , canEditByOwn: false };
   }
 };
 

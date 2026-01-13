@@ -16,4 +16,14 @@ export type EventDetail = {
 }
 export type EventAction = "edit" | "create"
 export type EventViewAction = "delete" | "view"
+
+
+
+// export type PermissionType = {
+//     canView : boolean,
+//     canCreate : boolean,
+//     canEdit : boolean,
+//     canDelete : boolean,
+//     canEditByOwn : boolean
+// }
 // export type DisplayType = 'overalltiesheet' | 'history' | 'todaysgame'| 'ongoinggame' | 'eventimage'
