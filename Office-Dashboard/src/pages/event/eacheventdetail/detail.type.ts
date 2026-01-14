@@ -1,1 +1,1 @@
-export type TabType = "Overall Tiesheet" | "Event History" | "Todays Game" | "Ongoing Game" | "Event Image";
+export type TabType = "Groups" |"Overall Tiesheet" | "Event History" | "Todays Game" | "Ongoing Game" | "Event Image" | "Rounds";

@@ -6,30 +6,19 @@ import type { TabType } from "./detail.type";
 import { useState } from "react";
 import Table from "../../../components/Tables";
 import { usePermissions } from "../../../hooks/userPermission";
-import { DynamicInserPopUp } from "../../../components/popup";
+import useFetch from "../../../hooks/useFetch";
+import { RETRIEVE_GROUP_AND_MEMBERS, RETRIEVE_ROUNDS } from "../../../constants/urls";
 
-const eventPage = {
-    "title" : "string",
-    "description" : "string",
-    "note" : "string",
-    "start date" : new Date(),
-    "end date" : new Date(),
-    // "status" : ["completed","upcoming","Draft"],
-    "participants": [
-        { id: 1, name: "user1" },
-        { id: 2, name: "user2" },
-        { id: 3, name: "user3" },
-        { id: 4, name: "user4" },
-        { id: 5, name: "user5" },
-    ]
-}
 
 export default function DetailEvent() {
     const permissions = usePermissions("eventdetail")
+    const { data: rounds } = useFetch(RETRIEVE_ROUNDS)
+    const { data: group_and_members } = useFetch(RETRIEVE_GROUP_AND_MEMBERS)
 
     const [activeTab, setActiveTab] = useState<TabType>("Overall Tiesheet");
-    const tabs: TabType[] = ["Overall Tiesheet", "Event History", "Todays Game", "Ongoing Game", "Event Image"];
+    const tabs: TabType[] = ["Groups","Overall Tiesheet", "Event History", "Todays Game", "Ongoing Game", "Event Image", "Rounds"];
     const [viewDetail, setViewDetail] = useState<boolean>(true)
+    console.log(group_and_members)
     return(
         <div className="flex min-h-screen bg-gray-100">
             <NavBar/>
@@ -43,14 +32,20 @@ export default function DetailEvent() {
                     </button>
                     {
                         permissions.canCreate && (
-                            <button
-                                className="px-6 py-3 rounded-xl bg-indigo-600 text-white font-semibold hover:bg-indigo-700"
-                            >
-                                Create Tiesheet
-                            </button>
+                            <div>
+                                <button
+                                    className="px-6 py-3 rounded-xl bg-indigo-600 text-white font-semibold hover:bg-indigo-700"
+                                >
+                                    Create Group
+                                </button>
+                                <button
+                                    className="px-6 py-3 rounded-xl bg-indigo-600 text-white font-semibold hover:bg-indigo-700"
+                                >
+                                    Create Tiesheet
+                                </button>
+                            </div>
                         )
                     }
-
                 </div>
 
 
@@ -178,6 +173,29 @@ export default function DetailEvent() {
                                 </div>
                             </div>
                         )}
+                        {
+                            activeTab === "Rounds" && (
+                                <Table tabledata={rounds} tablehead={["name","round_order"]} resource="eventdetail"/>
+                            )
+                        }
+                        {
+                            activeTab === "Groups" && (
+                                <div>
+                                    {group_and_members?.map((info) => (
+                                        <>
+                                        <h1 key={info.group_id}>{info.group_name}</h1>
+                                        <div>
+                                            {
+                                                info.members.map((member) => (
+                                                    <p key={member.user_id}>{member.username}</p>
+                                                ))
+                                            }
+                                        </div>
+                                        </>
+                                    ))}
+                                </div>
+                            )
+                        }
                     </div>
                 </div>
             </main>

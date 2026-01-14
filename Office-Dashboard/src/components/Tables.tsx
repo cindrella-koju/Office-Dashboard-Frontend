@@ -90,6 +90,7 @@ export default function Table({
                     {resource === "event" && (
                         <button
                         className="px-3 py-1.5 bg-green-100 rounded-lg hover:bg-green-600 hover:text-white text-sm"
+                        onClick={() => console.log(user.id)}
                         >
                         View
                         </button>

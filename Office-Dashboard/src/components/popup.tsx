@@ -1,87 +1,150 @@
 import { useState } from "react";
 
-type AnyDict = { [key: string]: any };
+type AnyDict = Record<string, any>;
 
-const keyToLabel = (key: string) => {
-  return key
-    .split(" ")
-    .map((word) => word[0].toUpperCase() + word.slice(1))
-    .join(" ");
-};
+interface DynamicInserPopUpProps {
+  eventPage: AnyDict;
+  title: string;
+}
 
 const baseInputClasses =
   "w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-700 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all duration-200";
 
 const baseLabelClasses = "block mb-2 text-gray-700 font-semibold text-sm";
 
-const renderInput = (
-  key: string,
-  value: any,
-  setSelectedParticipants?: (v: any[]) => void
-) => {
-  if (typeof value === "string") {
+const keyToLabel = (key: string) =>
+  key
+    .split(" ")
+    .map((word) => word[0].toUpperCase() + word.slice(1))
+    .join(" ");
+
+function parseOptions(value: string): string[] | null {
+  try {
+    if (value.startsWith("[")) {
+      return JSON.parse(value.replace(/'/g, '"'));
+    }
+  } catch (e) {
+    console.error("Failed to parse options:", e);
+  }
+  return null;
+}
+
+function FormField({
+  fieldKey,
+  value,
+  setSelectedParticipants,
+}: {
+  fieldKey: string;
+  value: any;
+  setSelectedParticipants?: (v: any[]) => void;
+}) {
+  const label = keyToLabel(fieldKey);
+  const isRequired = typeof value === "string" && !value.includes("None");
+
+  // Handle string inputs
+  if (value === "str" || value === "str or None") {
     return (
-      <input
-        className={baseInputClasses}
-        type="text"
-        placeholder={`Enter ${keyToLabel(key)}`}
-      />
+      <>
+        <label className={baseLabelClasses}>
+          {label}
+          {isRequired && <span style={{ color: "red" }}>*</span>}
+        </label>
+        <input
+          className={baseInputClasses}
+          type="text"
+          placeholder={`Enter ${label}`}
+          required={isRequired}
+        />
+      </>
     );
   }
 
-  if (value instanceof Date) {
-    return <input className={baseInputClasses} type="date" />;
+  // Handle date inputs
+  if (value === "date" || value === "date or None") {
+    return (
+      <>
+        <label className={baseLabelClasses}>
+          {label}
+          {isRequired && <span style={{ color: "red" }}>*</span>}
+        </label>
+        <input className={baseInputClasses} type="date" required={isRequired} />
+      </>
+    );
   }
 
   if (Array.isArray(value) && value.every((v) => typeof v === "string")) {
     return (
-      <select className={baseInputClasses}>
-        <option value="">Select {keyToLabel(key)}</option>
-        {value.map((option) => (
-          <option key={option} value={option}>
-            {option}
-          </option>
-        ))}
-      </select>
+      <>
+        <label className={baseLabelClasses}>
+          {label}
+          <span style={{ color: "red" }}>*</span>
+        </label>
+        <select className={baseInputClasses}>
+          <option value="">Select {label}</option>
+          {value.map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
+      </>
     );
   }
 
   if (Array.isArray(value) && value.every((v) => typeof v === "object")) {
     return (
-      <select
-        multiple
-        className={baseInputClasses}
-        onChange={(e) => {
-          const selectedIds = Array.from(e.target.selectedOptions).map(
-            (o) => o.value
-          );
-
-          const selectedObjects = value.filter((v) =>
-            selectedIds.includes(String(v.id))
-          );
-
-          setSelectedParticipants?.(selectedObjects);
-        }}
-      >
-        {value.map((option) => (
-          <option key={option.id} value={option.id}>
-            {option.name}
-          </option>
-        ))}
-      </select>
+      <>
+        <label className={baseLabelClasses}>
+          {label}
+          <span style={{ color: "red" }}>*</span>
+        </label>
+        <select
+          multiple
+          className={baseInputClasses}
+          onChange={(e) => {
+            const selectedIds = Array.from(e.target.selectedOptions).map(
+              (o) => o.value
+            );
+            const selectedObjects = value.filter((v) =>
+              selectedIds.includes(String(v.id))
+            );
+            setSelectedParticipants?.(selectedObjects);
+          }}
+        >
+          {value.map((option) => (
+            <option key={option.id} value={option.id}>
+              {option.name}
+            </option>
+          ))}
+        </select>
+      </>
     );
   }
 
-  return null;
-};
+  // Handle string enum pattern like "['draft','active'] or None"
+  if (typeof value === "string") {
+    const options = parseOptions(value);
+    if (options) {
+      return (
+        <>
+          <label className={baseLabelClasses}>{label}</label>
+          <select className={baseInputClasses}>
+            <option value="">Select {label}</option>
+            {options.map((opt) => (
+              <option key={opt} value={opt}>
+                {opt}
+              </option>
+            ))}
+          </select>
+        </>
+      );
+    }
+  }
 
-export function DynamicInserPopUp({
-  eventPage,
-  title,
-}: {
-  eventPage: AnyDict;
-  title: string;
-}) {
+  return null;
+}
+
+export function DynamicInserPopUp({ eventPage, title }: DynamicInserPopUpProps) {
   const [selectedParticipants, setSelectedParticipants] = useState<any[]>([]);
 
   return (
@@ -91,17 +154,17 @@ export function DynamicInserPopUp({
 
         {Object.entries(eventPage).map(([key, value]) => (
           <div key={key} className="mb-5">
-            <label className={baseLabelClasses}>{keyToLabel(key)}</label>
-            {renderInput(key, value, setSelectedParticipants)}
+            <FormField
+              fieldKey={key}
+              value={value}
+              setSelectedParticipants={setSelectedParticipants}
+            />
           </div>
         ))}
 
-
         {selectedParticipants.length > 0 && (
           <div className="mt-4">
-            <p className="text-sm font-semibold mb-2">
-              Selected Participants
-            </p>
+            <p className="text-sm font-semibold mb-2">Selected Participants</p>
             <div className="flex flex-wrap gap-2">
               {selectedParticipants.map((p) => (
                 <span

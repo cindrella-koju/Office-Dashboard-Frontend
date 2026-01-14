@@ -7,6 +7,7 @@ import EventPage from "./pages/event/event";
 import ScoreBoard from "./pages/event/scoreboard/scoreboard";
 import DetailEvent from "./pages/event/eacheventdetail/detailEvent";
 import UserPage from "./pages/users/user";
+import UsersList from "./components/checkFetch";
 
 export const router = createBrowserRouter([
     {
@@ -40,6 +41,10 @@ export const router = createBrowserRouter([
     {
         path : "event/detail",
         element : <DetailEvent/>
+    },
+    {
+        path : "/check",
+        element : <UsersList/>
     }
 ])
 
