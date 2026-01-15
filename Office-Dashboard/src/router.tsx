@@ -8,6 +8,9 @@ import ScoreBoard from "./pages/event/scoreboard/scoreboard";
 import DetailEvent from "./pages/event/eacheventdetail/detailEvent";
 import UserPage from "./pages/users/user";
 import UsersList from "./components/checkFetch";
+import Groups from "./pages/event/eventdetailpages/groups";
+import Tiesheet from "./pages/event/eventdetailpages/tiesheet";
+import CreateGroupForm from "./pages/event/eventdetailpages/groupCheck";
 
 export const router = createBrowserRouter([
     {
@@ -45,6 +48,17 @@ export const router = createBrowserRouter([
     {
         path : "/check",
         element : <UsersList/>
+    },
+    {
+        path : "/event/groups",
+        element : <Groups/>
+    },
+    {
+        path : "/event/tiesheet",
+        element : <Tiesheet/>
+    },{
+        path : "/checking",
+        element : <CreateGroupForm/>
     }
 ])
 

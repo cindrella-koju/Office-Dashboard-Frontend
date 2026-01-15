@@ -9,7 +9,7 @@ export interface Permission {
   canEditByOwn : boolean;
 }
 
-export type ResourceType = 'user' | 'event' | 'profile' | 'scoreboard' | 'eventdetail' | null
+export type ResourceType = 'user' | 'event' | 'profile' | 'scoreboard' | 'eventdetail' | null | "tiesheet" | "group"
 
 export const getPermissions = (role: string | null, resource: ResourceType): Permission => {
   if (!role) {
@@ -52,6 +52,23 @@ export const getPermissions = (role: string | null, resource: ResourceType): Per
         return { canView: true, canCreate: false, canEdit: false, canDelete: false , canEditByOwn: false };
       }
       return { canView: false, canCreate: false, canEdit: false, canDelete: false , canEditByOwn: false };
+
+      case 'tiesheet':
+        if (role === 'superadmin' || role === 'admin') {
+          return { canView: true, canCreate: true, canEdit: true, canDelete: true , canEditByOwn: false };
+        }
+        if (role === 'member') {
+          return { canView: true, canCreate: false, canEdit: false, canDelete: false , canEditByOwn: false };
+        }
+        return { canView: false, canCreate: false, canEdit: false, canDelete: false , canEditByOwn: false };
+      case 'group':
+        if (role === 'superadmin' || role === 'admin') {
+          return { canView: true, canCreate: true, canEdit: true, canDelete: true , canEditByOwn: false };
+        }
+        if (role === 'member') {
+          return { canView: true, canCreate: false, canEdit: false, canDelete: false , canEditByOwn: false };
+        }
+        return { canView: false, canCreate: false, canEdit: false, canDelete: false , canEditByOwn: false };
       
     case 'profile':
       return { canView: true, canCreate: false, canEdit: false, canDelete: false, canEditByOwn : true };

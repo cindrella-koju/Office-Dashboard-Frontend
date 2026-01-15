@@ -1,5 +1,4 @@
 import { FaArrowLeft, FaCalendarAlt } from "react-icons/fa";
-import NavBar from "../../../components/Navbar";
 import { MdEmojiEvents } from "react-icons/md";
 import { DUMMY_EVENT, oneEventInfo, ongoingMatches, overallTiesheetTableData, overallTiesheetTableHead, roundDetailData, roundDetailHead, statusColors, todayGameTableData, todayGameTableHead} from "./detail.data";
 import type { TabType } from "./detail.type";
@@ -8,6 +7,7 @@ import Table from "../../../components/Tables";
 import { usePermissions } from "../../../hooks/userPermission";
 import useFetch from "../../../hooks/useFetch";
 import { RETRIEVE_GROUP_AND_MEMBERS, RETRIEVE_ROUNDS } from "../../../constants/urls";
+import EventNavBar from "../../../components/EventNavbar";
 
 
 export default function DetailEvent() {
@@ -21,7 +21,7 @@ export default function DetailEvent() {
     console.log(group_and_members)
     return(
         <div className="flex min-h-screen bg-gray-100">
-            <NavBar/>
+            <EventNavBar/>
             <main className="flex-1 p-6 md:p-10">
                 <div className="flex justify-between items-center mb-8">
                     <button 
