@@ -8,9 +8,10 @@ import ScoreBoard from "./pages/event/scoreboard/scoreboard";
 import DetailEvent from "./pages/event/eacheventdetail/detailEvent";
 import UserPage from "./pages/users/user";
 import UsersList from "./components/checkFetch";
-import Groups from "./pages/event/eventdetailpages/groups";
+// import Groups from "./pages/event/eventdetailpages/groups";
 import Tiesheet from "./pages/event/eventdetailpages/tiesheet";
-import CreateGroupForm from "./pages/event/eventdetailpages/groupCheck";
+// import CreateGroupForm from "./pages/event/eventdetailpages/groupCheck";
+import GroupPage from "./pages/event/eventdetailpages/group/group";
 
 export const router = createBrowserRouter([
     {
@@ -51,14 +52,11 @@ export const router = createBrowserRouter([
     },
     {
         path : "/event/groups",
-        element : <Groups/>
+        element : <GroupPage/>
     },
     {
         path : "/event/tiesheet",
         element : <Tiesheet/>
-    },{
-        path : "/checking",
-        element : <CreateGroupForm/>
     }
 ])
 

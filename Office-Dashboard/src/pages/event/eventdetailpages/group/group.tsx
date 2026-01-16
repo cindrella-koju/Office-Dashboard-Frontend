@@ -1,19 +1,19 @@
-import EventNavBar from "../../../components/EventNavbar";
-import { usePermissions } from "../../../hooks/userPermission";
 import { useState } from "react";
+import EventNavBar from "../../../../components/EventNavbar";
+import { usePermissions } from "../../../../hooks/userPermission";
+import { DELETE_GROUP, DELETE_GROUP_MEMBER, RETRIEVE_GROUP_AND_MEMBERS, UPDATE_GROUP_TABLE } from "../../../../constants/urls";
+import GroupTable from "./Components/GroupTable";
+import type { Group } from "./group.type";
+import { getAllColumnFields } from "./groups.util";
 import { useSearchParams } from "react-router-dom";
-import useFetch from "../../../hooks/useFetch";
-import type { Group } from "./group/group.type";
-import { DELETE_GROUP, DELETE_GROUP_MEMBER, RETRIEVE_GROUP_AND_MEMBERS, UPDATE_GROUP_TABLE } from "../../../constants/urls";
-import GroupTable from "./group/Components/GroupTable";
-import { getAllColumnFields } from "./group/groups.util";
-import CreateGroupModal from "./group/Components/GroupModel";
+import useFetch from "../../../../hooks/useFetch";
+import CreateGroupModal from "./Components/GroupModel";
 
 
 export default function Groups() {
     const permissions = usePermissions("group");
     const [searchParams] = useSearchParams();
-    const eventId = searchParams.get('event_id') || '6428f9b8-2153-451a-a635-ce83a8bb39b8';
+    const eventId = searchParams.get('event_id') || '599fb65d-8ef7-4421-891a-4973b63395fc';
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalMode, setModalMode] = useState<'create' | 'edit'>('create');
     const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null);
@@ -34,7 +34,7 @@ export default function Groups() {
 
     const handleEditTableData = (group: Group) => {
         setEditingGroupId(group.group_id);
-        setEditedGroupData(JSON.parse(JSON.stringify(group))); // Deep copy
+        setEditedGroupData(JSON.parse(JSON.stringify(group)));
     };
 
     const handleCancelEdit = () => {
@@ -61,8 +61,9 @@ export default function Groups() {
             });
             
             if (response.ok) {
+                console.log("Response:",response)
                 alert('Group table data updated successfully!');
-                window.location.reload();
+                // window.location.reload();
             } else {
                 alert('Failed to update group table data.');
             }
@@ -86,6 +87,7 @@ export default function Groups() {
             member.columns[columnIndex].value = value;
         }
         
+        console.log("Update date:",updatedData)
         setEditedGroupData(updatedData);
     };
 
@@ -135,7 +137,7 @@ export default function Groups() {
     
     // Fetch groups data from API
     const { data: groupsData } = useFetch(RETRIEVE_GROUP_AND_MEMBERS);
-    const GroupMembers : Group[] = groupsData || [];
+    const GroupMembers: Group[] = groupsData || [];
     const columnFields = GroupMembers ? getAllColumnFields(GroupMembers) : [];
 
     return(
