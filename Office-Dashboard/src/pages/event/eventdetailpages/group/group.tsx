@@ -5,15 +5,13 @@ import { DELETE_GROUP, DELETE_GROUP_MEMBER, RETRIEVE_GROUP_AND_MEMBERS, UPDATE_G
 import GroupTable from "./Components/GroupTable";
 import type { Group } from "./group.type";
 import { getAllColumnFields } from "./groups.util";
-import { useSearchParams } from "react-router-dom";
 import useFetch from "../../../../hooks/useFetch";
 import CreateGroupModal from "./Components/GroupModel";
 
 
 export default function Groups() {
     const permissions = usePermissions("group");
-    const [searchParams] = useSearchParams();
-    const eventId = searchParams.get('event_id') || '599fb65d-8ef7-4421-891a-4973b63395fc';
+    const eventId = localStorage.getItem("eventId");
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalMode, setModalMode] = useState<'create' | 'edit'>('create');
     const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null);
@@ -61,7 +59,6 @@ export default function Groups() {
             });
             
             if (response.ok) {
-                console.log("Response:",response)
                 alert('Group table data updated successfully!');
                 // window.location.reload();
             } else {

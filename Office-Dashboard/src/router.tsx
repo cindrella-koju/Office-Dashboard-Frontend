@@ -9,9 +9,9 @@ import DetailEvent from "./pages/event/eacheventdetail/detailEvent";
 import UserPage from "./pages/users/user";
 import UsersList from "./components/checkFetch";
 // import Groups from "./pages/event/eventdetailpages/groups";
-import Tiesheet from "./pages/event/eventdetailpages/tiesheet";
 // import CreateGroupForm from "./pages/event/eventdetailpages/groupCheck";
 import GroupPage from "./pages/event/eventdetailpages/group/group";
+import Tiesheet from "./pages/event/eventdetailpages/tiesheet/tiesheet";
 
 export const router = createBrowserRouter([
     {

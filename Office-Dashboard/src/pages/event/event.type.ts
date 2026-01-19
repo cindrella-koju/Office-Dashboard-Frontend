@@ -14,9 +14,21 @@ export type EventDetail = {
     participants : Participants[],
     note : string
 }
+
+export interface EventResponse{
+    title : string,
+    description : string,
+    startdate : string,
+    enddate : string,
+    status : EventStatus,
+    progress_note : string,
+    id : string,
+    created_at : string
+    updated_at : string
+}
+
 export type EventAction = "edit" | "create"
 export type EventViewAction = "delete" | "view"
-// export type DisplayType = 'overalltiesheet' | 'history' | 'todaysgame'| 'ongoinggame' | 'eventimage'
 
 
 export type EventHistoryItem = {

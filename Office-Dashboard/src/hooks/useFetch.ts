@@ -40,7 +40,7 @@ function useFetch<T = unknown>(url: string, options?: RequestInit): FetchState<T
     fetchData();
 
     return () => {
-      controller.abort(); // cancel fetch if component unmounts
+      controller.abort(); 
     };
   }, [url, JSON.stringify(options)]);
 

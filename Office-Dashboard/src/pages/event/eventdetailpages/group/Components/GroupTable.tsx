@@ -119,7 +119,7 @@ export default function GroupTable({
                                         {isEditing ? (
                                                 <input
                                                     type="text"
-                                                    value={getColumnValue(member, field)}
+                                                    value={getColumnValue(member, field) || ""}
                                                     onChange={(e) => onCellValueChange(memberIdx, field, e.target.value)}
                                                     className="w-20 border border-gray-300 rounded px-2 py-1 text-center focus:outline-none focus:ring-2 focus:ring-blue-400"
                                                 />

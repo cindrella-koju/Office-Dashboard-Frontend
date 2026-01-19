@@ -1,36 +1,34 @@
 import { useEffect, useState } from "react";
 import NavBar from "../../components/Navbar";
-import { type EventAction, type EventStatus } from "./event.type";
+import { type EventResponse, type EventStatus } from "./event.type";
 import FilterComponent from "../../components/Filters";
 import { usePermissions } from "../../hooks/userPermission";
 import Table from "../../components/Tables";
-import { DynamicInserPopUp } from "../../components/popup";
 import useFetch from "../../hooks/useFetch";
-import { CREATE_EVENT_FORM, RETRIEVE_EVENT } from "../../constants/urls";
+import { RETRIEVE_EVENT } from "../../constants/urls";
+import extractHeaders from "../../utils/extractHeader";
+import EventModel from "./Components/EventModel";
+
+
 
 export default function EventPage() {
-    const {data : eventPage, loading, error} = useFetch(CREATE_EVENT_FORM);
-    const {data : retrieve_events} = useFetch(RETRIEVE_EVENT)
+
+    const { data: retrieve_events, loading, error } = useFetch<EventResponse[]>(RETRIEVE_EVENT);
+    const [tablehead,setTablehead] = useState<string[]>([])
+    const [eventMode, setEventMode] = useState<'create' | 'edit' | null>(null)
     const permissions = usePermissions('event')
-    const filters:string[] = ["All","Active","Completed","Draft"];
-    const tablehead:string[] = ["title", "startdate","enddate", "status"];
     const [events, setEvents] = useState<any[]>([]);
-    const [eventName,setEventName] = useState<EventAction | null >(null);
+    const [eachEventDetail, setEachEventDetail] = useState<EventResponse>()
+    const filters:string[] = ["All","Active","Completed","Draft"];
     const [filter, setFilter] = useState<"All" | EventStatus>("All");
     
-    console.log("Retrieve /data:",retrieve_events,"exist event:",events)
-
     useEffect(() => {
-    if (retrieve_events) {
-        setEvents(retrieve_events);
-    }
+        if (retrieve_events) {
+            const headers = extractHeaders(retrieve_events);
+            setTablehead(headers)
+            setEvents(retrieve_events)
+        }
     }, [retrieve_events]);
-
-    useEffect(() => {
-        console.log("Event:",eventPage)
-    },[eventName])
-    if (loading) return <p>Loading...</p>;
-    if (error) return <p>Error: {error}</p>;
 
 
     return(
@@ -42,8 +40,8 @@ export default function EventPage() {
                     {
                         permissions.canCreate && (
                             <button
-                                onClick={() => setEventName("create")}
                                 className="px-6 py-3 rounded-xl bg-indigo-600 text-white font-semibold hover:bg-indigo-700"
+                                onClick={() => setEventMode("create")}
                             >
                                 Create Event
                             </button>
@@ -56,16 +54,10 @@ export default function EventPage() {
                 </div> 
 
                 <div className="w-full bg-white p-6 sm:p-8 rounded-2xl shadow-lg mt-10 h-170 overflow-y-auto">
-                    <Table tabledata={events} tablehead={tablehead} resource="event"/>
+                    <Table tabledata={events} tablehead={tablehead} resource="event" setMode={setEventMode} setValue={setEachEventDetail}/>
                 </div>
 
-                {
-                    eventName != null && (
-                        <>
-                            <DynamicInserPopUp eventPage={eventPage} title="Create Event"/>
-                        </>
-                        )
-                }
+                <EventModel eventMode={eventMode} setEventMode={setEventMode} editEventData={eachEventDetail}/>
 
             </main>
         </div>

@@ -1,5 +1,8 @@
+import { type Dispatch, type SetStateAction } from "react";
 import { usePermissions } from "../hooks/userPermission";
 import type { ResourceType } from "../utils/permissions";
+import type { EventResponse } from "../pages/event/event.type";
+import { NavLink } from "react-router-dom";
 
 type UserRole = "Admin" | "Superadmin" | "Member";
 
@@ -22,15 +25,32 @@ export default function Table({
   tabledata,
   resource,
   isOverAllTieSheet,
-  classname 
+  classname,
+  setMode, 
+  setValue,
+  // tablefor
 }: {
   tablehead: string[];
   tabledata: Record<string, any>[];
   resource : ResourceType;
   isOverAllTieSheet? : boolean;
-  classname? : string
+  classname? : string,
+  setMode : Dispatch<SetStateAction<'create' | 'edit' | null>>;
+  setValue : Dispatch<React.SetStateAction<EventResponse  | undefined>>;
+  // tablefor : string
 }) {
-    const permissions = usePermissions(resource)
+  const permissions = usePermissions(resource)
+
+  const handleEdit = (detail : any) => {
+    setMode('edit')
+    setValue(detail)
+  }
+
+  // const handleView = (user: any) => {
+  //   if (tablefor === "event") {
+  //     router.push(`/event/detail/${user.id}`);
+  //   }
+  // };
 
   return (
     <table className={`w-full ${classname && classname}`}>
@@ -75,7 +95,6 @@ export default function Table({
                         userstatusStyles[user[head] as UserRole]
                     }`}
                     >
-                        {/* {head} */}
                     {user[head]}
                     </span>
                 ) : (
@@ -88,13 +107,18 @@ export default function Table({
                 <td className="px-6 py-4">
                     <div className="flex gap-2">
                     {resource === "event" && (
+                      <NavLink to={`/event/tiesheet`}>
                         <button
-                        className="px-3 py-1.5 bg-green-100 rounded-lg hover:bg-green-600 hover:text-white text-sm"
-                        onClick={() => console.log(user.id)}
+                          className="px-3 py-1.5 bg-green-100 rounded-lg hover:bg-green-600 hover:text-white text-sm"
+                          onClick={() => {
+                            localStorage.setItem("eventId", user.id); // store user.id in localStorage
+                          }}
                         >
-                        View
+                          View
                         </button>
+                      </NavLink>
                     )}
+
                     {
                      resource === "eventdetail" ? (
                       isOverAllTieSheet && (
@@ -102,6 +126,7 @@ export default function Table({
                           {permissions.canEdit && (
                               <button
                               className="px-3 py-1.5 bg-gray-100 rounded-lg hover:bg-indigo-600 hover:text-white text-sm"
+                              onClick={() => console.log("Event details:", user)}
                               >
                               Edit
                               </button>
@@ -122,6 +147,7 @@ export default function Table({
                         {permissions.canEdit && (
                             <button
                             className="px-3 py-1.5 bg-gray-100 rounded-lg hover:bg-indigo-600 hover:text-white text-sm"
+                            onClick={() => handleEdit(user)}
                             >
                             Edit
                             </button>
