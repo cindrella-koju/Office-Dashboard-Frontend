@@ -44,9 +44,10 @@ export default function EventNavBar() {
 
           <nav className="flex flex-col gap-10">
             <NavItem icon={<FaHome />} label="Groups" to="/event/groups" />
-            <NavItem icon={<FaUsers />} label="Rounds" to="/user/rounds" />
+            <NavItem icon={<FaUsers />} label="Rounds" to="/event/rounds" />
             <NavItem icon={<FaTrophy />} label="Tiesheet" to="/event/tiesheet" />
             <NavItem icon={<CgProfile/>} label="Qualifier" to="/event/qualifier"/>
+            <NavItem icon={<CgProfile/>} label="Participants" to="/event/qualifier"/>
             <NavItem icon={<FaSignOutAlt/>} label="Todays Game" to="/event/todays-game" />
             <NavItem icon={<FaSignOutAlt/>} label="Ongoing Game" to="/event/ongoing-game" />
             <NavItem icon={<FaSignOutAlt/>} label="Score Board" to="/event/score-board" />

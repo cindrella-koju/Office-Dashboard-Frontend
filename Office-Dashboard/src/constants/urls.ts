@@ -4,7 +4,6 @@ export const CREATE_EVENT_FORM = `${BASE_URL}/test/createfield?page=event`
 export const CREATE_EVENT = `${BASE_URL}/event`
 export const UPDATE_EVENT = (eventId: string) => `${BASE_URL}/event?event_id=${eventId}`
 export const RETRIEVE_EVENT = `${BASE_URL}/event`
-export const RETRIEVE_ROUNDS = `${BASE_URL}/event/stage`
 export const RETRIEVE_GROUP_AND_MEMBERS = `${BASE_URL}/event/group`
 
 // API for Group
@@ -23,3 +22,7 @@ export const RETRIEVE_QUALIFIER_BY_ROUND = (roundId :  string ) => `${BASE_URL}/
 
 export const RETRIEVE_TIESHEET = (eventId : string) => `${BASE_URL}/event/tiesheet?event_id=${eventId}`
 export const CREATE_TIESHEET = `${BASE_URL}/event/tiesheet`
+
+export const RETRIEVE_ROUNDS = (eventId : string) => `${BASE_URL}/event/stage?event_id=${eventId}`
+export const CREATE_ROUND = (eventId : string) => `${BASE_URL}/event/stage?event_id=${eventId}`
+export const EDIT_ROUND = (stageId : string) => `${BASE_URL}/event/stage?stage_id=${stageId}`
