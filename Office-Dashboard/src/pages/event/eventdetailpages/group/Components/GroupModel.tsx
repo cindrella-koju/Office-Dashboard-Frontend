@@ -19,9 +19,7 @@ export default function CreateGroupModal({ isOpen, onClose, groupId, mode, event
             fetch(GET_ROUNDS_BY_EVENT(eventId))
                 .then(res => res.json())
                 .then(data => {
-                    if (data.round) {
-                        setRounds(data.round);
-                    }
+                    setRounds(data)
                 })
                 .catch(err => console.error('Error fetching rounds:', err));
         }

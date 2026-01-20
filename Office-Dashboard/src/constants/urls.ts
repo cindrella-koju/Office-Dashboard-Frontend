@@ -15,10 +15,11 @@ export const DELETE_GROUP_MEMBER = (userId: string, groupId: string) => `${BASE_
 export const ADD_GROUP_MEMBER = `${BASE_URL}/event/group/player`
 
 // Api to extract group and participants
-export const GET_ROUNDS_BY_EVENT = (eventId: string) => `${BASE_URL}/event/stage/rounds?event_id=${eventId}`
+export const  GET_ROUNDS_BY_EVENT = (eventId: string) => `${BASE_URL}/event/stage/rounds?event_id=${eventId}`
 export const GET_PARTICIPANTS_BY_EVENT = (eventId: string) => `${BASE_URL}/participant/not-in-group?event_id=${eventId}` 
 export const RETRIEVE_GROUP_BY_ROUND = (roundId : string) => `${BASE_URL}/event/group/info/${roundId}` 
 export const RETRIEVE_QUALIFIER_BY_ROUND = (roundId :  string ) => `${BASE_URL}/event/qualifier?stage_id=${roundId}`
+export const RETRIEVE_USER_PARTICIPANT_NOT_IN_QUALIFIER = (eventId:string, roundId : string) =>  `${BASE_URL}/participant/not_qualifier?stage_id=${roundId}&event_id=${eventId}`
 
 export const RETRIEVE_TIESHEET = (eventId : string) => `${BASE_URL}/event/tiesheet?event_id=${eventId}`
 export const CREATE_TIESHEET = `${BASE_URL}/event/tiesheet`
@@ -26,3 +27,9 @@ export const CREATE_TIESHEET = `${BASE_URL}/event/tiesheet`
 export const RETRIEVE_ROUNDS = (eventId : string) => `${BASE_URL}/event/stage?event_id=${eventId}`
 export const CREATE_ROUND = (eventId : string) => `${BASE_URL}/event/stage?event_id=${eventId}`
 export const EDIT_ROUND = (stageId : string) => `${BASE_URL}/event/stage?stage_id=${stageId}`
+
+export const RETRIEVE_PARTICIPANTS = (eventId : string) => `${BASE_URL}/participant?event_id=${eventId}`
+export const RETEIEVE_NOT_PARTICIPANTS = (eventId : string) => `${BASE_URL}/participant/not-participants?event_id=${eventId}`
+export const ADD_PARTICIPANTS = (eventID : string) =>  `${BASE_URL}/participant?event_id=${eventID}`
+
+export const ADD_QUALIFIER = (eventId:string,roundId:string) =>`${BASE_URL}/event/qualifier?event_id=${eventId}&stage_id=${roundId}`

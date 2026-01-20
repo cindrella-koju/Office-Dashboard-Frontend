@@ -13,6 +13,8 @@ import UsersList from "./components/checkFetch";
 import GroupPage from "./pages/event/eventdetailpages/group/group";
 import Tiesheet from "./pages/event/eventdetailpages/tiesheet/tiesheet";
 import Rounds from "./pages/event/eventdetailpages/rounds/rounds";
+import Participants from "./pages/event/eventdetailpages/participants/participants";
+import Qualifier from "./pages/event/eventdetailpages/qualifier/qualifier";
 
 export const router = createBrowserRouter([
     {
@@ -62,6 +64,14 @@ export const router = createBrowserRouter([
     {
         path : "/event/rounds",
         element : <Rounds/>
-    }
+    },
+    {
+        path : "/event/participants",
+        element : <Participants/>
+    },
+    {
+        path : "/event/qualifier",
+        element : <Qualifier/>
+    },
 ])
 
