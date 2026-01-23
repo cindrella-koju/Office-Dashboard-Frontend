@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { ADD_PARTICIPANTS, ADD_QUALIFIER, GET_ROUNDS_BY_EVENT, RETRIEVE_PARTICIPANTS, RETRIEVE_USER_PARTICIPANT_NOT_IN_QUALIFIER } from "../../../../constants/urls"
+import { ADD_QUALIFIER, GET_ROUNDS_BY_EVENT, RETRIEVE_USER_PARTICIPANT_NOT_IN_QUALIFIER } from "../../../../constants/urls"
 import useFetch from "../../../../hooks/useFetch"
 import type { Round } from "../group/group.type"
 

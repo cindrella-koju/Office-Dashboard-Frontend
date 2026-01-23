@@ -49,9 +49,10 @@ export default function EventNavBar() {
             <NavItem icon={<CgProfile/>} label="Qualifier" to="/event/qualifier"/>
             <NavItem icon={<CgProfile/>} label="Participants" to="/event/participants"/>
             <NavItem icon={<CgProfile/>} label="Standing Column" to="/event/column"/>
-            <NavItem icon={<FaSignOutAlt/>} label="Todays Game" to="/event/todays-game" />
+            <NavItem icon={<CgProfile/>} label="All Points" to="/event/overallpoint"/>
+            {/* <NavItem icon={<FaSignOutAlt/>} label="Todays Game" to="/event/todays-game" />
             <NavItem icon={<FaSignOutAlt/>} label="Ongoing Game" to="/event/ongoing-game" />
-            <NavItem icon={<FaSignOutAlt/>} label="Score Board" to="/event/score-board" />
+            <NavItem icon={<FaSignOutAlt/>} label="Score Board" to="/event/score-board" /> */}
           </nav>
         </aside>
       </>

@@ -15,6 +15,8 @@ import Tiesheet from "./pages/event/eventdetailpages/tiesheet/tiesheet";
 import Rounds from "./pages/event/eventdetailpages/rounds/rounds";
 import Participants from "./pages/event/eventdetailpages/participants/participants";
 import Qualifier from "./pages/event/eventdetailpages/qualifier/qualifier";
+import OverallPoints from "./pages/event/eventdetailpages/overallpoints/overallpoints";
+import StandingColumn from "./pages/event/eventdetailpages/standingcolumn/standingcolumn";
 
 export const router = createBrowserRouter([
     {
@@ -73,5 +75,13 @@ export const router = createBrowserRouter([
         path : "/event/qualifier",
         element : <Qualifier/>
     },
+    {
+        path : "/event/overallpoint",
+        element: <OverallPoints/>
+    },
+    {
+        path : "/event/column",
+        element : <StandingColumn/>
+    }
 ])
 

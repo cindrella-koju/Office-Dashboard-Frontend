@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import useRound from "../../../../../hooks/useRound";
 import useFetch from "../../../../../hooks/useFetch";
-import { CREATE_TIESHEET, RETRIEVE_QUALIFIER_BY_ROUND } from "../../../../../constants/urls";
+import { CREATE_TIESHEET, GET_ROUNDS_BY_EVENT, RETRIEVE_QUALIFIER_BY_ROUND } from "../../../../../constants/urls";
 
 interface TiesheetProps {
   viewMode: "create" | "edit" | null;
@@ -20,8 +20,12 @@ interface SelectedMatch {
   scheduled_time: string;
 }
 
+interface RoundResponse{
+  id : string,
+  name : string
+}
 export default function TiesheetModel({ viewMode, eventId }: TiesheetProps) {
-  const rounds = useRound(eventId);
+  const { data:rounds}= useFetch<RoundResponse[]>(eventId ? GET_ROUNDS_BY_EVENT(eventId) : "");
   const [roundId, setRoundID] = useState<string>("");
   const { data: qualifier } = useFetch<QualifierResponse[]>(
     roundId ? RETRIEVE_QUALIFIER_BY_ROUND(roundId) : ""
@@ -94,7 +98,7 @@ export default function TiesheetModel({ viewMode, eventId }: TiesheetProps) {
                 }}
               >
                 <option value="">Select Round</option>
-                {rounds?.map((round) => (
+                {rounds && rounds.map((round) => (
                   <option key={round.id} value={round.id}>
                     {round.name}
                   </option>

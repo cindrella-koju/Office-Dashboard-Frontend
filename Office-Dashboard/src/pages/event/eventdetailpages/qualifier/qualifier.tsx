@@ -3,72 +3,19 @@ import EventNavBar from "../../../../components/EventNavbar";
 import { usePermissions } from "../../../../hooks/userPermission";
 import { getInitials } from "../participants/participants";
 import QualifierModule from "./QualifierModel";
+import useFetch from "../../../../hooks/useFetch";
+import { RETRIEVE_QUALIFIER_BY_EVENT } from "../../../../constants/urls";
 
 interface EachQualifier{
-    id : number,
+    user_id : number,
     username : string
 }
 
 interface QualifierResponse{
-    roundNumber : number,
-    roundName : string
-    qualifiers :  EachQualifier[]
+    round_name : string
+    qualifier :  EachQualifier[]
 }
 
-const dummyRoundsData = [
-    {
-        roundNumber: 1,
-        roundName: "Preliminary Round",
-        qualifiers: [
-            { id: 1, username: "john_doe" },
-            { id: 2, username: "jane_smith" },
-            { id: 3, username: "alex_jones" },
-            { id: 4, username: "emily_brown" },
-        ]
-    },
-    {
-        roundNumber: 2,
-        roundName: "Quarter Finals",
-        qualifiers: [
-            { id: 5, username: "michael_wilson" },
-            { id: 6, username: "sarah_davis" },
-            { id: 7, username: "david_miller" },
-            { id: 8, username: "lisa_anderson" },
-            { id: 9, username: "chris_taylor" },
-            { id: 10, username: "amanda_moore" },
-        ]
-    },
-    {
-        roundNumber: 3,
-        roundName: "Semi Finals",
-        qualifiers: [
-            { id: 11, username: "robert_thomas" },
-            { id: 12, username: "maria_garcia" },
-            { id: 13, username: "james_martin" },
-            { id: 14, username: "linda_rodriguez" },
-            { id: 15, username: "william_lee" },
-        ]
-    },
-    {
-        roundNumber: 4,
-        roundName: "Finals Round 1",
-        qualifiers: [
-            { id: 16, username: "jennifer_white" },
-            { id: 17, username: "charles_harris" },
-            { id: 18, username: "patricia_clark" },
-        ]
-    },
-    {
-        roundNumber: 5,
-        roundName: "Grand Finals",
-        qualifiers: [
-            { id: 19, username: "daniel_lewis" },
-            { id: 20, username: "nancy_walker" },
-            { id: 21, username: "matthew_hall" },
-            { id: 22, username: "karen_allen" },
-        ]
-    }
-];
 
 const getColor = (id: number) => {
     const colors = [
@@ -88,8 +35,8 @@ const getColor = (id: number) => {
 export default function Qualifier(){
     const eventID = localStorage.getItem("eventId")
     const permissions = usePermissions("qualifier")
+    const {data : qualifier} = useFetch<QualifierResponse[]>(eventID ? RETRIEVE_QUALIFIER_BY_EVENT(eventID) : "")
     const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
-    const [qualifier,setQualifier] = useState<QualifierResponse[]>(dummyRoundsData)
     const [viewQualifier, setViewQualifier] = useState<boolean>(false)
 
     return(
@@ -151,28 +98,27 @@ export default function Qualifier(){
                 </div>
 
                 <div className="bg-white rounded-xl shadow-lg p-6">
-                    {
+                    {   qualifier &&
                         qualifier.map((qua) => (
                             <>
                             <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center mt-10 first:mt-0">
-                                {qua.roundName}
+                                {qua.round_name}
                             </h2>
                             {
                                 viewMode === "grid" ? (
                                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                                         {
-                                            qua.qualifiers.map((q) => (
+                                            qua.qualifier.map((q,index) => (
                                                 <div 
-                                                    key={q.id} 
+                                                    key={q.user_id} 
                                                     className="relative group bg-gradient-to-br from-gray-50 to-white border-2 border-gray-100 rounded-xl p-5 hover:shadow-xl hover:scale-105 transition-all duration-300 hover:border-blue-200"
                                                 >
                                                     <div className="flex items-center space-x-4">
-                                                        <div className={`${getColor(q.id)} rounded-full w-14 h-14 flex-shrink-0 flex items-center justify-center text-white font-bold text-lg shadow-md group-hover:scale-110 transition-transform duration-300`}>
+                                                        <div className={`${getColor(index)} rounded-full w-14 h-14 flex-shrink-0 flex items-center justify-center text-white font-bold text-lg shadow-md group-hover:scale-110 transition-transform duration-300`}>
                                                             {getInitials(q.username)}
                                                         </div>
                                                         
                                                         <div className="flex-1 min-w-0">
-                                                            <p className="text-sm text-gray-500 font-medium">ID: {q.id}</p>
                                                             <p className="text-lg font-bold text-gray-800 truncate group-hover:text-blue-600 transition-colors duration-200">
                                                                 {q.username}
                                                             </p>
@@ -196,18 +142,17 @@ export default function Qualifier(){
                                 ):(
                                     <div className="space-y-3">
                                         {
-                                            qua.qualifiers.map((q) => (
+                                            qua.qualifier.map((q,index) => (
                                                 <div 
-                                                    key={q.id} 
+                                                    key={q.user_id} 
                                                     className="relative group bg-gradient-to-br from-gray-50 to-white border-2 border-gray-100 rounded-xl p-5 hover:shadow-xl hover:scale-105 transition-all duration-300 hover:border-blue-200"
                                                 >
                                                     <div className="flex items-center space-x-4">
-                                                        <div className={`${getColor(q.id)} rounded-full w-14 h-14 flex-shrink-0 flex items-center justify-center text-white font-bold text-lg shadow-md group-hover:scale-110 transition-transform duration-300`}>
+                                                        <div className={`${getColor(index)} rounded-full w-14 h-14 flex-shrink-0 flex items-center justify-center text-white font-bold text-lg shadow-md group-hover:scale-110 transition-transform duration-300`}>
                                                             {getInitials(q.username)}
                                                         </div>
                                                         
                                                         <div className="flex-1 min-w-0">
-                                                            <p className="text-sm text-gray-500 font-medium">ID: {q.id}</p>
                                                             <p className="text-lg font-bold text-gray-800 truncate group-hover:text-blue-600 transition-colors duration-200">
                                                                 {q.username}
                                                             </p>

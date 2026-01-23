@@ -33,3 +33,10 @@ export const RETEIEVE_NOT_PARTICIPANTS = (eventId : string) => `${BASE_URL}/part
 export const ADD_PARTICIPANTS = (eventID : string) =>  `${BASE_URL}/participant?event_id=${eventID}`
 
 export const ADD_QUALIFIER = (eventId:string,roundId:string) =>`${BASE_URL}/event/qualifier?event_id=${eventId}&stage_id=${roundId}`
+export const RETRIEVE_QUALIFIER_BY_EVENT = (eventId : string) => `${BASE_URL}/event/qualifier/event?event_id=${eventId}`
+
+// export const RETRIEVE_OVERALL_TIESHEET = (eventId : string, roundId:string) => `${BASE_URL}/event/overalltiesheet?event_id=${eventId}&stage_id=${roundId}`
+export const RETRIEVE_OVERALL_TIESHEET = (eventId : string) => `${BASE_URL}/event/overalltiesheet?event_id=${eventId}`
+
+export const RETRIEVE_STANDING_COLUMN = (roundId : string ) => `${BASE_URL}/event/column?stage_id=${roundId}`
+export const ADD_STANDING_COLUMN = `${BASE_URL}/event/column`

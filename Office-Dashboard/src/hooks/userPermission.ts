@@ -4,7 +4,7 @@ import { getPermissions, type Permission, type ResourceType } from '../utils/per
 export function usePermissions(resource: ResourceType ): Permission {
   const auth = {
     token : "SDfdsfS",
-    role: "admin",
+    role: "superadmin",
     isAuthenticated : true
   }
   
