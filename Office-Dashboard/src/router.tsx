@@ -73,7 +73,7 @@ export const router = createBrowserRouter([
         element: <OverallPoints/>
     },
     {
-        path : "/event/column",
+        path : "/event/standing-column",
         element : <StandingColumn/>
     }
 ])

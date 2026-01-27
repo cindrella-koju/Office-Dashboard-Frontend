@@ -1,6 +1,7 @@
 import type { Dispatch, SetStateAction } from "react";
 import type { Permission } from "../utils/permissions";
 import Button from "./ui/Button";
+import { useNavigate } from "react-router-dom";
 
 type UserRole = 'admin' | 'member' | 'superadmin'
 type Status = 'active' | 'draft' | 'completed'
@@ -48,8 +49,15 @@ export default function Table({
   setModelType,
   setValue
 }: TableProps) {
+  const navigate = useNavigate();
   const showActions =
     permissions.canView || permissions.canEdit || permissions.canDelete;
+
+  const handleClick = (id : string) => {
+    localStorage.setItem("eventId",id);
+
+    navigate("/event/tiesheet");
+  };
 
   return (
     <>
@@ -105,7 +113,7 @@ export default function Table({
                   <td className="px-6 py-4">
                     <div className="flex justify-end gap-2">
                       {showView && permissions.canView && (
-                        <Button varient="success" size="sm">
+                        <Button varient="success" size="sm" onClick={()  => handleClick(row.id)}>
                           View
                         </Button>
                       )}
