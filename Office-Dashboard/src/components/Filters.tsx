@@ -3,7 +3,7 @@ import type React from "react";
 interface FilterComponentProps<T extends string> {
   filters: T[];
   filter: T;
-  setFilter: React.Dispatch<React.SetStateAction<T>>;
+  setFilter?: React.Dispatch<React.SetStateAction<T>>;
   label?: string;
 }
 
@@ -23,7 +23,7 @@ export default function FilterComponent<T extends string>({
         {filters.map((filterOption) => (
           <button
             key={filterOption}
-            onClick={() => setFilter(filterOption)}
+            // onClick={() => setFilter(filterOption)}
             className={`
               px-4 sm:px-5 py-2 rounded-lg font-semibold text-xs sm:text-sm
               transition-all duration-200

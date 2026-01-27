@@ -7,40 +7,6 @@ import { usePermissions } from "../../../../hooks/userPermission";
 import StandingColumnModule, { type RoundType } from "./StandingColumnModule";
 import { RETRIEVE_ROUNDS, RETRIEVE_STANDING_COLUMN } from "../../../../constants/urls";
 
-
-const DUMMY_STANDING_COLUMN = [
-  {
-    "stage_id": "fff42539-a573-4ae6-b7b1-25a691c5e787",
-    "column_field": "Match Played",
-    "default_value": "0",
-    "id": "69a39161-810b-4bdf-a606-03535cd238c6"
-  },
-  {
-    "stage_id": "fff42539-a573-4ae6-b7b1-25a691c5e787",
-    "column_field": "Win",
-    "default_value": "0",
-    "id": "1af93744-5a06-4493-99b3-8b1fab9a4e4b"
-  },
-  {
-    "stage_id": "fff42539-a573-4ae6-b7b1-25a691c5e787",
-    "column_field": "Loss",
-    "default_value": "0",
-    "id": "4f8e7170-7fda-40f3-a333-146372fe3b41"
-  },
-  {
-    "stage_id": "fff42539-a573-4ae6-b7b1-25a691c5e787",
-    "column_field": "Draw",
-    "default_value": "0",
-    "id": "4e7bf02d-e43f-4c56-a141-0555b695e591"
-  },
-  {
-    "stage_id": "fff42539-a573-4ae6-b7b1-25a691c5e787",
-    "column_field": "Points",
-    "default_value": "0",
-    "id": "ee560183-134d-4dca-af28-88333f36b652"
-  }
-]
-
 interface StandingColumnType{
     stage_id : string,
     column_field : string,

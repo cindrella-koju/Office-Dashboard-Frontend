@@ -7,9 +7,6 @@ import EventPage from "./pages/event/event";
 import ScoreBoard from "./pages/event/scoreboard/scoreboard";
 import DetailEvent from "./pages/event/eacheventdetail/detailEvent";
 import UserPage from "./pages/users/user";
-import UsersList from "./components/checkFetch";
-// import Groups from "./pages/event/eventdetailpages/groups";
-// import CreateGroupForm from "./pages/event/eventdetailpages/groupCheck";
 import GroupPage from "./pages/event/eventdetailpages/group/group";
 import Tiesheet from "./pages/event/eventdetailpages/tiesheet/tiesheet";
 import Rounds from "./pages/event/eventdetailpages/rounds/rounds";
@@ -50,10 +47,6 @@ export const router = createBrowserRouter([
     {
         path : "event/detail",
         element : <DetailEvent/>
-    },
-    {
-        path : "/check",
-        element : <UsersList/>
     },
     {
         path : "/event/groups",

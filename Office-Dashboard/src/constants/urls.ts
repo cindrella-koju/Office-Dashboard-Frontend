@@ -1,6 +1,5 @@
 const BASE_URL = "http://127.0.0.1:8000"
 
-export const CREATE_EVENT_FORM = `${BASE_URL}/test/createfield?page=event`
 export const CREATE_EVENT = `${BASE_URL}/event`
 export const UPDATE_EVENT = (eventId: string) => `${BASE_URL}/event?event_id=${eventId}`
 export const RETRIEVE_EVENT = `${BASE_URL}/event`
@@ -40,3 +39,8 @@ export const RETRIEVE_OVERALL_TIESHEET = (eventId : string) => `${BASE_URL}/even
 
 export const RETRIEVE_STANDING_COLUMN = (roundId : string ) => `${BASE_URL}/event/column?stage_id=${roundId}`
 export const ADD_STANDING_COLUMN = `${BASE_URL}/event/column`
+
+
+export const RETRIEVE_USERS = `${BASE_URL}/user`
+export const CREATE_USER = `${BASE_URL}/user/signup`
+export const UPDATE_USER = (user_id : string ) =>`${BASE_URL}/user?user_id=${user_id}`
