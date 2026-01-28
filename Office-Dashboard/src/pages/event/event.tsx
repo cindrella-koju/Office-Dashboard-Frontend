@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import NavBar from "../../components/Navbar";
-import { type EventResponse, type EventStatus } from "./event.type";
+import { type Event, type EventResponse, type EventStatus } from "./event.type";
 import FilterComponent from "../../components/Filters";
 import { usePermissions } from "../../hooks/userPermission";
 import useFetch from "../../hooks/useFetch";
@@ -39,7 +39,7 @@ export default function EventPage() {
   const [originalEvent, setOriginalEvent] =
     useState<EventResponse| null>(null);
 
-  const [eventDetail, setEventDetail] = useState({
+  const [eventDetail, setEventDetail] = useState<Event>({
     id: "",
     title: "",
     description: "",
@@ -48,6 +48,7 @@ export default function EventPage() {
     status: "draft",
     progress_note: "",
   });
+
 
   const [submitEvent, setSubmitEvent] =
     useState<"create" | "edit" | null>(null);
@@ -97,7 +98,7 @@ export default function EventPage() {
           key !== "id" &&
           current[key] !== (original as any)[key]
         ) {
-          changed[key] = current[key];
+          changed[key] = current[key] as any;
         }
       }
     );
@@ -107,7 +108,7 @@ export default function EventPage() {
 
 
 //   Submit
-  useCreateResource<Event>({
+  useCreateResource({
     trigger: submitEvent,
     method: submitEvent === "create" ? "POST" : "PATCH",
     endpoint:

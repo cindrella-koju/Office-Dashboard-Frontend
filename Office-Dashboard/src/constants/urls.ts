@@ -16,6 +16,7 @@ export const ADD_GROUP_MEMBER = `${BASE_URL}/event/group/player`
 // Api to extract group and participants
 export const  GET_ROUNDS_BY_EVENT = (eventId: string) => `${BASE_URL}/event/stage/rounds?event_id=${eventId}`
 export const GET_PARTICIPANTS_BY_EVENT = (eventId: string) => `${BASE_URL}/participant/not-in-group?event_id=${eventId}` 
+export const GET_QUALIFIER_NOT_IN_GROUP = (eventId:string, roundId:string) => `${BASE_URL}/participant/not-in-group/event/${eventId}/stage/${roundId}` 
 export const RETRIEVE_GROUP_BY_ROUND = (roundId : string) => `${BASE_URL}/event/group/info/${roundId}` 
 export const RETRIEVE_QUALIFIER_BY_ROUND = (roundId :  string ) => `${BASE_URL}/event/qualifier?stage_id=${roundId}`
 export const RETRIEVE_USER_PARTICIPANT_NOT_IN_QUALIFIER = (eventId:string, roundId : string) =>  `${BASE_URL}/participant/not_qualifier?stage_id=${roundId}&event_id=${eventId}`
@@ -39,6 +40,7 @@ export const RETRIEVE_OVERALL_TIESHEET = (eventId : string) => `${BASE_URL}/even
 
 export const RETRIEVE_STANDING_COLUMN = (roundId : string ) => `${BASE_URL}/event/column?stage_id=${roundId}`
 export const ADD_STANDING_COLUMN = `${BASE_URL}/event/column`
+export const EDIT_STANDING_COLUMN = (column_id : string) => `${BASE_URL}/event/column/${column_id}`
 
 
 export const RETRIEVE_USERS = `${BASE_URL}/user`

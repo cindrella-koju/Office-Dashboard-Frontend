@@ -60,7 +60,7 @@ export default function UserPage() {
       setTablehead(headers);
       setUsers(retrieve_users);
     }
-  }, [retrieve_users]);
+  },[retrieve_users]);
 
   // set Edit data
   useEffect(() => {

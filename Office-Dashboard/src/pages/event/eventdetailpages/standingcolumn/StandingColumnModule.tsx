@@ -1,133 +1,133 @@
-import React, { useState, type Dispatch, type SetStateAction } from "react"
-import { ADD_STANDING_COLUMN, RETRIEVE_ROUNDS } from "../../../../constants/urls"
+import React, { useEffect, useState, type Dispatch, type SetStateAction } from "react"
+import { ADD_STANDING_COLUMN, EDIT_STANDING_COLUMN, RETRIEVE_ROUNDS } from "../../../../constants/urls"
 import useFetch from "../../../../hooks/useFetch"
+import ModalWrapper from "../../../../components/pages/shared/ModelWrapper"
+import SelectField from "../../../../components/pages/shared/SelectField"
+import FormField from "../../../../components/pages/shared/FormField"
+import Button from "../../../../components/ui/Button"
+import type { StandingColumnType } from "../../../../type/standingcolumn.type"
 
-interface StandingColumnModule{
-    viewMode : "create" | "edit" | null,
-    eventId : string | null,
-    setViewMode : Dispatch<SetStateAction<'create' | 'edit' | null>>;
+
+
+interface StandingColumnModuleProps {
+  viewMode: "create" | "edit" | null
+  eventId: string | null
+  setViewMode: Dispatch<SetStateAction<"create" | "edit" | null>>
+  colVal? : StandingColumnType
 }
 
-export interface RoundType{
-    id : string,
-    name : string,
-    round_order : string
+export interface RoundType {
+  id: string
+  name: string
+  round_order: string
 }
 
-export default function StandingColumnModule({viewMode, eventId, setViewMode}:StandingColumnModule){
-    const { data:rounds } = useFetch<RoundType[]>(eventId ? RETRIEVE_ROUNDS(eventId) : "")
-    const [columnDetail,setColumnDetail] = useState({
-        stage_id : "",
-        column_field : "",
-        default_value : ""
-    })
+export default function StandingColumnModule({
+  viewMode,
+  eventId,
+  setViewMode,
+  colVal
+}: StandingColumnModuleProps) {
 
-    const handleSubmit = async(e:React.FormEvent) => {
-        e.preventDefault()
-        console.log("Column Detail:",columnDetail)
+  const { data: rounds } = useFetch<RoundType[]>(
+    eventId ? RETRIEVE_ROUNDS(eventId) : ""
+  )
 
-        try{
-            const url = viewMode === "create" ? ADD_STANDING_COLUMN : ADD_STANDING_COLUMN
+  const [columnDetail, setColumnDetail] = useState({
+    id : "",
+    stage_id: "",
+    column_field: "",
+    default_value: ""
+  })
 
-            const method = viewMode === "create" ? "POST" : "PATCH"
-
-            const response = await fetch(url, {
-                method,
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(
-                    columnDetail
-                ),
-            })
-
-            if(response.ok){
-                alert(`Column ${viewMode === "create" ? "created" : "updated"} successfully!`)
-                setColumnDetail({ stage_id: "", column_field: "", default_value : "" })
-                // window.location.reload()
-            } else {
-                alert(`Failed to ${viewMode === "create" ? "create" : "update"} column.`)
-            }
-        }catch (error) {
-            console.error("Error submitting form:", error)
-            alert("Failed to save round. Please try again.")
-        }
+  useEffect(() => {
+    console.log("View Mode", viewMode)
+    if (viewMode === "create") {
+      setColumnDetail({ stage_id: "", column_field: "", default_value: "" , id:""})
+    } else if (viewMode === "edit" && colVal) {
+      setColumnDetail({
+        id : colVal.id,
+        stage_id: colVal.stage_id,
+        column_field: colVal.column_field,
+        default_value: colVal.default_value
+      })
     }
-    return(
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-            <div className="w-full max-w-2xl bg-white rounded-2xl shadow-xl p-6 max-h-[80vh] overflow-y-auto">
-                <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-2xl font-bold text-gray-800">
-                        {viewMode === "edit" ? "Edit Column" : "Create Column"}
-                    </h2>
-                    <button
-                        onClick={() => setViewMode(null)}
-                        className="text-gray-500 hover:text-gray-700 text-2xl font-bold"
-                    >
-                        ×
-                    </button>
-                </div>
+  }, [viewMode, colVal])
 
-                <form onSubmit={handleSubmit}>
-                    <div className="mb-4">
-                        <label className="block mb-2 text-sm font-medium text-gray-700">
-                            Round <span className="text-red-500">*</span>
-                        </label>
-                        <select
-                            required
-                            className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-800
-                                    focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition duration-200"
-                            onChange={(e) => {
-                              setColumnDetail((prev) => ({ ...prev, stage_id: e.target.value }));
-                            }}
-                        >
-                            <option value="">Select Round</option>
-                            {rounds && rounds.map((round) => (
-                            <option key={round.id} value={round.id}>
-                                {round.name}
-                            </option>
-                            ))}
-                        </select>
-                    </div>
-                    <div className="mb-4">
-                        <label className="block mb-2 text-sm font-medium text-gray-700">
-                        Column Name <span className="text-red-500">*</span>
-                        </label>
-                        <input
-                        type="text"
-                        className="w-full border border-gray-300 rounded-lg px-4 py-2"
-                        placeholder="Enter column name"
-                        value={columnDetail.column_field}
-                        onChange={(e) =>
-                            setColumnDetail((prev) => ({ ...prev, column_field: e.target.value }))
-                        }
-                        required
-                        />
-                    </div>
-                    <div className="mb-4">
-                        <label className="block mb-2 text-sm font-medium text-gray-700">
-                        Default Value <span className="text-red-500">*</span>
-                        </label>
-                        <input
-                        type="text"
-                        className="w-full border border-gray-300 rounded-lg px-4 py-2"
-                        placeholder="Enter default value"
-                        value={columnDetail.default_value}
-                        onChange={(e) =>
-                            setColumnDetail((prev) => ({ ...prev, default_value: e.target.value }))
-                        }
-                        required
-                        />
-                    </div>
 
-                    <div className="flex justify-end gap-3 mt-6">
-                        <button
-                        type="submit"
-                        className="px-5 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-                        >
-                        {viewMode === "create" ? "Create Column" : "Update Column"}
-                        </button>
-                    </div>
-                </form>
-            </div>
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    try {
+      const url = viewMode === "create" ? ADD_STANDING_COLUMN : EDIT_STANDING_COLUMN(columnDetail.id)
+      const response = await fetch(url, {
+        method: viewMode === "create" ? "POST" : "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(columnDetail)
+      })
+
+      if (response.ok) {
+        alert(`Column ${viewMode === "create" ? "created" : "updated"} successfully!`)
+        setColumnDetail({ stage_id: "", column_field: "", default_value: "", id : "" })
+        setViewMode(null)
+      } else {
+        alert("Failed to save column")
+      }
+    } catch (error) {
+      console.error(error)
+      alert("Something went wrong")
+    }
+  }
+
+  return (
+    <ModalWrapper
+      title={viewMode === "edit" ? "Edit Column" : "Create Column"}
+      onClose={() => {
+        setViewMode(null)
+      }}
+    >
+      <form onSubmit={handleSubmit}>
+
+        <SelectField
+          label="Round"
+          value={columnDetail.stage_id}
+          onChange={(val) =>
+            setColumnDetail(prev => ({ ...prev, stage_id: val }))
+          }
+          options={rounds?.map(r => ({
+            value: r.id,
+            label: r.name
+          }))}
+          required
+        />
+
+        <FormField
+          label="Column Name"
+          placeholder="Enter column name"
+          value={columnDetail.column_field}
+          onChange={(val) =>
+            setColumnDetail(prev => ({ ...prev, column_field: val }))
+          }
+          required
+        />
+
+        <FormField
+          label="Default Value"
+          placeholder="Enter default value"
+          value={columnDetail.default_value}
+          onChange={(val) =>
+            setColumnDetail(prev => ({ ...prev, default_value: val }))
+          }
+          required
+        />
+
+        <div className="flex justify-end mt-6">
+          <Button type="submit">
+
+            {viewMode === "create" ? "Create Column" : "Update Column"}
+          </Button>
         </div>
-    )
+      </form>
+    </ModalWrapper>
+  )
 }

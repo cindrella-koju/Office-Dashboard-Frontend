@@ -1,5 +1,6 @@
 import type { FieldProps } from "../type/main.type";
 
+
 export const userField: FieldProps[] = [
     { label: "Username", name: "username", type: "text", required: true },
     { label: "Fullname", name: "fullname", type: "text", required: true },
@@ -30,3 +31,8 @@ export const editEventFields: FieldProps[] = [
     ...eventFields,
     { label: "Progress Note", name: "progress_note", type: "text" },
 ];
+
+export const roundFields : FieldProps[] = [
+    { label:"Round Name", name:"name", type:"text",required:true },
+    { label:"Order Index", name:"round_order", type:"number",required:true },
+]

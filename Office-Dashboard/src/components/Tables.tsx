@@ -74,7 +74,7 @@ export default function Table({
                 </th>
               ))}
 
-              {showActions && (
+              {showActions && tabledata.length > 0 &&(
                 <th className="px-6 py-3 text-right text-xs font-semibold uppercase tracking-wide text-gray-600">
                   Actions
                 </th>
@@ -83,17 +83,6 @@ export default function Table({
           </thead>
 
           <tbody className="divide-y divide-gray-200">
-            {tabledata.length === 0 && (
-              <tr>
-                <td
-                  colSpan={tablehead.length + (showActions ? 1 : 0)}
-                  className="px-6 py-8 text-center text-sm text-gray-500"
-                >
-                  No data available
-                </td>
-              </tr>
-            )}
-
             {tabledata.map((row, index) => (
               <tr
                 key={row.id ?? index}

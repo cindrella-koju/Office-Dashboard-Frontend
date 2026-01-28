@@ -1,11 +1,11 @@
-export type EventStatus = "Active" | "Completed" | "Draft" 
+export type EventStatus = "active" | "completed" | "draft" 
 
 type Participants = {
     id : number,
     fullname : string 
 }
 export type EventDetail = {
-    id : number,
+    id : string,
     title : string,
     description : string,
     startdate : string,
@@ -25,6 +25,17 @@ export interface EventResponse{
     id : string,
     created_at : string
     updated_at : string
+}
+
+
+export interface Event{
+    title : string,
+    description : string,
+    startdate : string,
+    enddate : string,
+    status : EventStatus,
+    progress_note : string,
+    id : string,
 }
 
 export type EventAction = "edit" | "create"

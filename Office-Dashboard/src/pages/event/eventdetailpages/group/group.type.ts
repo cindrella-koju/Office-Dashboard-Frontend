@@ -28,6 +28,12 @@ export interface ColumnData {
     value: string | null;
 }
 
+export interface Stage{
+    stage_id : string,
+    stage_name : string,
+    groups : Group[]
+}
+
 export interface Group {
     group_id: string;
     group_name: string;

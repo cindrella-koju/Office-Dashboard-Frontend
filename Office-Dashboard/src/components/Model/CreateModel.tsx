@@ -33,11 +33,24 @@ export default function CreateModel<T extends Record<string, any>>({
   setSubmit
 }: CreateModelProps<T>) {
 
+  const resetFormData = () => {
+    setFormData(
+      fields.reduce((acc, field) => {
+        if (field.type === "select" && field.options?.length) {
+          (acc as any)[field.name] = field.options[0]; 
+        } else {
+          (acc as any)[field.name] = "";
+        }
+        return acc;
+      }, {} as T)
+    );
+  };
+
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-
     setFormData(prev => ({
       ...prev,
       [name]: value
@@ -66,7 +79,10 @@ export default function CreateModel<T extends Record<string, any>>({
             {modelType === "edit" ? `Edit ${title}` : `Create ${title}`}
           </h2>
           <button
-            onClick={() => setModelType(null)}
+            onClick={() => {
+              resetFormData();  // Reset form data when closing the modal
+              setModelType(null);
+            }}
             className="text-gray-500 hover:text-gray-700 text-2xl font-bold"
           >
             ×

@@ -8,12 +8,13 @@ import ScoreBoard from "./pages/event/scoreboard/scoreboard";
 import DetailEvent from "./pages/event/eacheventdetail/detailEvent";
 import UserPage from "./pages/users/user";
 import GroupPage from "./pages/event/eventdetailpages/group/group";
-import Tiesheet from "./pages/event/eventdetailpages/tiesheet/tiesheet";
-import Rounds from "./pages/event/eventdetailpages/rounds/rounds";
-import Participants from "./pages/event/eventdetailpages/participants/participants";
+
+import Rounds from "./pages/event/eventdetailpages/rounds";
+import Participants from "./pages/event/eventdetailpages/participants";
 import Qualifier from "./pages/event/eventdetailpages/qualifier/qualifier";
-import OverallPoints from "./pages/event/eventdetailpages/overallpoints/overallpoints";
 import StandingColumn from "./pages/event/eventdetailpages/standingcolumn/standingcolumn";
+import Tiesheet from "./pages/event/eventdetailpages/tiesheet";
+import OverallPoints from "./pages/event/eventdetailpages/overallpoints";
 
 export const router = createBrowserRouter([
     {
@@ -69,12 +70,11 @@ export const router = createBrowserRouter([
         element : <Qualifier/>
     },
     {
-        path : "/event/overallpoint",
-        element: <OverallPoints/>
-    },
-    {
         path : "/event/standing-column",
         element : <StandingColumn/>
+    },{
+        path : "event/overall-points",
+        element: <OverallPoints/>
     }
 ])
 

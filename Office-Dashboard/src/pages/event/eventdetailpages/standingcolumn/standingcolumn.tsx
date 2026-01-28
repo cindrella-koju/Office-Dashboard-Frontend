@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import EventNavBar from "../../../../components/EventNavbar";
 import FilterComponent from "../../../../components/Filters";
 import Card from "../../../../components/ui/Card";
@@ -6,13 +6,15 @@ import useFetch from "../../../../hooks/useFetch";
 import { usePermissions } from "../../../../hooks/userPermission";
 import StandingColumnModule, { type RoundType } from "./StandingColumnModule";
 import { RETRIEVE_ROUNDS, RETRIEVE_STANDING_COLUMN } from "../../../../constants/urls";
+import { PageContent, PageHeader, PageLayout } from "../../../../components/layout/PageLayout";
+import Button from "../../../../components/ui/Button";
+import extractHeaders from "../../../../utils/extractHeader";
+import Table from "../../../../components/Tables";
+import EmptyMessage from "../../../../components/ui/EmptyMessage";
+import { FaChartBar } from "react-icons/fa";
+import type { StandingColumnType } from "../../../../type/standingcolumn.type";
 
-interface StandingColumnType{
-    stage_id : string,
-    column_field : string,
-    default_value : string,
-    id : string
-}
+
 export default function StandingColumn(){
     const eventId = localStorage.getItem("eventId")
     const permissions = usePermissions("standingcolumn")
@@ -20,96 +22,68 @@ export default function StandingColumn(){
     const { data:rounds } = useFetch<RoundType[]>(eventId ? RETRIEVE_ROUNDS(eventId) : "")
     const roundId = rounds && rounds[0].id
     // const [roundId, setRoundId] = useState(rounds && rounds[0].id)
-    const { data:standingcolumn } = useFetch<StandingColumnType[]>(roundId ? RETRIEVE_STANDING_COLUMN(roundId) : "")
+    const { data:retrieve_standingcolumn, loading, error } = useFetch<StandingColumnType[]>(roundId ? RETRIEVE_STANDING_COLUMN(roundId) : "")
+    const [tablehead, setTableHead] = useState<string[]>([])
+    const [standingcolumn, setStandingColumn] = useState<StandingColumnType[]>([])
+    const [colVal, setColVal] = useState<StandingColumnType>()
     const filters = ["Round 1", "Round 2"]
 
-    console.log("Round id:",roundId)
-    return(
-        <div className="flex min-h-screen bg-gray-100">
-            <EventNavBar/>
-            <main className="flex-1 p-6 md:p-10">
-                 <div className="flex items-center justify-between mb-8">
-                    <h1 className="text-2xl font-semibold text-gray-900">Standing Columns</h1>
-                    {permissions.canCreate && (
-                        <button className="px-5 py-2.5 rounded-lg bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 transition-colors"
-                        onClick={() => setViewMode("create")}
-                        >
-                            + Add Column
-                        </button>
-                    )}
-                </div>
+    useEffect(() => {
+        if (!retrieve_standingcolumn) return;
 
+        const headers = extractHeaders(retrieve_standingcolumn);
+        setTableHead(headers)
+        setStandingColumn(retrieve_standingcolumn)
+    },[retrieve_standingcolumn])
+    return(
+        <PageLayout sidebar={<EventNavBar/>}>
+            <PageContent>
+                <PageHeader
+                    title="Standing Columns"
+                    actions = {permissions.canCreate && (
+                        <Button varient="primary" onClick={() => setViewMode("create")}>Add Column</Button>
+                    )}
+                />
                 <Card className="mb-6">
                     <div className="p-4 sm:p-6">
                         <FilterComponent filter="Round 1" filters={filters}/>
                     </div>
                 </Card>
 
-                <Card className="flex-1 h-[70%]">
-                    <div className="p-4 sm:p-6 h-full overflow-y-auto space-y-8">
-                        <table className="min-w-full text-sm">
-                            <thead className="bg-gray-50">
-                                <tr>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Column Name
-                                    </th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Default Value
-                                    </th>
-                                        {(permissions.canEdit || permissions.canDelete) && (
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Actions
-                                        </th>
-                                    )}
+                <Card className="p-4 sm:p-6" >
+                    {
+                        rounds &&
+                        <div className="max-h-[500px] lg:max-h-[800px] overflow-y-auto">
+                            {loading ? (
+                            <div className="flex items-center justify-center py-12">
+                                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600" />
+                            </div>
+                            ) : error ? (
+                            <div className="text-center py-12 text-red-500">
+                                Error loading users: {error}
+                            </div>
+                            ) : (
+                                standingcolumn.length > 0 ? (
+                                    <Table
+                                        tablehead={tablehead}
+                                        tabledata={standingcolumn}
+                                        permissions={permissions}
+                                        setModelType={setViewMode}
+                                        setValue={setColVal}
+                                    />
 
-                                    
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {   standingcolumn && 
-                                    standingcolumn.map((col,index) => (
-                                        <tr key={index} className="hover:bg-gray-50 transition-colors">
-                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                <span className="text-sm font-medium text-gray-900">
-                                                    {col.column_field}
-                                                </span>
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                <span className="text-sm font-medium text-gray-900">
-                                                    {col.default_value}
-                                                </span>
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm">
-                                                {
-                                                    permissions.canEdit && (
-                                                        <button className="text-indigo-600 hover:text-indigo-900 mr-4" onClick={() => {
-                                                            // setRoundVal(round)
-                                                            // setViewMode('edit')
-                                                        }}>
-                                                            Edit
-                                                        </button>
-                                                    )
-                                                }
-                                                {
-                                                    permissions.canEdit && (
-                                                        <button className="text-red-600 hover:text-red-900">
-                                                            Delete
-                                                        </button>
-                                                    )
-                                                }
-                                            </td>
-                                        </tr>
-                                    ))
-                                }
-                            </tbody>
-                        </table>
-                    </div>
+                                ) : <EmptyMessage message="No Standing Column Yet" submessage="Create Standing Column Based on Round" icon={<FaChartBar size={80} />}/>
+                            )}
+                        </div>
+                    }
                 </Card>
-
                 {
-                    viewMode != null && <StandingColumnModule viewMode={viewMode} eventId={eventId} setViewMode={setViewMode}/> 
+                    viewMode != null  && <StandingColumnModule viewMode={viewMode} eventId={eventId} setViewMode={setViewMode} colVal={colVal}/> 
                 }
-            </main>
-        </div>
+            </PageContent>
+
+        </PageLayout>
+
+
     )
 }
