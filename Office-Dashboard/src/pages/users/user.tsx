@@ -21,11 +21,11 @@ import CreateModel from "../../components/Model/CreateModel";
 import useCreateResource from "../../hooks/useSubmit";
 import { userField } from "../../constants/fields";
 import type { AddUser, RoleType, UserDetail } from "../../type/user.type";
-import Table from "../../components/Tables";
+import Table from "../../components/table/Tables";
 
 export default function UserPage() {
   const permissions = usePermissions("user");
-  const { data: retrieve_users, loading, error } =
+  const { data: retrieve_users, loading, error, refetch } =
     useFetch<UserDetail[]>(RETRIEVE_USERS);
 
   const filters = ["All", "Admin", "SuperAdmin", "Member"];
@@ -115,6 +115,10 @@ export default function UserPage() {
       submitUser === "create"
         ? userDetail
         : getChangedFields(originalUser, userDetail),
+      
+    refetch : () => {
+      refetch()
+    },
 
     page: "User",
 
@@ -153,11 +157,11 @@ export default function UserPage() {
         />
 
         <Card className="mb-6 sm:mb-8 p-4 sm:p-6">
-          <FilterComponent
+          {/* <FilterComponent
             filters={filters}
             filter={filter}
             setFilter={setFilter}
-          />
+          /> */}
         </Card>
 
         <Card className="p-4 sm:p-6">

@@ -1,11 +1,11 @@
 import React, { useEffect, useState, type Dispatch, type SetStateAction } from "react"
-import { ADD_STANDING_COLUMN, EDIT_STANDING_COLUMN, RETRIEVE_ROUNDS } from "../../../../constants/urls"
-import useFetch from "../../../../hooks/useFetch"
-import ModalWrapper from "../../../../components/pages/shared/ModelWrapper"
-import SelectField from "../../../../components/pages/shared/SelectField"
-import FormField from "../../../../components/pages/shared/FormField"
-import Button from "../../../../components/ui/Button"
-import type { StandingColumnType } from "../../../../type/standingcolumn.type"
+import { ADD_STANDING_COLUMN, EDIT_STANDING_COLUMN, RETRIEVE_ROUNDS } from "../../constants/urls"
+import useFetch from "../../hooks/useFetch"
+import ModalWrapper from "../pages/shared/ModelWrapper"
+import SelectField from "../pages/shared/SelectField"
+import FormField from "../pages/shared/FormField"
+import Button from "../ui/Button"
+import type { StandingColumnType } from "../../type/standingcolumn.type"
 
 
 
@@ -22,7 +22,7 @@ export interface RoundType {
   round_order: string
 }
 
-export default function StandingColumnModule({
+export default function StandingColumnModel({
   viewMode,
   eventId,
   setViewMode,

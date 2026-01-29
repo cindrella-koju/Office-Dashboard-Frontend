@@ -1,15 +1,21 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 interface FetchState<T> {
   data: T | null;
   loading: boolean;
   error: string | null;
+  refetch: () => void;
 }
 
 function useFetch<T = unknown>(url: string, options?: RequestInit): FetchState<T> {
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [refetchKey, setRefetchKey] = useState<number>(0);
+
+  const refetch = useCallback(() => {
+    setRefetchKey(prev => prev + 1);
+  }, []);
 
   useEffect(() => {
     if (!url) return;
@@ -42,9 +48,9 @@ function useFetch<T = unknown>(url: string, options?: RequestInit): FetchState<T
     return () => {
       controller.abort(); 
     };
-  }, [url, JSON.stringify(options)]);
+  }, [url, JSON.stringify(options), refetchKey]);
 
-  return { data, loading, error };
+  return { data, loading, error, refetch };
 }
 
 export default useFetch;

@@ -1,5 +1,7 @@
-import { RETRIEVE_GROUP_AND_MEMBERS } from "../../../../constants/urls";
-import type { Group } from "./group.type";
+import { RETRIEVE_GROUP_AND_MEMBERS } from "../constants/urls";
+import type { Group } from "../type/group.type";
+
+import type { GroupMember } from "../type/group.type";
 
 
 // API function to fetch group details
@@ -49,3 +51,26 @@ export const getAllColumnFields = (groups: Group[]) => {
     });
     return Array.from(fields);
 };
+
+export function extractColumnFieldsFromMembers(members : GroupMember[]){
+    return Array.from(
+        new Set(members.flatMap(
+        (member) => (
+                member.columns.map((col) => 
+                    col.column_field
+                )
+            )
+        ))
+    )
+}
+
+export function extractColumnsAndValues(members: GroupMember[], columnFields: string[]) {
+    return members.map((member) => {
+        const valuesByColumn = columnFields.map((columnField) => {
+            const column = member.columns.find((col) => col.column_field === columnField);
+            return column ? { value : column.value, column_id : column.column_id} : { value : null,  column_id : ""}
+        });
+
+        return { user_id : member.user_id, username : member.username, values : valuesByColumn}
+    })
+}

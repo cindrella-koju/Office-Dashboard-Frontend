@@ -7,7 +7,8 @@ interface UseCreateResourceProps<T> {
   onSuccess?: () => void;        
   resetTrigger?: () => void;
   page: string;
-  method : "POST" | "PATCH"
+  method : "POST" | "PATCH";
+  refetch? : () => void;
 }
 
 const useCreateResource = <T extends object>({
@@ -17,7 +18,8 @@ const useCreateResource = <T extends object>({
   onSuccess,
   resetTrigger,
   page,
-  method
+  method,
+  refetch
 }: UseCreateResourceProps<T>) => {
   useEffect(() => {
     if (!trigger) return;
@@ -33,7 +35,7 @@ const useCreateResource = <T extends object>({
         if (response.ok) {
           alert(method === "POST" ? `${page} Created Successfully` : `${page} Edited Successfully`)
           onSuccess?.();
-          window.location.reload();
+          refetch?.();
         } else {
           alert(method === "POST" ? `Failed to create ${page}` : `Failed to edit ${page}`)
         }

@@ -7,13 +7,13 @@ import { CREATE_ROUND, EDIT_ROUND, RETRIEVE_ROUNDS } from "../../../constants/ur
 import { PageContent, PageHeader, PageLayout } from "../../../components/layout/PageLayout";
 import Button from "../../../components/ui/Button";
 import Card from "../../../components/ui/Card";
-import Table from "../../../components/Tables";
 import extractHeaders from "../../../utils/extractHeader";
 import CreateModel from "../../../components/Model/CreateModel";
 import { roundFields } from "../../../constants/fields";
 import useCreateResource from "../../../hooks/useSubmit";
 import EmptyMessage from "../../../components/ui/EmptyMessage";
 import { GrGroup } from "react-icons/gr";
+import Table from "../../../components/table/Tables";
 // import type { RoundData } from "../../../type/round.type";
 
 

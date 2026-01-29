@@ -3,10 +3,10 @@ const BASE_URL = "http://127.0.0.1:8000"
 export const CREATE_EVENT = `${BASE_URL}/event`
 export const UPDATE_EVENT = (eventId: string) => `${BASE_URL}/event?event_id=${eventId}`
 export const RETRIEVE_EVENT = `${BASE_URL}/event`
-export const RETRIEVE_GROUP_AND_MEMBERS = `${BASE_URL}/event/group`
+export const RETRIEVE_GROUP_AND_MEMBERS  = (eventId: string ) => `${BASE_URL}/event/group/event/${eventId}`
 
 // API for Group
-export const CREATE_GROUP = `${BASE_URL}/event/group`
+export const CREATE_GROUP = (eventId : string) => `${BASE_URL}/event/group?event_id=${eventId}`
 export const UPDATE_GROUP = (groupId: string) => `${BASE_URL}/event/group/${groupId}`
 export const DELETE_GROUP = (groupId: string) => `${BASE_URL}/event/group/${groupId}`
 export const UPDATE_GROUP_TABLE = (groupId: string) => `${BASE_URL}/event/group/${groupId}/members`
@@ -17,6 +17,7 @@ export const ADD_GROUP_MEMBER = `${BASE_URL}/event/group/player`
 export const  GET_ROUNDS_BY_EVENT = (eventId: string) => `${BASE_URL}/event/stage/rounds?event_id=${eventId}`
 export const GET_PARTICIPANTS_BY_EVENT = (eventId: string) => `${BASE_URL}/participant/not-in-group?event_id=${eventId}` 
 export const GET_QUALIFIER_NOT_IN_GROUP = (eventId:string, roundId:string) => `${BASE_URL}/participant/not-in-group/event/${eventId}/stage/${roundId}` 
+export const GET_QUALIFIER_NOT_IN_GROUP_FOR_EDIT = (eventId:string, roundId:string, groupId : string) => `${BASE_URL}/participant/not-in-group/event/${eventId}/stage/${roundId}?group_id=${groupId}` 
 export const RETRIEVE_GROUP_BY_ROUND = (roundId : string) => `${BASE_URL}/event/group/info/${roundId}` 
 export const RETRIEVE_QUALIFIER_BY_ROUND = (roundId :  string ) => `${BASE_URL}/event/qualifier?stage_id=${roundId}`
 export const RETRIEVE_USER_PARTICIPANT_NOT_IN_QUALIFIER = (eventId:string, roundId : string) =>  `${BASE_URL}/participant/not_qualifier?stage_id=${roundId}&event_id=${eventId}`

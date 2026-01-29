@@ -1,4 +1,4 @@
-import Table from "../../Tables"
+import Table from "../../table/Tables"
 import EmptyMessage from "../../ui/EmptyMessage"
 
 interface OverAllPointsTableProps{

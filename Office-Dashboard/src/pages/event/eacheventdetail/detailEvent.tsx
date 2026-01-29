@@ -3,11 +3,12 @@ import { MdEmojiEvents } from "react-icons/md";
 import { DUMMY_EVENT, oneEventInfo, ongoingMatches, overallTiesheetTableData, overallTiesheetTableHead, roundDetailData, roundDetailHead, statusColors, todayGameTableData, todayGameTableHead} from "./detail.data";
 import type { TabType } from "./detail.type";
 import { useState } from "react";
-import Table from "../../../components/Tables";
+
 import { usePermissions } from "../../../hooks/userPermission";
 import useFetch from "../../../hooks/useFetch";
 import { RETRIEVE_GROUP_AND_MEMBERS, RETRIEVE_ROUNDS } from "../../../constants/urls";
 import EventNavBar from "../../../components/EventNavbar";
+import Table from "../../../components/table/Tables";
 
 
 export default function DetailEvent() {

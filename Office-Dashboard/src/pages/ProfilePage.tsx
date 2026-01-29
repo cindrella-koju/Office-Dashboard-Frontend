@@ -1,7 +1,7 @@
 import NavBar from "../components/Navbar";
 import { HiUser } from "react-icons/hi";
 import { useState } from "react";
-import Table from "../components/Tables";
+import Table from "../components/table/Tables";
 
 type EventStatus = "Active" | "Completed" | "Draft";
 

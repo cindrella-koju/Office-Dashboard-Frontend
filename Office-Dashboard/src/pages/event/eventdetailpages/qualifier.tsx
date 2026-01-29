@@ -1,17 +1,17 @@
 import { useState, useCallback } from "react";
-import EventNavBar from "../../../../components/EventNavbar";
-import { usePermissions } from "../../../../hooks/userPermission";
-import QualifierModule from "./QualifierModel";
-import useFetch from "../../../../hooks/useFetch";
-import { RETRIEVE_QUALIFIER_BY_EVENT } from "../../../../constants/urls";
-import { PageContent, PageHeader, PageLayout } from "../../../../components/layout/PageLayout";
-import Button from "../../../../components/ui/Button";
-import { Card } from "../../../../components/ui/Card";
-import { UserToolbar, UserCard } from "../../../../components/shared";
-import type { ViewMode, UserCardData } from "../../../../components/shared";
-import EmptyMessage from "../../../../components/ui/EmptyMessage";
+import EventNavBar from "../../../components/EventNavbar";
+import { usePermissions } from "../../../hooks/userPermission";
+import QualifierModule from "../../../components/Model/QualifierModel";
+import useFetch from "../../../hooks/useFetch";
+import { RETRIEVE_QUALIFIER_BY_EVENT } from "../../../constants/urls";
+import { PageContent, PageHeader, PageLayout } from "../../../components/layout/PageLayout";
+import Button from "../../../components/ui/Button";
+import { Card } from "../../../components/ui/Card";
+import { UserToolbar, UserCard } from "../../../components/shared";
+import type { ViewMode, UserCardData } from "../../../components/shared";
+import EmptyMessage from "../../../components/ui/EmptyMessage";
 import { IoPeople } from "react-icons/io5";
-import { type ModelType } from "../../../../type/main.type";
+import { type ModelType } from "../../../type/main.type";
 
 interface EachQualifier {
     user_id: number;

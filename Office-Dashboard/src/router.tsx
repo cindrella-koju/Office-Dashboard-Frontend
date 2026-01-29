@@ -7,12 +7,12 @@ import EventPage from "./pages/event/event";
 import ScoreBoard from "./pages/event/scoreboard/scoreboard";
 import DetailEvent from "./pages/event/eacheventdetail/detailEvent";
 import UserPage from "./pages/users/user";
-import GroupPage from "./pages/event/eventdetailpages/group/group";
+import GroupPage from "./pages/event/eventdetailpages/group";
 
 import Rounds from "./pages/event/eventdetailpages/rounds";
 import Participants from "./pages/event/eventdetailpages/participants";
-import Qualifier from "./pages/event/eventdetailpages/qualifier/qualifier";
-import StandingColumn from "./pages/event/eventdetailpages/standingcolumn/standingcolumn";
+import Qualifier from "./pages/event/eventdetailpages/qualifier";
+import StandingColumn from "./pages/event/eventdetailpages/standingcolumn";
 import Tiesheet from "./pages/event/eventdetailpages/tiesheet";
 import OverallPoints from "./pages/event/eventdetailpages/overallpoints";
 

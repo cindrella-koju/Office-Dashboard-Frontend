@@ -91,7 +91,7 @@ export default function CreateModel<T extends Record<string, any>>({
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="flex flex-col">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4">
             {fields.map((field, index) => {
               if (modelType === "edit" && field.type === "password") return null;
 

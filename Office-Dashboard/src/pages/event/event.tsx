@@ -20,11 +20,12 @@ import Card from "../../components/ui/Card";
 import CreateModel from "../../components/Model/CreateModel";
 import useCreateResource from "../../hooks/useSubmit";
 import { editEventFields, eventFields } from "../../constants/fields";
-import Table from "../../components/Tables";
+import EmptyMessage from "../../components/ui/EmptyMessage";
+import Table from "../../components/table/Tables";
 
 
 export default function EventPage() {
-  const { data: retrieve_events, loading, error } =
+  const { data: retrieve_events, loading, error, refetch } =
     useFetch<EventResponse[]>(RETRIEVE_EVENT);
 
   const permissions = usePermissions("event");
@@ -122,6 +123,9 @@ export default function EventPage() {
         : getChangedFields(originalEvent, eventDetail),
 
     page: "Event",
+    refetch : () => {
+      refetch()
+    },
 
     onSuccess: () => {
       setEventDetail({
@@ -160,11 +164,11 @@ export default function EventPage() {
         />
 
         <Card className="mb-6 sm:mb-8 p-4 sm:p-6">
-          <FilterComponent
+          {/* <FilterComponent
             filters={filters}
             filter={filter}
             setFilter={setFilter}
-          />
+          /> */}
         </Card>
 
         <Card className="p-4 sm:p-6">
@@ -175,22 +179,24 @@ export default function EventPage() {
               </div>
             ) : error ? (
               <div className="text-center py-12 text-red-500">
-                Error loading events: {error}
+                Error loading events
               </div>
             ) : (
-              <Table
-                tablehead={tablehead}
-                tabledata={events}
-                permissions={permissions}
-                showView
-                setModelType={setEventMode}
-                setValue={setEachEventDetail}
-              />
+              events.length > 0 ? (
+                <Table
+                  tablehead={tablehead}
+                  tabledata={events}
+                  permissions={permissions}
+                  showView
+                  setModelType={setEventMode}
+                  setValue={setEachEventDetail}
+                />
+              ) : <EmptyMessage message="No Event Yet" submessage="Create event to see here"/>
             )}
           </div>
         </Card>
 
-        {eventMode && (
+        {eventMode &&(
           <CreateModel
             modelType={eventMode}
             setModelType={setEventMode}
@@ -201,6 +207,7 @@ export default function EventPage() {
             setSubmit={setSubmitEvent}
           />
         )}
+
       </PageContent>
     </PageLayout>
   );

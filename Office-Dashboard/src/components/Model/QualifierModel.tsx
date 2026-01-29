@@ -1,14 +1,14 @@
 import { useState, type Dispatch, type SetStateAction } from "react"
-import useFetch from "../../../../hooks/useFetch"
+import useFetch from "../../hooks/useFetch"
 import {
   ADD_QUALIFIER,
   GET_ROUNDS_BY_EVENT,
   RETRIEVE_USER_PARTICIPANT_NOT_IN_QUALIFIER
-} from "../../../../constants/urls"
-import type { Round } from "../group/group.type"
-import ModalWrapper from "../../../../components/pages/shared/ModelWrapper"
-import MultiSelect from "../../../../components/pages/shared/MultiSelect"
-import type { ModelType } from "../../../../type/main.type"
+} from "../../constants/urls"
+import type { Round } from "../../type/group.type"
+import ModalWrapper from "../pages/shared/ModelWrapper"
+import MultiSelect from "../pages/shared/MultiSelect"
+import type { ModelType } from "../../type/main.type"
 
 interface QualifierModelType {
   eventID: string | null,
