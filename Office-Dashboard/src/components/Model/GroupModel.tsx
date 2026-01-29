@@ -121,9 +121,6 @@ export default function CreateGroupModal({mode, eventId, groupId, setIsModalOpen
                     ...prev,
                     participant_ids: ids,
                   }))
-                  // setGroupId(ids)
-                  console.log(ids)
-                  
                 }
                 
               }

@@ -55,9 +55,7 @@ export default function Tiesheet(){
                     actions = {
                         permissions.canCreate && (
                             <>
-                            <Button onClick={() => setViewMode("create")}>Individual Match</Button>
-                            <Button onClick={() => setViewMode("create")}>Group vs Group</Button>
-                            <Button onClick={() => setViewMode("create")}>Within Group</Button>
+                            <Button onClick={() => setViewMode("create")}>Create Tiesheet</Button>
                             </>
                         )
                     }
@@ -91,7 +89,6 @@ export default function Tiesheet(){
                                                     scheduledDate={match.scheduled_date}
                                                     scheduledTime={match.scheduled_time}
                                                     players={match.player_info}
-                                                    onEdit={(id) => console.log('Edit match:', id)}
                                                 />
                                             ))}
                                         </div>

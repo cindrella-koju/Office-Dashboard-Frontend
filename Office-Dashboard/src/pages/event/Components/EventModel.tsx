@@ -53,10 +53,6 @@ export default function EventModel({ eventMode, setEventMode, editEventData, onE
     }
   }, [eventMode, editEventData]);
 
-  useEffect(() => {
-    console.log("Each Ecent Detail:",editEventData)
-  },[editEventData])
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {

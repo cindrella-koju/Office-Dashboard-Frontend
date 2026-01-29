@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import NavBar from "../../components/Navbar";
 import { type Event, type EventResponse, type EventStatus } from "./event.type";
-import FilterComponent from "../../components/Filters";
 import { usePermissions } from "../../hooks/userPermission";
 import useFetch from "../../hooks/useFetch";
 import {

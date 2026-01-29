@@ -28,11 +28,6 @@ export default function Groups(){
         participants_id : []
     })
 
-    useEffect(() => {
-        if (!eachGroupData) return;
-
-        console.log("Each group data:", eachGroupData)
-    },[eachGroupData])
     const handleEditUser = (groupId: string, member: GroupMember) => {
         setEditingUserId({ groupId, userId: member.user_id });
         setEditedUserData(JSON.parse(JSON.stringify(member)));

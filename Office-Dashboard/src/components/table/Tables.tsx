@@ -94,7 +94,7 @@ export default function Table({
                       {head === "role" || head === "status" ? (
                         <Badge value={row[head]} />
                       ) : (
-                        row[head]
+                        row[head].toString()
                       )}
                     </td>
                 ))}
@@ -111,7 +111,6 @@ export default function Table({
                       {permissions.canEdit && (
                         <Button varient="primary" size="sm" onClick={() => {
                           setModelType("edit")
-                          console.log(row)
                           setValue(row)
                         }}>
                           Edit
@@ -164,7 +163,6 @@ export default function Table({
                       {showView && permissions.canView && <Button varient="success" size="sm" className="flex-1">View</Button>}
                       {permissions.canEdit && <Button varient="primary" size="sm" className="flex-1" onClick={() => {
                           setModelType("edit")
-                          console.log(row)
                           setValue(row)
                         }}>Edit</Button>}
                       {permissions.canDelete && <Button varient="danger" size="sm" className="flex-1">Delete</Button>}

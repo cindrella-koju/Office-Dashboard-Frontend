@@ -19,7 +19,6 @@ export default function DetailEvent() {
     const [activeTab, setActiveTab] = useState<TabType>("Overall Tiesheet");
     const tabs: TabType[] = ["Groups","Overall Tiesheet", "Event History", "Todays Game", "Ongoing Game", "Event Image", "Rounds"];
     const [viewDetail, setViewDetail] = useState<boolean>(true)
-    console.log(group_and_members)
     return(
         <div className="flex min-h-screen bg-gray-100">
             <EventNavBar/>

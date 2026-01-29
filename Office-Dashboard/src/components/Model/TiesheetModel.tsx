@@ -11,12 +11,10 @@ import FormField from "../pages/shared/FormField"
 import type { ModelType } from "../../type/main.type"
 import Button from "../ui/Button"
 
-
 interface TiesheetProps {
-  setviewMode: Dispatch<SetStateAction<ModelType>>;
-  viewMode : ModelType;
-  eventId: string;
-  modelType? : "individual" | "group" | "withingroup"
+  setviewMode: Dispatch<SetStateAction<ModelType>>
+  viewMode: ModelType
+  eventId: string
 }
 
 interface QualifierResponse {
@@ -29,6 +27,7 @@ interface SelectedMatch {
   players: string[]
   scheduled_date: string
   scheduled_time: string
+  status: "scheduled" | "completed"
 }
 
 interface RoundResponse {
@@ -36,18 +35,26 @@ interface RoundResponse {
   name: string
 }
 
-export default function TiesheetModel({ viewMode, eventId, setviewMode, modelType = "group" }: TiesheetProps) {
+export default function TiesheetModel({
+  viewMode,
+  eventId,
+  setviewMode
+}: TiesheetProps) {
+  /* Status options: UI label vs stored value */
+  const statusOptions = [
+    { label: "Scheduled", value: "scheduled" },
+    { label: "Completed", value: "completed" }
+  ] as const
 
   const { data: rounds } = useFetch<RoundResponse[]>(
     eventId ? GET_ROUNDS_BY_EVENT(eventId) : ""
   )
 
   const [roundId, setRoundID] = useState("")
+
   const { data: qualifier } = useFetch<QualifierResponse[]>(
     roundId ? RETRIEVE_QUALIFIER_BY_ROUND(roundId) : ""
   )
-  
-  // const {data:group} = useFetch(roundId ? RETRIEVE_GROUP_BY_ROUND(roundId) : "")
 
   const [selectedUsers, setSelectedUsers] = useState<
     { id: string; name: string }[]
@@ -57,17 +64,21 @@ export default function TiesheetModel({ viewMode, eventId, setviewMode, modelTyp
     stage_id: "",
     players: [],
     scheduled_date: "",
-    scheduled_time: ""
+    scheduled_time: "",
+    status: "scheduled" // always lowercase
   })
 
-  /* Reset when round changes */
+  /* Reset players & date/time when round changes */
   useEffect(() => {
-    setSelectedMatch({
+    if (!roundId) return
+
+    setSelectedMatch(prev => ({
+      ...prev,
       stage_id: roundId,
       players: [],
       scheduled_date: "",
       scheduled_time: ""
-    })
+    }))
     setSelectedUsers([])
   }, [roundId])
 
@@ -76,16 +87,27 @@ export default function TiesheetModel({ viewMode, eventId, setviewMode, modelTyp
 
     if (viewMode !== "create") return
 
+    if (selectedMatch.players.length < 2) {
+      alert("Please select at least 2 players")
+      return
+    }
+
+    /* Final payload – status guaranteed lowercase */
+    const payload = {
+      ...selectedMatch,
+      status: selectedMatch.status.toLowerCase()
+    }
+
     try {
       const response = await fetch(CREATE_TIESHEET, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(selectedMatch)
+        body: JSON.stringify(payload)
       })
 
       if (response.ok) {
         alert("Tiesheet created successfully!")
-        window.location.reload()
+        setviewMode(null)
       } else {
         alert("Failed to create tiesheet")
       }
@@ -100,10 +122,9 @@ export default function TiesheetModel({ viewMode, eventId, setviewMode, modelTyp
   return (
     <ModalWrapper
       title={viewMode === "create" ? "Create TieSheet" : "Edit TieSheet"}
-      onClose={() => {setviewMode(null)}}
+      onClose={() => setviewMode(null)}
     >
       <form onSubmit={handleSubmit} className="space-y-5">
-
         {/* Round */}
         <SelectField
           label="Round"
@@ -113,29 +134,22 @@ export default function TiesheetModel({ viewMode, eventId, setviewMode, modelTyp
             value: r.id,
             label: r.name
           }))}
-          onChange={(val) => {
-            setRoundID(val)
-            setSelectedMatch(prev => ({ ...prev, stage_id: val }))
-          }}
+          onChange={val => setRoundID(val)}
         />
-        
-        {
-          modelType === "group" && (
-            <SelectField
-              label="Group"
-              required
-              value={roundId}
-              options={rounds?.map(r => ({
-                value: r.id,
-                label: r.name
-              }))}
-              onChange={(val) => {
-                setRoundID(val)
-                setSelectedMatch(prev => ({ ...prev, stage_id: val }))
-              }}
-            />
-          )
-        }
+
+        {/* Status */}
+        <SelectField
+          label="Status"
+          required
+          value={selectedMatch.status}
+          options={statusOptions}
+          onChange={val =>
+            setSelectedMatch(prev => ({
+              ...prev,
+              status: val.toLowerCase() as "scheduled" | "completed"
+            }))
+          }
+        />
 
         {/* Match Between */}
         <div>
@@ -148,7 +162,7 @@ export default function TiesheetModel({ viewMode, eventId, setviewMode, modelTyp
             required
             className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm
                        focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
-            onChange={(e) => {
+            onChange={e => {
               const members = Array.from(e.target.selectedOptions).map(opt => ({
                 id: opt.value,
                 name: opt.text
@@ -195,8 +209,11 @@ export default function TiesheetModel({ viewMode, eventId, setviewMode, modelTyp
           type="date"
           required
           value={selectedMatch.scheduled_date}
-          onChange={(val) =>
-            setSelectedMatch(prev => ({ ...prev, scheduled_date: val }))
+          onChange={val =>
+            setSelectedMatch(prev => ({
+              ...prev,
+              scheduled_date: val
+            }))
           }
         />
 
@@ -206,8 +223,11 @@ export default function TiesheetModel({ viewMode, eventId, setviewMode, modelTyp
           type="time"
           required
           value={selectedMatch.scheduled_time}
-          onChange={(val) =>
-            setSelectedMatch(prev => ({ ...prev, scheduled_time: val }))
+          onChange={val =>
+            setSelectedMatch(prev => ({
+              ...prev,
+              scheduled_time: val
+            }))
           }
         />
 
@@ -217,7 +237,6 @@ export default function TiesheetModel({ viewMode, eventId, setviewMode, modelTyp
             {viewMode === "create" ? "Create" : "Update"}
           </Button>
         </div>
-
       </form>
     </ModalWrapper>
   )

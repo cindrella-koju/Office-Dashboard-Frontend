@@ -1,5 +1,9 @@
 import React, { useEffect, useState, type Dispatch, type SetStateAction } from "react"
-import { ADD_STANDING_COLUMN, EDIT_STANDING_COLUMN, RETRIEVE_ROUNDS } from "../../constants/urls"
+import {
+  ADD_STANDING_COLUMN,
+  EDIT_STANDING_COLUMN,
+  RETRIEVE_ROUNDS
+} from "../../constants/urls"
 import useFetch from "../../hooks/useFetch"
 import ModalWrapper from "../pages/shared/ModelWrapper"
 import SelectField from "../pages/shared/SelectField"
@@ -7,13 +11,11 @@ import FormField from "../pages/shared/FormField"
 import Button from "../ui/Button"
 import type { StandingColumnType } from "../../type/standingcolumn.type"
 
-
-
 interface StandingColumnModuleProps {
   viewMode: "create" | "edit" | null
   eventId: string | null
   setViewMode: Dispatch<SetStateAction<"create" | "edit" | null>>
-  colVal? : StandingColumnType
+  colVal?: StandingColumnType
 }
 
 export interface RoundType {
@@ -22,57 +24,90 @@ export interface RoundType {
   round_order: string
 }
 
-export default function StandingColumnModel({
+interface ColumnDetail {
+  id: string
+  stage_id: string
+  column_field: string
+  default_value: string
+  to_show: "True" | "False" // store as string
+}
+
+export default function StandingColumnModal({
   viewMode,
   eventId,
   setViewMode,
   colVal
 }: StandingColumnModuleProps) {
-
   const { data: rounds } = useFetch<RoundType[]>(
     eventId ? RETRIEVE_ROUNDS(eventId) : ""
   )
 
-  const [columnDetail, setColumnDetail] = useState({
-    id : "",
+  const showOptions = [
+    { value: "True", label: "True" },
+    { value: "False", label: "False" }
+  ]
+
+  const [columnDetail, setColumnDetail] = useState<ColumnDetail>({
+    id: "",
     stage_id: "",
     column_field: "",
-    default_value: ""
+    default_value: "",
+    to_show: "False" // default as string
   })
 
   useEffect(() => {
-    console.log("View Mode", viewMode)
     if (viewMode === "create") {
-      setColumnDetail({ stage_id: "", column_field: "", default_value: "" , id:""})
-    } else if (viewMode === "edit" && colVal) {
       setColumnDetail({
-        id : colVal.id,
+        id: "",
+        stage_id: "",
+        column_field: "",
+        default_value: "",
+        to_show: "False"
+      })
+    }
+
+    if (viewMode === "edit" && colVal) {
+      setColumnDetail({
+        id: colVal.id,
         stage_id: colVal.stage_id,
         column_field: colVal.column_field,
-        default_value: colVal.default_value
+        default_value: colVal.default_value,
+        to_show: colVal.to_show ? "True" : "False" // convert boolean to string
       })
     }
   }, [viewMode, colVal])
-
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
     try {
-      const url = viewMode === "create" ? ADD_STANDING_COLUMN : EDIT_STANDING_COLUMN(columnDetail.id)
+      const url =
+        viewMode === "create"
+          ? ADD_STANDING_COLUMN
+          : EDIT_STANDING_COLUMN(columnDetail.id)
+
+      const payload =
+        viewMode === "create"
+          ? {
+              stage_id: columnDetail.stage_id,
+              column_field: columnDetail.column_field,
+              default_value: columnDetail.default_value,
+              to_show: columnDetail.to_show // string "True" or "False"
+            }
+          : columnDetail
+
       const response = await fetch(url, {
         method: viewMode === "create" ? "POST" : "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(columnDetail)
+        body: JSON.stringify(payload)
       })
 
-      if (response.ok) {
-        alert(`Column ${viewMode === "create" ? "created" : "updated"} successfully!`)
-        setColumnDetail({ stage_id: "", column_field: "", default_value: "", id : "" })
-        setViewMode(null)
-      } else {
-        alert("Failed to save column")
+      if (!response.ok) {
+        throw new Error("Failed to save column")
       }
+
+      alert(`Column ${viewMode === "create" ? "created" : "updated"} successfully!`)
+      setViewMode(null)
     } catch (error) {
       console.error(error)
       alert("Something went wrong")
@@ -82,11 +117,18 @@ export default function StandingColumnModel({
   return (
     <ModalWrapper
       title={viewMode === "edit" ? "Edit Column" : "Create Column"}
-      onClose={() => {
-        setViewMode(null)
-      }}
+      onClose={() => setViewMode(null)}
     >
       <form onSubmit={handleSubmit}>
+        <SelectField
+          label="Show Column"
+          value={columnDetail.to_show} // "True" or "False"
+          onChange={(val) =>
+            setColumnDetail(prev => ({ ...prev, to_show: val as "True" | "False" }))
+          }
+          options={showOptions}
+          required
+        />
 
         <SelectField
           label="Round"
@@ -123,7 +165,6 @@ export default function StandingColumnModel({
 
         <div className="flex justify-end mt-6">
           <Button type="submit">
-
             {viewMode === "create" ? "Create Column" : "Update Column"}
           </Button>
         </div>

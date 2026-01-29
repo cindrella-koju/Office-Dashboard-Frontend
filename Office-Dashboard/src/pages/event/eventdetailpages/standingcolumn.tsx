@@ -44,6 +44,7 @@ export default function StandingColumn() {
   const [standingColumn, setStandingColumn] = useState<StandingColumnType[]>([]);
   const [colVal, setColVal] = useState<StandingColumnType>();
 
+  console.log("Standing Column:",standingColumn)
   // Update table header and standing column data once standingColumnData is fetched
   useEffect(() => {
     if (!standingColumnData) return;

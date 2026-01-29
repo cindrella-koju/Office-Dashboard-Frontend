@@ -23,9 +23,6 @@ export default function Filters<T>({
   onSelectFilter, // Destructure onSelectFilter prop
 }: FilterProps<T>) {
   const [selectedFilter, setSelectedFilter] = useState<FilterOption>(defaultVal);
-
-  console.log("Default val:",defaultVal)
-  console.log("Filters:", filters)
   useEffect(() => {
     const fetchData = async () => {
       try {

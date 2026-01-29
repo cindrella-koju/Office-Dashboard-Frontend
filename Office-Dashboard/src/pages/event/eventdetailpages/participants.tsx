@@ -55,10 +55,6 @@ export default function Participants() {
         setModelType("create")
     }, []);
 
-    const handleRemoveParticipant = useCallback((userId: number | string) => {
-        // TODO: Implement remove participant functionality
-        console.log("Remove participant:", userId);
-    }, []);
 
     // Transform participants to UserCardData format
     const userCardData = participants?.participants.map(transformToUserCard) || null;
