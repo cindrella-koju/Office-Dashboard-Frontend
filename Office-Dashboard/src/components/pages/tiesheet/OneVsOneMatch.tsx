@@ -1,19 +1,21 @@
+
+import type { PlayerInfoType } from "../../../pages/event/eventdetailpages/tiesheet";
+import extractToShowColumn from "../../../utils/tiesheet.util";
 import PlayerAvatar from "./PlayerAvatar";
 
 
-interface PlayerInfo {
-  user_id: string;
-  is_winner: boolean;
-  username: string;
-  points?: number;
-}
 
 interface OneVsOneMatchProps {
-  player1: PlayerInfo;
-  player2: PlayerInfo;
+  player1: PlayerInfoType;
+  player2: PlayerInfoType;
 }
 
+
 export default function OneVsOneMatch({ player1, player2 }: OneVsOneMatchProps) {
+  const p1Column = extractToShowColumn(player1.columns);
+  const p2Column = extractToShowColumn(player2.columns);
+  console.log("P1:",p1Column, "P2:", p2Column)
+
   return (
     <div className="flex items-center justify-center gap-6 w-full">
       {/* Player 1 */}
@@ -39,20 +41,21 @@ export default function OneVsOneMatch({ player1, player2 }: OneVsOneMatchProps) 
 
       {/* Score Center */}
       <div className="flex flex-col items-center justify-center px-2">
-        <div className="flex items-center gap-2">
+        {/* <div className="flex items-center gap-2">
           <span className={`text-2xl font-bold ${
             player1.is_winner ? 'text-green-600' : 'text-gray-400'
           }`}>
-            {player1.points ?? 0}
+            {p1Column?.value ?? 0}
           </span>
           <span className="text-lg font-bold text-gray-300">-</span>
           <span className={`text-2xl font-bold ${
             player2.is_winner ? 'text-green-600' : 'text-gray-400'
           }`}>
-            {player2.points ?? 0}
+            { p2Column?.value ??0}
           </span>
-        </div>
-        <span className="text-xs text-gray-400 mt-1">Points</span>
+        </div> */}
+        {/* <span className="text-xs text-gray-400 mt-1">{p2Column?.column_field}</span> */}
+        <span className="text-xs text-black-400 mt-1 font-bold">VS</span>
       </div>
 
       {/* Player 2 */}

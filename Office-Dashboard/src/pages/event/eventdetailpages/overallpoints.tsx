@@ -25,7 +25,7 @@ export default function OverallPoints(){
                 />
                 <Card className="mb-6">
                     <div className="p-4 sm:p-6">
-                        <FilterComponent filter="All" filters={filters}/>
+                        {/* <FilterComponent filter="All" filters={filters}/> */}
                     </div>
                 </Card>
 

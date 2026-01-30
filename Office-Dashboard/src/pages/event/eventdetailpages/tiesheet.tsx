@@ -10,11 +10,34 @@ import Button from "../../../components/ui/Button";
 import EmptyMessage from "../../../components/ui/EmptyMessage";
 import { CgFileDocument } from "react-icons/cg";
 
-interface PlayerInfoType{
+export interface ColumnInfoType{
+    column_field : string,
+    value : string,
+    to_show : string
+}
+
+interface TiesheetType{
+  id : string,
+  scheduled_date : string,
+  scheduled_time : string,
+  stage_id : string,
+  stage_name : string,
+  status : "scheduled" | "completed",
+  player_info : PlayerInfoType[]
+//   group_name : string | null
+}
+
+interface ColumnType {
+  column_field : string;
+  value: string;
+  to_show : string
+}
+
+export interface PlayerInfoType{
   user_id : string,
   is_winner : boolean,
   username : string,
-  points?: number
+  columns : ColumnType[]
 }
 
 interface TiesheetType{
@@ -22,6 +45,7 @@ interface TiesheetType{
   scheduled_date : string,
   scheduled_time : string,
   stage_name : string,
+  status: 'scheduled' | 'completed',
   player_info : PlayerInfoType[]
   group_name : string | null
 }
@@ -46,6 +70,12 @@ export default function Tiesheet(){
 
 
   const [viewMode, setViewMode] = useState<'create' | 'edit' | null>(null);
+  const [selectedMatchId, setSelectedMatchId] = useState<string | null>(null);
+
+  const handleEditMatch = (matchId: string) => {
+    setSelectedMatchId(matchId);
+    setViewMode("edit");
+  };
 
     return(
         <PageLayout sidebar={<EventNavBar/>}>
@@ -85,10 +115,12 @@ export default function Tiesheet(){
                                                 <TiesheetCard
                                                     key={match.id}
                                                     id={match.id}
-                                                    groupName={match.group_name}
+                                                    // groupName={match.group_name}
                                                     scheduledDate={match.scheduled_date}
                                                     scheduledTime={match.scheduled_time}
+                                                    status={match.status}
                                                     players={match.player_info}
+                                                    onEdit={handleEditMatch}
                                                 />
                                             ))}
                                         </div>
@@ -102,7 +134,7 @@ export default function Tiesheet(){
             
                   {
                     eventId && (
-                      <TiesheetModel viewMode={viewMode} eventId={eventId} setviewMode={setViewMode}/>
+                      <TiesheetModel viewMode={viewMode} eventId={eventId} setviewMode={setViewMode} matchId={selectedMatchId}/>
                     )
                   }
             </PageContent>

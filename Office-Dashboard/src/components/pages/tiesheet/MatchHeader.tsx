@@ -1,11 +1,11 @@
 interface MatchHeaderProps {
   groupName?: string | null;
-  isCompleted: boolean;
   matchTime: string;
+  status : "scheduled" | "completed",
   onEdit?: () => void;
 }
 
-export default function MatchHeader({ groupName, isCompleted, matchTime, onEdit }: MatchHeaderProps) {
+export default function MatchHeader({ groupName, matchTime, onEdit, status }: MatchHeaderProps) {
   return (
     <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
       <div className="flex items-center gap-2">
@@ -15,20 +15,21 @@ export default function MatchHeader({ groupName, isCompleted, matchTime, onEdit 
           </span>
         )}
         <span className={`text-xs font-medium px-2 py-1 rounded ${
-          isCompleted ? 'text-green-600' : 'text-gray-500'
+          status === "scheduled" ? 'text-green-600' : 'text-gray-500'
         }`}>
-          {isCompleted ? 'Completed' : 'Scheduled'}
+          {status}
         </span>
       </div>
       <span className="text-xs text-gray-400">{matchTime}</span>
-      {onEdit && (
+      {
+        status === "scheduled" && 
         <button 
           className="text-xs font-medium text-blue-600 hover:text-blue-800 hover:underline transition-colors" 
           onClick={onEdit}
         >
           Edit
         </button>
-      )}
+      }
     </div>
   );
 }

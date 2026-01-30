@@ -2,33 +2,28 @@ import MatchHeader from "./MatchHeader";
 import MatchDate from "./MatchDate";
 import OneVsOneMatch from "./OneVsOneMatch";
 import MultiPlayerMatch from "./MultiPlayerMatch";
+import type { PlayerInfoType } from "../../../pages/event/eventdetailpages/tiesheet";
 
-interface PlayerInfo {
-  user_id: string;
-  is_winner: boolean;
-  username: string;
-  points?: number;
-}
 
 interface TiesheetCardProps {
   id: string;
-  groupName?: string | null;
+  status : "scheduled" | "completed";
   scheduledDate: string;
   scheduledTime: string;
-  players: PlayerInfo[];
+  players: PlayerInfoType[];
   onEdit?: (id: string) => void;
 }
 
 export default function TiesheetCard({ 
   id, 
-  groupName, 
+  status,
+  // groupName, 
   scheduledDate, 
   scheduledTime, 
   players,
   onEdit 
 }: TiesheetCardProps) {
   const matchDate = new Date(`${scheduledDate}T${scheduledTime}`);
-  const isCompleted = players.some(p => p.is_winner);
   const matchTime = matchDate.toLocaleTimeString('en-US', { 
     hour: '2-digit', 
     minute: '2-digit',
@@ -38,10 +33,10 @@ export default function TiesheetCard({
   return (
     <div className="bg-white rounded-xl border border-gray-200 overflow-hidden hover:border-gray-300 transition-colors flex flex-col">
       <MatchHeader 
-        groupName={groupName}
-        isCompleted={isCompleted}
+        // groupName={groupName}
         matchTime={matchTime}
         onEdit={onEdit ? () => onEdit(id) : undefined}
+        status = {status}
       />
 
       <div className="flex flex-1">
@@ -53,7 +48,7 @@ export default function TiesheetCard({
           )}
         </div>
 
-        <MatchDate date={matchDate} isCompleted={isCompleted} />
+        <MatchDate date={matchDate} status={status} />
       </div>
     </div>
   );

@@ -1,13 +1,13 @@
 interface MatchDateProps {
   date: Date;
-  isCompleted: boolean;
+  status : "completed" | "scheduled"
 }
 
-export default function MatchDate({ date, isCompleted }: MatchDateProps) {
+export default function MatchDate({ date, status }: MatchDateProps) {
   return (
     <>
       {/* Partition Line */}
-      <div className={`w-1 ${isCompleted ? 'bg-green-400' : 'bg-yellow-400'}`}></div>
+      <div className={`w-1 ${ status === "completed" ? 'bg-green-400' : 'bg-yellow-400'}`}></div>
 
       {/* Date & Time */}
       <div className="w-50 flex flex-col items-center justify-center py-4 text-center">

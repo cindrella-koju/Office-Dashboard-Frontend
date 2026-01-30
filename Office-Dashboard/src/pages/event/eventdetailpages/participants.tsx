@@ -55,7 +55,9 @@ export default function Participants() {
         setModelType("create")
     }, []);
 
-
+    const handleRemoveParticipant = () => {
+        console.log("Dummy")
+    }
     // Transform participants to UserCardData format
     const userCardData = participants?.participants.map(transformToUserCard) || null;
 
