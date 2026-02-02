@@ -50,6 +50,8 @@ export default function TiesheetCard({
         tiesheetfrom={tiesheetfrom}
         tiesheetId={tiesheetId}
         refetchMatches={refetchMatches}
+        player1={players[0]}
+        player2={players[1]}
       />
 
       <div className="flex flex-1">
