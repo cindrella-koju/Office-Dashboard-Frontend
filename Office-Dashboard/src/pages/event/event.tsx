@@ -6,6 +6,7 @@ import useFetch from "../../hooks/useFetch";
 import {
   CREATE_EVENT,
   RETRIEVE_EVENT,
+  RETRIEVE_EVENT_BY_STATUS,
   UPDATE_EVENT,
 } from "../../constants/urls";
 import extractHeaders from "../../utils/extractHeader";
@@ -21,23 +22,22 @@ import useCreateResource from "../../hooks/useSubmit";
 import { editEventFields, eventFields } from "../../constants/fields";
 import EmptyMessage from "../../components/ui/EmptyMessage";
 import Table from "../../components/table/Tables";
-
+import Filters from "../../components/Filters";
+import { FaTrophy } from "react-icons/fa";
 
 export default function EventPage() {
+  // Fetch events
   const { data: retrieve_events, loading, error, refetch } =
     useFetch<EventResponse[]>(RETRIEVE_EVENT);
 
   const permissions = usePermissions("event");
 
   const [tablehead, setTablehead] = useState<string[]>([]);
-  const [events, setEvents] = useState<any[]>([]);
-  const [eventMode, setEventMode] =
-    useState<"create" | "edit" | null>(null);
+  const [events, setEvents] = useState<EventResponse[]>([]);
+  const [eventMode, setEventMode] = useState<"create" | "edit" | null>(null);
 
-  const [eachEventDetail, setEachEventDetail] =
-    useState<EventResponse>();
-  const [originalEvent, setOriginalEvent] =
-    useState<EventResponse| null>(null);
+  const [eachEventDetail, setEachEventDetail] = useState<EventResponse>();
+  const [originalEvent, setOriginalEvent] = useState<EventResponse | null>(null);
 
   const [eventDetail, setEventDetail] = useState<Event>({
     id: "",
@@ -49,14 +49,18 @@ export default function EventPage() {
     progress_note: "",
   });
 
+  const [submitEvent, setSubmitEvent] = useState<"create" | "edit" | null>(null);
 
-  const [submitEvent, setSubmitEvent] =
-    useState<"create" | "edit" | null>(null);
-
-  const filters: string[] = ["All", "Active", "Completed", "Draft"];
+  // Filter setup
+  const filterOptions = [
+    { id: "all", name: "All" },
+    { id: "active", name: "Active" },
+    { id: "completed", name: "Completed" },
+    { id: "draft", name: "Draft" },
+  ];
   const [filter, setFilter] = useState<"All" | EventStatus>("All");
 
-//   Fetch events
+  // Populate table headers and events
   useEffect(() => {
     if (retrieve_events) {
       const headers = extractHeaders(retrieve_events);
@@ -65,7 +69,7 @@ export default function EventPage() {
     }
   }, [retrieve_events]);
 
-// Set Edit Data
+  // Set edit data when user selects an event
   useEffect(() => {
     if (!eachEventDetail) return;
 
@@ -82,8 +86,7 @@ export default function EventPage() {
     });
   }, [eachEventDetail]);
 
-
-// Get Changed field
+  // Get changed fields for PATCH request
   const getChangedFields = (
     original: EventResponse | null,
     current: typeof eventDetail
@@ -92,40 +95,28 @@ export default function EventPage() {
 
     const changed: Partial<typeof eventDetail> = {};
 
-    (Object.keys(current) as (keyof typeof eventDetail)[]).forEach(
-      (key) => {
-        if (
-          key !== "id" &&
-          current[key] !== (original as any)[key]
-        ) {
-          changed[key] = current[key] as any;
-        }
+    (Object.keys(current) as (keyof typeof eventDetail)[]).forEach((key) => {
+      if (key !== "id" && current[key] !== (original as any)[key]) {
+        changed[key] = current[key] as any;
       }
-    );
+    });
 
     return changed;
   };
 
-
-//   Submit
+  // Submit create or edit event
   useCreateResource({
     trigger: submitEvent,
     method: submitEvent === "create" ? "POST" : "PATCH",
-    endpoint:
-      submitEvent === "create"
-        ? CREATE_EVENT
-        : UPDATE_EVENT(eventDetail.id),
-
+    endpoint: submitEvent === "create" ? CREATE_EVENT : UPDATE_EVENT(eventDetail.id),
     payload:
       submitEvent === "create"
         ? eventDetail
         : getChangedFields(originalEvent, eventDetail),
-
     page: "Event",
-    refetch : () => {
-      refetch()
+    refetch: () => {
+      refetch();
     },
-
     onSuccess: () => {
       setEventDetail({
         id: "",
@@ -139,10 +130,8 @@ export default function EventPage() {
       setEventMode(null);
       setOriginalEvent(null);
     },
-
     resetTrigger: () => setSubmitEvent(null),
   });
-
 
   return (
     <PageLayout sidebar={<NavBar />}>
@@ -162,14 +151,23 @@ export default function EventPage() {
           }
         />
 
+        {/* Filter Section */}
         <Card className="mb-6 sm:mb-8 p-4 sm:p-6">
-          {/* <FilterComponent
-            filters={filters}
-            filter={filter}
-            setFilter={setFilter}
-          /> */}
+          <div className="p-4 sm:p-6">
+            <Filters<EventResponse[]>
+              defaultVal={filterOptions[0]}
+              filters={filterOptions}
+              urlFunction={RETRIEVE_EVENT_BY_STATUS}
+              label="Select Status"
+              setSelectVal={setEvents}
+              onSelectFilter={(f:any) =>
+                setFilter(f.id as "All" | EventStatus)
+              }
+            />
+          </div>
         </Card>
 
+        {/* Table Section */}
         <Card className="p-4 sm:p-6">
           <div className="max-h-[500px] lg:max-h-[600px] overflow-y-auto">
             {loading ? (
@@ -180,22 +178,27 @@ export default function EventPage() {
               <div className="text-center py-12 text-red-500">
                 Error loading events
               </div>
+            ) : events.length > 0 ? (
+              <Table
+                tablehead={tablehead}
+                tabledata={events}
+                permissions={permissions}
+                showView
+                setModelType={setEventMode}
+                setValue={setEachEventDetail}
+              />
             ) : (
-              events.length > 0 ? (
-                <Table
-                  tablehead={tablehead}
-                  tabledata={events}
-                  permissions={permissions}
-                  showView
-                  setModelType={setEventMode}
-                  setValue={setEachEventDetail}
-                />
-              ) : <EmptyMessage message="No Event Yet" submessage="Create event to see here"/>
+              <EmptyMessage
+                message="No Event Yet"
+                submessage="Create event to see here"
+                icon = {<FaTrophy size={80} />}
+              />
             )}
           </div>
         </Card>
 
-        {eventMode &&(
+        {/* Create/Edit Modal */}
+        {eventMode && (
           <CreateModel
             modelType={eventMode}
             setModelType={setEventMode}
@@ -206,7 +209,6 @@ export default function EventPage() {
             setSubmit={setSubmitEvent}
           />
         )}
-
       </PageContent>
     </PageLayout>
   );

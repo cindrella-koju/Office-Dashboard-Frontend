@@ -44,7 +44,7 @@ export default function StandingColumn() {
   const [standingColumn, setStandingColumn] = useState<StandingColumnType[]>([]);
   const [colVal, setColVal] = useState<StandingColumnType>();
 
-  console.log("Standing Column:",standingColumn)
+
   // Update table header and standing column data once standingColumnData is fetched
   useEffect(() => {
     if (!standingColumnData) return;
@@ -64,24 +64,24 @@ export default function StandingColumn() {
           )}
         />
         
-        <Card className="mb-6">
-          <div className="p-4 sm:p-6">
-            {/* Filters Component */}
-            {
-              selectedRound && round_by_event&& (
-                <Filters<StandingColumnType[]>
-                  defaultVal={selectedRound}
-                  urlFunction={RETRIEVE_STANDING_COLUMN}
-                  filters={round_by_event}
-                  label="Select Round"
-                  setSelectVal={setStandingColumn}
-                  onSelectFilter={setSelectedRound} // Pass setSelectedRound to handle filter changes
-                />
+        {
+          selectedRound && round_by_event&& (
+            <Card className="mb-6">
+              <div className="p-4 sm:p-6">
+                {/* Filters Component */}
+                    <Filters<StandingColumnType[]>
+                      defaultVal={selectedRound}
+                      urlFunction={RETRIEVE_STANDING_COLUMN}
+                      filters={round_by_event}
+                      label="Select Round"
+                      setSelectVal={setStandingColumn}
+                      onSelectFilter={setSelectedRound} // Pass setSelectedRound to handle filter changes
+                    />
 
-              )
-            }
-          </div>
-        </Card>
+              </div>
+            </Card>
+          )
+        }
 
         <Card className="p-4 sm:p-6">
           {rounds && (

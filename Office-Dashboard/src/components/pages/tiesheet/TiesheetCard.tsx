@@ -2,7 +2,8 @@ import MatchHeader from "./MatchHeader";
 import MatchDate from "./MatchDate";
 import OneVsOneMatch from "./OneVsOneMatch";
 import MultiPlayerMatch from "./MultiPlayerMatch";
-import type { PlayerInfoType } from "../../../pages/event/eventdetailpages/tiesheet";
+import type { Permission } from "../../../utils/permissions";
+import type { PlayerInfoType } from "../../../type/tiesheet.type";
 
 
 interface TiesheetCardProps {
@@ -12,6 +13,8 @@ interface TiesheetCardProps {
   scheduledTime: string;
   players: PlayerInfoType[];
   onEdit?: (id: string) => void;
+  permissions : Permission,
+  tiesheetfrom : string
 }
 
 export default function TiesheetCard({ 
@@ -21,7 +24,9 @@ export default function TiesheetCard({
   scheduledDate, 
   scheduledTime, 
   players,
-  onEdit 
+  onEdit,
+  permissions ,
+  tiesheetfrom
 }: TiesheetCardProps) {
   const matchDate = new Date(`${scheduledDate}T${scheduledTime}`);
   const matchTime = matchDate.toLocaleTimeString('en-US', { 
@@ -37,6 +42,8 @@ export default function TiesheetCard({
         matchTime={matchTime}
         onEdit={onEdit ? () => onEdit(id) : undefined}
         status = {status}
+        permissions={permissions}
+        tiesheetfrom={tiesheetfrom}
       />
 
       <div className="flex flex-1">

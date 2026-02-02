@@ -1,4 +1,4 @@
-export type RoleType = "Admin" | "Superadmin" | "Member"
+export type RoleType = "admin" | "superadmin" | "member"
 
 export type UserDetail = {
     id: string,

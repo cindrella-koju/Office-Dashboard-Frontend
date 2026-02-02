@@ -15,6 +15,7 @@ import Qualifier from "./pages/event/eventdetailpages/qualifier";
 import StandingColumn from "./pages/event/eventdetailpages/standingcolumn";
 import Tiesheet from "./pages/event/eventdetailpages/tiesheet";
 import OverallPoints from "./pages/event/eventdetailpages/overallpoints";
+import TodayGame from "./pages/event/eventdetailpages/todaygame";
 
 export const router = createBrowserRouter([
     {
@@ -75,6 +76,10 @@ export const router = createBrowserRouter([
     },{
         path : "event/overall-points",
         element: <OverallPoints/>
+    },
+    {
+        path :"event/todays-game",
+        element: <TodayGame/>
     }
 ])
 

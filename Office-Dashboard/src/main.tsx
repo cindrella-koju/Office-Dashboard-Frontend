@@ -4,11 +4,14 @@ import { RouterProvider } from 'react-router-dom'
 import './index.css'
 import { AuthProvider } from './pages/auth/authProvider'
 import { router } from './router'
+import RoleContext from './context/rolecontext'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <AuthProvider>
-      <RouterProvider router={router}/>
+      <RoleContext.Provider value='member'>
+        <RouterProvider router={router}/>
+      </RoleContext.Provider>
     </AuthProvider>
   </StrictMode>,
 )

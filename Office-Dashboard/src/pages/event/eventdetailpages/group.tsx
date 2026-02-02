@@ -9,6 +9,8 @@ import { usePermissions } from "../../../hooks/userPermission";
 import type { EachGroupDetail, GroupMember, Stage } from "../../../type/group.type";
 import CreateGroupModal from "../../../components/Model/GroupModel";
 import GroupTable from "../../../components/table/GroupTable";
+import EmptyMessage from "../../../components/ui/EmptyMessage";
+import { MdGroups } from "react-icons/md";
 
 
 
@@ -103,25 +105,25 @@ export default function Groups(){
                         )
                     }
                 />
-                <Card className="p-4 sm:p-6">
-                    <div className="space-y-8">
-                        {
-                            groupsData && 
-                                <GroupTable
-                                    groupData={groupsData}
-                                    permissions={permissions}
-                                    editingUserId={editingUserId}
-                                    editedUserData={editedUserData}
-                                    handleUserCellChange={handleUserCellChange}
-                                    handleCancel={handleCancel}
-                                    handleSave={handleSave}
-                                    handleEditUser={handleEditUser}
-                                    handleEditGroup={handleEditGroup}
-                                    setEachGroupData={setEachGroupData}
-                                />
-                        }
-                    </div>
-                </Card>
+                {
+                groupsData && groupsData.length > 0 &&
+                    <Card className="p-4 sm:p-6">
+                        <div className="space-y-8">
+                            <GroupTable
+                                groupData={groupsData}
+                                permissions={permissions}
+                                editingUserId={editingUserId}
+                                editedUserData={editedUserData}
+                                handleUserCellChange={handleUserCellChange}
+                                handleCancel={handleCancel}
+                                handleSave={handleSave}
+                                handleEditUser={handleEditUser}
+                                handleEditGroup={handleEditGroup}
+                                setEachGroupData={setEachGroupData}
+                            />
+                        </div>
+                    </Card>
+                }
 
                 {
                     eventId && modalMode!= null &&(
@@ -134,6 +136,12 @@ export default function Groups(){
                             setIsModalOpen={setModalMode}
                             eachGroupData={eachGroupData}
                         />
+                    )
+                }
+
+                {
+                    groupsData && groupsData.length === 0 && (
+                        <EmptyMessage message="No Group Yet" submessage="Create Group to see them appear hear" icon={<MdGroups size={80} />}/>
                     )
                 }
             </PageContent>

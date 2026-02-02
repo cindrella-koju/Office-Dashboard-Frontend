@@ -1,4 +1,4 @@
-import { useEffect, useState,type Dispatch,type SetStateAction } from "react";
+import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
 
 export interface FilterOption {
   id: string;
@@ -6,27 +6,43 @@ export interface FilterOption {
 }
 
 interface FilterProps<T> {
-  urlFunction: (id: string) => string;
+  urlFunction?: (id: string) => string;
+  twoIdUrlFunction?: (eventId: string, roundId: string) => string;
   filters: FilterOption[];
   label: string;
   defaultVal: FilterOption;
   setSelectVal: Dispatch<SetStateAction<T>>;
-  onSelectFilter?: (filter: FilterOption) => void; // Add onSelectFilter prop
+  onSelectFilter?: (filter: FilterOption) => void;
+  eventUrl?: () => string
 }
 
 export default function Filters<T>({
   defaultVal,
   urlFunction,
+  twoIdUrlFunction,
   filters,
   label,
   setSelectVal,
-  onSelectFilter, // Destructure onSelectFilter prop
+  onSelectFilter,
 }: FilterProps<T>) {
-  const [selectedFilter, setSelectedFilter] = useState<FilterOption>(defaultVal);
+  const eventId = localStorage.getItem("eventID");
+  const [selectedFilter, setSelectedFilter] =
+    useState<FilterOption>(defaultVal);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(urlFunction(selectedFilter.id));
+        let url: string | undefined;
+
+        if (urlFunction) {
+          url = urlFunction(selectedFilter.id);
+        } else if (twoIdUrlFunction && eventId) {
+          url = twoIdUrlFunction(eventId, selectedFilter.id);
+        }
+
+        if (!url) return;
+
+        const response = await fetch(url);
         const data = await response.json();
         setSelectVal(data);
       } catch (error) {
@@ -35,36 +51,42 @@ export default function Filters<T>({
     };
 
     fetchData();
-  }, [selectedFilter, urlFunction, setSelectVal]);
+  }, [
+    selectedFilter,
+    urlFunction,
+    twoIdUrlFunction,
+    eventId,
+    setSelectVal,
+  ]);
 
   const handleClick = (filter: FilterOption) => {
     setSelectedFilter(filter);
-    if (onSelectFilter) onSelectFilter(filter); // Call onSelectFilter if provided
+    onSelectFilter?.(filter);
   };
 
   return (
-<div className="space-y-4">
-  <p className="font-bold text-xl sm:text-2xl text-gray-800">{label}</p>
-  <div className="flex gap-3 sm:gap-4 flex-wrap">
-    {filters.map((filter) => (
-      <button
-        key={filter.id}
-        onClick={() => handleClick(filter)}
-        className={`
-          px-5 py-2 rounded-lg font-semibold text-xs sm:text-sm
-          transition-all duration-300 ease-in-out
-          ${selectedFilter.id === filter.id
-            ? "bg-indigo-600 text-white shadow-md transform scale-105"
-            : "bg-gray-100 text-gray-700 hover:bg-gray-200 hover:scale-105"}
-          focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50
-          hover:cursor-pointer
-        `}
-      >
-        {filter.name}
-      </button>
-    ))}
-  </div>
-</div>
-
+    <div className="space-y-4">
+      <p className="font-bold text-xl sm:text-2xl text-gray-800">{label}</p>
+      <div className="flex gap-3 sm:gap-4 flex-wrap">
+        {filters.map((filter) => (
+          <button
+            key={filter.id}
+            onClick={() => handleClick(filter)}
+            className={`
+              px-5 py-2 rounded-lg font-semibold text-xs sm:text-sm
+              transition-all duration-300 ease-in-out
+              ${
+                selectedFilter.id === filter.id
+                  ? "bg-indigo-600 text-white shadow-md scale-105"
+                  : "bg-gray-100 text-gray-700 hover:bg-gray-200 hover:scale-105"
+              }
+              focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50
+            `}
+          >
+            {filter.name}
+          </button>
+        ))}
+      </div>
+    </div>
   );
 }

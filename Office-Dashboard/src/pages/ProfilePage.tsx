@@ -108,7 +108,7 @@ export default function ProfilePage() {
             {
                 event.length > 0 ? (
                     <div className="overflow-x-auto">
-                      <Table tabledata={INITIAL_EVENTS} tablehead={tablehead} resource="profile"/>
+                      {/* <Table tabledata={INITIAL_EVENTS} tablehead={tablehead} resource="profile"/> */}
                     </div>
 
                 ) : (

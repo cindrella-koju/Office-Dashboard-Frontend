@@ -43,7 +43,7 @@ interface SelectedMatch {
   players: string[]
   scheduled_date: string
   scheduled_time: string
-  status: "scheduled" | "completed"
+  status: "scheduled" | "completed" | "ongoing"
   player_columns?: PlayerColumnData[]
 }
 
@@ -61,7 +61,8 @@ export default function TiesheetModel({
   /* Status options: UI label vs stored value */
   const statusOptions = [
     { label: "Scheduled", value: "scheduled" },
-    { label: "Completed", value: "completed" }
+    { label: "Completed", value: "completed" },
+    { label : "Ongoing", value : "ongoing"}
   ] as const
 
   const { data: rounds } = useFetch<RoundResponse[]>(

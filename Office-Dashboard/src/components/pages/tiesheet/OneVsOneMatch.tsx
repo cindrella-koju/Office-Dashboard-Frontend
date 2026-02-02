@@ -1,5 +1,5 @@
 
-import type { PlayerInfoType } from "../../../pages/event/eventdetailpages/tiesheet";
+import type { PlayerInfoType } from "../../../type/tiesheet.type";
 import extractToShowColumn from "../../../utils/tiesheet.util";
 import PlayerAvatar from "./PlayerAvatar";
 

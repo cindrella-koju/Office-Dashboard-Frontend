@@ -4,7 +4,7 @@ import EventNavBar from "../../../components/EventNavbar";
 import TiesheetModel from "../../../components/Model/TiesheetModel";
 import TiesheetCard from "../../../components/pages/tiesheet/TiesheetCard";
 import useFetch from "../../../hooks/useFetch";
-import { RETRIEVE_TIESHEET } from "../../../constants/urls";
+import { RETRIEVE_TODAY_TIESHEET } from "../../../constants/urls";
 import { PageContent, PageHeader, PageLayout } from "../../../components/layout/PageLayout";
 import Button from "../../../components/ui/Button";
 import EmptyMessage from "../../../components/ui/EmptyMessage";
@@ -12,13 +12,13 @@ import { CgFileDocument } from "react-icons/cg";
 import type { TiesheetType } from "../../../type/tiesheet.type";
 
 
-export default function Tiesheet(){
+export default function TodayGame(){
 
   const eventId = localStorage.getItem("eventId");
   const permissions = usePermissions("tiesheet")
 
   const { data: tiesheet } = useFetch<TiesheetType[] | null>(
-    eventId ? RETRIEVE_TIESHEET(eventId) : ""
+    eventId ? RETRIEVE_TODAY_TIESHEET(eventId) : ""
   );
 
   const groupedByStage = tiesheet && (tiesheet.reduce((acc, tiesheet) => {
@@ -43,16 +43,8 @@ export default function Tiesheet(){
         <PageLayout sidebar={<EventNavBar/>}>
             <PageContent>
                 <PageHeader
-                    title="Tiesheet"
-                    actions = {
-                        permissions.canCreate && (
-                            <>
-                            <Button onClick={() => setViewMode("create")}>Create Tiesheet</Button>
-                            </>
-                        )
-                    }
+                    title="Todays Game"
                 />
-            
                             {/* Matches by Stage */}
                             <div className="space-y-6">
                                 {groupedByStage && (Object.entries(groupedByStage).map(([stageName, matches]) => (
@@ -84,7 +76,7 @@ export default function Tiesheet(){
                                                     players={match.player_info}
                                                     onEdit={handleEditMatch}
                                                     permissions={permissions}
-                                                    tiesheetfrom="tiesheet"
+                                                    tiesheetfrom="todaystiesheet"
                                                 />
                                             ))}
                                         </div>
@@ -95,12 +87,6 @@ export default function Tiesheet(){
                             {tiesheet && tiesheet.length === 0 && (
                                 <EmptyMessage message="No Tiesheet Yet" submessage="Create Tiesheet to see them appear hear" icon={<CgFileDocument size={80}/>}/>
                             )}
-            
-                  {
-                    eventId && (
-                      <TiesheetModel viewMode={viewMode} eventId={eventId} setviewMode={setViewMode} matchId={selectedMatchId}/>
-                    )
-                  }
             </PageContent>
         </PageLayout>
 

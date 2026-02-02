@@ -3,6 +3,7 @@ const BASE_URL = "http://127.0.0.1:8000"
 export const CREATE_EVENT = `${BASE_URL}/event`
 export const UPDATE_EVENT = (eventId: string) => `${BASE_URL}/event?event_id=${eventId}`
 export const RETRIEVE_EVENT = `${BASE_URL}/event`
+export const RETRIEVE_EVENT_BY_STATUS = (status : string) => `${BASE_URL}/event?status=${status}`
 export const RETRIEVE_GROUP_AND_MEMBERS  = (eventId: string ) => `${BASE_URL}/event/group/event/${eventId}`
 
 // API for Group
@@ -22,6 +23,7 @@ export const RETRIEVE_GROUP_BY_ROUND = (roundId : string) => `${BASE_URL}/event/
 export const RETRIEVE_QUALIFIER_BY_ROUND = (roundId :  string ) => `${BASE_URL}/event/qualifier?stage_id=${roundId}`
 export const RETRIEVE_USER_PARTICIPANT_NOT_IN_QUALIFIER = (eventId:string, roundId : string) =>  `${BASE_URL}/participant/not_qualifier?stage_id=${roundId}&event_id=${eventId}`
 
+export const RETRIEVE_TODAY_TIESHEET = (eventId : string) => `${BASE_URL}/event/tiesheet?event_id=${eventId}&today=true`
 export const RETRIEVE_TIESHEET = (eventId : string) => `${BASE_URL}/event/tiesheet?event_id=${eventId}`
 export const CREATE_TIESHEET = `${BASE_URL}/event/tiesheet`
 export const GET_TIESHEET_BY_ID = (tiesheetId: string) => `${BASE_URL}/event/tiesheet/${tiesheetId}`
@@ -40,6 +42,7 @@ export const RETRIEVE_QUALIFIER_BY_EVENT = (eventId : string) => `${BASE_URL}/ev
 
 // export const RETRIEVE_OVERALL_TIESHEET = (eventId : string, roundId:string) => `${BASE_URL}/event/overalltiesheet?event_id=${eventId}&stage_id=${roundId}`
 export const RETRIEVE_OVERALL_TIESHEET = (eventId : string) => `${BASE_URL}/event/overalltiesheet?event_id=${eventId}`
+export const RETRIEVE_OVERALL_TIESHEET_BY_ROUND = (eventId:string, roundId : string) => `${BASE_URL}/event/overalltiesheet?event_id=${eventId}&stage_id=${roundId}`
 
 export const RETRIEVE_STANDING_COLUMN = (roundId : string ) => `${BASE_URL}/event/column?stage_id=${roundId}`
 export const ADD_STANDING_COLUMN = `${BASE_URL}/event/column`
@@ -47,5 +50,6 @@ export const EDIT_STANDING_COLUMN = (column_id : string) => `${BASE_URL}/event/c
 
 
 export const RETRIEVE_USERS = `${BASE_URL}/user`
+export const RETRIEVE_USERS_BY_Role = (role : string ) => `${BASE_URL}/user?role=${role}`
 export const CREATE_USER = `${BASE_URL}/user/signup`
 export const UPDATE_USER = (user_id : string ) =>`${BASE_URL}/user?user_id=${user_id}`

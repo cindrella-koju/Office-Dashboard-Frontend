@@ -4,6 +4,7 @@ import Sidebar from "./layout/SideBar";
 
 
 
+
 const navItems = [
   { icon: <FaHome />, label: "Home", to: "/home" },
   { icon: <FaTrophy />, label: "Event", to: "/event" },

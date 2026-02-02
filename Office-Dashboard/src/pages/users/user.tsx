@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import NavBar from "../../components/Navbar";
-import FilterComponent from "../../components/Filters";
 import { usePermissions } from "../../hooks/userPermission";
 import {
   PageContent,
@@ -14,6 +13,7 @@ import useFetch from "../../hooks/useFetch";
 import {
   CREATE_USER,
   RETRIEVE_USERS,
+  RETRIEVE_USERS_BY_Role,
   UPDATE_USER,
 } from "../../constants/urls";
 import extractHeaders from "../../utils/extractHeader";
@@ -22,6 +22,8 @@ import useCreateResource from "../../hooks/useSubmit";
 import { userField } from "../../constants/fields";
 import type { AddUser, RoleType, UserDetail } from "../../type/user.type";
 import Table from "../../components/table/Tables";
+import EmptyMessage from "../../components/ui/EmptyMessage";
+import Filters from "../../components/Filters";
 
 export default function UserPage() {
   const permissions = usePermissions("user");
@@ -30,7 +32,7 @@ export default function UserPage() {
 
   const filters = ["All", "Admin", "SuperAdmin", "Member"];
   const [filter, setFilter] = useState<"All" | RoleType>("All");
-  const [users, setUsers] = useState<any[]>([]);
+  const [users, setUsers] = useState<UserDetail[]>([]);
   const [tablehead, setTablehead] = useState<string[]>([]);
   const [userMode, setUserMode] = useState<"create" | "edit" | null>(null);
 
@@ -51,7 +53,12 @@ export default function UserPage() {
   const [submitUser, setSubmitUser] =
     useState<"create" | "edit" | null>(null);
 
-
+  const filterOptions = [
+    { id: "all", name: "All" },
+    { id: "member", name: "Member" },
+    { id: "admin", name: "Admin" },
+    { id: "superadmin", name: "Superadmin" },
+  ];
 
   // fetch user
   useEffect(() => {
@@ -157,13 +164,19 @@ export default function UserPage() {
         />
 
         <Card className="mb-6 sm:mb-8 p-4 sm:p-6">
-          {/* <FilterComponent
-            filters={filters}
-            filter={filter}
-            setFilter={setFilter}
-          /> */}
+          <div className="p-4 sm:p-6">
+            <Filters<UserDetail[]>
+              defaultVal={filterOptions[0]}
+              filters={filterOptions}
+              urlFunction={RETRIEVE_USERS_BY_Role}
+              label="Select Status"
+              setSelectVal={setUsers}
+              onSelectFilter={(f:any) =>
+                setFilter(f.id as "All" | RoleType)
+              }
+            />
+          </div>
         </Card>
-
         <Card className="p-4 sm:p-6">
           <div className="max-h-[500px] lg:max-h-[800px] overflow-y-auto">
             {loading ? (
@@ -174,13 +187,19 @@ export default function UserPage() {
               <div className="text-center py-12 text-red-500">
                 Error loading users: {error}
               </div>
-            ) : (
+            ) : users.length > 0 ? (
               <Table
                 tablehead={tablehead}
                 tabledata={users}
                 permissions={permissions}
                 setModelType={setUserMode}
                 setValue={setEachUserDetail}
+              />
+            ) : (
+              <EmptyMessage
+                message="No Users Yet"
+                submessage="Create User to see here"
+                // icon = {<FaTrophy size={80} />}
               />
             )}
           </div>

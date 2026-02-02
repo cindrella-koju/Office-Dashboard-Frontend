@@ -1,11 +1,15 @@
+import type { Permission } from "../../../utils/permissions";
+
 interface MatchHeaderProps {
   groupName?: string | null;
   matchTime: string;
   status : "scheduled" | "completed",
   onEdit?: () => void;
+  permissions : Permission
+  tiesheetfrom : string
 }
 
-export default function MatchHeader({ groupName, matchTime, onEdit, status }: MatchHeaderProps) {
+export default function MatchHeader({ groupName, matchTime, onEdit, status, permissions, tiesheetfrom }: MatchHeaderProps) {
   return (
     <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
       <div className="flex items-center gap-2">
@@ -22,12 +26,20 @@ export default function MatchHeader({ groupName, matchTime, onEdit, status }: Ma
       </div>
       <span className="text-xs text-gray-400">{matchTime}</span>
       {
-        status === "scheduled" && 
+        status === "scheduled" && permissions.canEdit && tiesheetfrom == "tiesheet" &&
         <button 
           className="text-xs font-medium text-blue-600 hover:text-blue-800 hover:underline transition-colors" 
           onClick={onEdit}
         >
           Edit
+        </button>
+      }
+      {
+        status === "scheduled" && permissions.canEdit && tiesheetfrom == "todaystiesheet" &&
+        <button 
+          className="text-xs font-medium text-blue-600 hover:text-blue-800 hover:underline transition-colors" 
+        >
+          Start
         </button>
       }
     </div>
