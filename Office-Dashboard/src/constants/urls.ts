@@ -53,3 +53,6 @@ export const RETRIEVE_USERS = `${BASE_URL}/user`
 export const RETRIEVE_USERS_BY_Role = (role : string ) => `${BASE_URL}/user?role=${role}`
 export const CREATE_USER = `${BASE_URL}/user/signup`
 export const UPDATE_USER = (user_id : string ) =>`${BASE_URL}/user?user_id=${user_id}`
+
+
+export const CREATE_MATCH = `${BASE_URL}/event/match`

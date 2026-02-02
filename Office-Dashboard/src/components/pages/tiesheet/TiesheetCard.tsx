@@ -14,7 +14,9 @@ interface TiesheetCardProps {
   players: PlayerInfoType[];
   onEdit?: (id: string) => void;
   permissions : Permission,
-  tiesheetfrom : string
+  tiesheetfrom : string,
+  tiesheetId : string,
+  refetchMatches: () => void;
 }
 
 export default function TiesheetCard({ 
@@ -26,7 +28,9 @@ export default function TiesheetCard({
   players,
   onEdit,
   permissions ,
-  tiesheetfrom
+  tiesheetfrom,
+  tiesheetId,
+  refetchMatches
 }: TiesheetCardProps) {
   const matchDate = new Date(`${scheduledDate}T${scheduledTime}`);
   const matchTime = matchDate.toLocaleTimeString('en-US', { 
@@ -44,6 +48,8 @@ export default function TiesheetCard({
         status = {status}
         permissions={permissions}
         tiesheetfrom={tiesheetfrom}
+        tiesheetId={tiesheetId}
+        refetchMatches={refetchMatches}
       />
 
       <div className="flex flex-1">

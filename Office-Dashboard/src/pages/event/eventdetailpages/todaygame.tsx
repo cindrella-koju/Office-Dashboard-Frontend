@@ -1,12 +1,9 @@
-import { useState } from "react";
 import { usePermissions } from "../../../hooks/userPermission";
 import EventNavBar from "../../../components/EventNavbar";
-import TiesheetModel from "../../../components/Model/TiesheetModel";
 import TiesheetCard from "../../../components/pages/tiesheet/TiesheetCard";
 import useFetch from "../../../hooks/useFetch";
 import { RETRIEVE_TODAY_TIESHEET } from "../../../constants/urls";
 import { PageContent, PageHeader, PageLayout } from "../../../components/layout/PageLayout";
-import Button from "../../../components/ui/Button";
 import EmptyMessage from "../../../components/ui/EmptyMessage";
 import { CgFileDocument } from "react-icons/cg";
 import type { TiesheetType } from "../../../type/tiesheet.type";
@@ -17,7 +14,7 @@ export default function TodayGame(){
   const eventId = localStorage.getItem("eventId");
   const permissions = usePermissions("tiesheet")
 
-  const { data: tiesheet } = useFetch<TiesheetType[] | null>(
+  const { data: tiesheet, refetch:refetchTiesheet } = useFetch<TiesheetType[] | null>(
     eventId ? RETRIEVE_TODAY_TIESHEET(eventId) : ""
   );
 
@@ -31,13 +28,6 @@ export default function TodayGame(){
     }, {} as Record<string, typeof tiesheet>));
 
 
-  const [viewMode, setViewMode] = useState<'create' | 'edit' | null>(null);
-  const [selectedMatchId, setSelectedMatchId] = useState<string | null>(null);
-
-  const handleEditMatch = (matchId: string) => {
-    setSelectedMatchId(matchId);
-    setViewMode("edit");
-  };
 
     return(
         <PageLayout sidebar={<EventNavBar/>}>
@@ -74,9 +64,10 @@ export default function TodayGame(){
                                                     scheduledTime={match.scheduled_time}
                                                     status={match.status}
                                                     players={match.player_info}
-                                                    onEdit={handleEditMatch}
                                                     permissions={permissions}
                                                     tiesheetfrom="todaystiesheet"
+                                                    tiesheetId={match.id}
+                                                    refetchMatches={refetchTiesheet}
                                                 />
                                             ))}
                                         </div>
@@ -85,7 +76,7 @@ export default function TodayGame(){
                             </div>
             
                             {tiesheet && tiesheet.length === 0 && (
-                                <EmptyMessage message="No Tiesheet Yet" submessage="Create Tiesheet to see them appear hear" icon={<CgFileDocument size={80}/>}/>
+                                <EmptyMessage message="No Game for Today" submessage="Create Tiesheet to see them appear hear" icon={<CgFileDocument size={80}/>}/>
                             )}
             </PageContent>
         </PageLayout>

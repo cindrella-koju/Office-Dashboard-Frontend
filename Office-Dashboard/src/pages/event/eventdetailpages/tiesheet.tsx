@@ -17,9 +17,9 @@ export default function Tiesheet(){
   const eventId = localStorage.getItem("eventId");
   const permissions = usePermissions("tiesheet")
 
-  const { data: tiesheet } = useFetch<TiesheetType[] | null>(
+  const { data: tiesheet, refetch: refetchTiesheet } = useFetch<TiesheetType[] | null>(
     eventId ? RETRIEVE_TIESHEET(eventId) : ""
-  );
+    );
 
   const groupedByStage = tiesheet && (tiesheet.reduce((acc, tiesheet) => {
         const stage = tiesheet.stage_name;
@@ -85,6 +85,8 @@ export default function Tiesheet(){
                                                     onEdit={handleEditMatch}
                                                     permissions={permissions}
                                                     tiesheetfrom="tiesheet"
+                                                    tiesheetId ={match.id} 
+                                                    refetchMatches={refetchTiesheet}
                                                 />
                                             ))}
                                         </div>
