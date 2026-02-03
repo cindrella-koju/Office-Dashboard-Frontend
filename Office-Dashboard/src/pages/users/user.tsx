@@ -199,7 +199,6 @@ export default function UserPage() {
               <EmptyMessage
                 message="No Users Yet"
                 submessage="Create User to see here"
-                // icon = {<FaTrophy size={80} />}
               />
             )}
           </div>

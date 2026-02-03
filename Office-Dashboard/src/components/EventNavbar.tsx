@@ -13,8 +13,8 @@ const eventNavItems = [
   { icon: <FaChartBar />, label: "Standing Column", to: "/event/standing-column" },
   { icon: <MdOutlineSportsScore />, label: "Overall Points", to: "/event/overall-points" },
   { icon: <FaCalendarDay />, label: "Todays Game", to: "/event/todays-game" },
-  { icon: <FaPlay />, label: "Ongoing Game", to: "/event/ongoing-game" },
-  { icon: <FaHome />, label: "Score Board", to: "/event/score-board" },
+  // { icon: <FaPlay />, label: "Ongoing Game", to: "/event/ongoing-game" },
+  // { icon: <FaHome />, label: "Score Board", to: "/event/score-board" },
 ];
 
 const logoConfig = {

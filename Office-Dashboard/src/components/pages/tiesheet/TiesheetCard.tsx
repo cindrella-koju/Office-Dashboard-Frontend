@@ -4,6 +4,7 @@ import OneVsOneMatch from "./OneVsOneMatch";
 import MultiPlayerMatch from "./MultiPlayerMatch";
 import type { Permission } from "../../../utils/permissions";
 import type { PlayerInfoType } from "../../../type/tiesheet.type";
+import type { Dispatch, SetStateAction } from "react";
 
 
 interface TiesheetCardProps {
@@ -17,6 +18,7 @@ interface TiesheetCardProps {
   tiesheetfrom : string,
   tiesheetId : string,
   refetchMatches: () => void;
+  setShowAddDetail? : Dispatch<SetStateAction<boolean>>
 }
 
 export default function TiesheetCard({ 
@@ -30,7 +32,8 @@ export default function TiesheetCard({
   permissions ,
   tiesheetfrom,
   tiesheetId,
-  refetchMatches
+  refetchMatches,
+  setShowAddDetail
 }: TiesheetCardProps) {
   const matchDate = new Date(`${scheduledDate}T${scheduledTime}`);
   const matchTime = matchDate.toLocaleTimeString('en-US', { 
@@ -52,6 +55,7 @@ export default function TiesheetCard({
         refetchMatches={refetchMatches}
         player1={players[0]}
         player2={players[1]}
+        setShowAddDetail={setShowAddDetail}
       />
 
       <div className="flex flex-1">

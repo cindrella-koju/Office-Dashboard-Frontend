@@ -1,7 +1,5 @@
-import { useState } from "react";
+import { type Dispatch, type SetStateAction } from "react";
 import type { Permission } from "../../../utils/permissions";
-import StartGameModal from "../../Model/StartGameModel";
-import AddMatchModel from "../../Model/AddMatchModel";
 import type { PlayerInfoType } from "../../../type/tiesheet.type";
 
 interface MatchHeaderProps {
@@ -15,6 +13,7 @@ interface MatchHeaderProps {
   refetchMatches: () => void;
   player1: PlayerInfoType;
   player2: PlayerInfoType;
+  setShowAddDetail? : Dispatch<SetStateAction<boolean>>
 }
 
 export default function MatchHeader({
@@ -24,14 +23,11 @@ export default function MatchHeader({
   onEdit,
   permissions,
   tiesheetfrom,
-  tiesheetId,
-  refetchMatches,
-  player1,
-  player2
+  setShowAddDetail
 }: MatchHeaderProps) {
-  const [openStartGame, setOpenStartGame] = useState(false);
 
-  const handleStart = () => setOpenStartGame(true);
+
+  const handleStart = () => setShowAddDetail && setShowAddDetail(true);
 
   const getStatusLabel = () => {
     if (status === "scheduled") return "Scheduled";
@@ -42,8 +38,8 @@ export default function MatchHeader({
 
   const statusClass = () => {
     if (status === "scheduled") return "text-green-600";
-    if (status === "completed") return "text-gray-500";
-    if (status === "ongoing") return "text-yellow-500";
+    if (status === "completed") return "text-yellow-500";
+    if (status === "ongoing") return "text-red-500";
     return "text-gray-500";
   };
 
@@ -63,7 +59,7 @@ export default function MatchHeader({
       
       <span className="text-xs text-gray-400">{matchTime}</span>
 
-      {status === "scheduled" && permissions.canEdit && tiesheetfrom === "tiesheet" && (
+      {(status === "scheduled" || status === "ongoing") && permissions.canEdit && tiesheetfrom === "tiesheet" && (
         <button
           className="text-xs font-medium text-blue-600 hover:text-blue-800 hover:underline transition-colors"
           onClick={onEdit}
@@ -83,14 +79,6 @@ export default function MatchHeader({
           </button>
         )}
 
-      {openStartGame && (
-        <AddMatchModel player1={player1} player2={player2} tiesheetID={tiesheetId} setOpenStartGame={setOpenStartGame}  refetchMatches={refetchMatches}/>
-        // <StartGameModal
-        //   tiesheetId={tiesheetId}
-        //   setOpenStartGame={setOpenStartGame}
-        //   refetchMatches={refetchMatches}
-        // />
-      )}
     </div>
   );
 }

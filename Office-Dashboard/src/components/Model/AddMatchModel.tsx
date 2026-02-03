@@ -8,7 +8,7 @@ interface AddMatchModalProps {
   player2: PlayerInfoType;
   tiesheetID: string;
   setOpenStartGame: Dispatch<SetStateAction<boolean>>;
-  refetchMatches: () => void;
+//   refetchMatches: () => void;
 }
 
 export default function AddMatchModal({
@@ -16,7 +16,7 @@ export default function AddMatchModal({
   player2,
   tiesheetID,
   setOpenStartGame,
-  refetchMatches,
+//   refetchMatches,
 }: AddMatchModalProps) {
   const [showPoints, setShowPoints] = useState(false);
   const [showWinner, setShowWinner] = useState(true);

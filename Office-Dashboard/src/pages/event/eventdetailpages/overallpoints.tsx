@@ -1,8 +1,7 @@
 import EventNavBar from "../../../components/EventNavbar";
-import FilterComponent from "../../../components/Filters";
 import { PageContent, PageHeader, PageLayout } from "../../../components/layout/PageLayout";
 import Card from "../../../components/ui/Card";
-import { GET_ROUNDS_BY_EVENT, RETRIEVE_OVERALL_TIESHEET, RETRIEVE_OVERALL_TIESHEET_BY_ROUND, RETRIEVE_ROUNDS } from "../../../constants/urls";
+import { GET_ROUNDS_BY_EVENT, RETRIEVE_OVERALL_TIESHEET_BY_ROUND, RETRIEVE_ROUNDS } from "../../../constants/urls";
 import useFetch from "../../../hooks/useFetch";
 import OverallPointTable, { type UserType } from "../../../components/pages/overallpoints/OverallPointTable";
 import type { Round } from "../../../type/group.type";

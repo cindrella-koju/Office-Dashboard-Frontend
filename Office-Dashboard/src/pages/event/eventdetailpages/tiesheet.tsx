@@ -10,12 +10,14 @@ import Button from "../../../components/ui/Button";
 import EmptyMessage from "../../../components/ui/EmptyMessage";
 import { CgFileDocument } from "react-icons/cg";
 import type { TiesheetType } from "../../../type/tiesheet.type";
+import MatchDetail from "../../../components/pages/tiesheet/MatchDetail";
 
 
 export default function Tiesheet(){
 
   const eventId = localStorage.getItem("eventId");
   const permissions = usePermissions("tiesheet")
+  const [showMatchDetail, setShowMatchDetail] = useState<boolean>(false)
 
   const { data: tiesheet, refetch: refetchTiesheet } = useFetch<TiesheetType[] | null>(
     eventId ? RETRIEVE_TIESHEET(eventId) : ""
@@ -38,6 +40,12 @@ export default function Tiesheet(){
     setSelectedMatchId(matchId);
     setViewMode("edit");
   };
+
+  const handleMatchDetailView = (status : string) => {
+        {
+            status === "completed" && setShowMatchDetail(true)
+        }
+    }
 
     return(
         <PageLayout sidebar={<EventNavBar/>}>
@@ -74,10 +82,9 @@ export default function Tiesheet(){
                                         {/* Match Cards */}
                                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                                             {matches.map((match) => (
+                                                <div key={match.id} className="hover:scale-102 transform transition duration-300 ease-in-out cursor-pointer" onClick={() => handleMatchDetailView(match.status)}>
                                                 <TiesheetCard
-                                                    key={match.id}
                                                     id={match.id}
-                                                    // groupName={match.group_name}
                                                     scheduledDate={match.scheduled_date}
                                                     scheduledTime={match.scheduled_time}
                                                     status={match.status}
@@ -85,11 +92,13 @@ export default function Tiesheet(){
                                                     onEdit={handleEditMatch}
                                                     permissions={permissions}
                                                     tiesheetfrom="tiesheet"
-                                                    tiesheetId ={match.id} 
+                                                    tiesheetId={match.id} 
                                                     refetchMatches={refetchTiesheet}
                                                 />
+                                                </div>
                                             ))}
                                         </div>
+
                                     </div>
                                 )))}
                             </div>
@@ -103,6 +112,9 @@ export default function Tiesheet(){
                       <TiesheetModel viewMode={viewMode} eventId={eventId} setviewMode={setViewMode} matchId={selectedMatchId}/>
                     )
                   }
+                  {
+                        showMatchDetail && <MatchDetail setShowMatchDetail={setShowMatchDetail}/>
+                    }
             </PageContent>
         </PageLayout>
 
