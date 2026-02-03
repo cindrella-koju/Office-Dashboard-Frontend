@@ -6,7 +6,9 @@ import {
   RETRIEVE_QUALIFIER_BY_ROUND,
   RETRIEVE_STANDING_COLUMN,
   GET_TIESHEET_BY_ID,
-  UPDATE_TIESHEET
+  UPDATE_TIESHEET,
+  RETRIEVE_GROUP_ID_NAME_BY_ROUND,
+  RETRIEVE_GROUP_MEMBER_ID_NAME
 } from "../../constants/urls"
 import ModalWrapper from "../pages/shared/ModelWrapper"
 import SelectField from "../pages/shared/SelectField"
@@ -40,6 +42,7 @@ interface PlayerColumnData {
 
 interface SelectedMatch {
   stage_id: string
+  group_id : string
   players: string[]
   scheduled_date: string
   scheduled_time: string
@@ -71,14 +74,21 @@ export default function TiesheetModel({
 
   const [roundId, setRoundID] = useState("")
   const [roundName, setRoundName] = useState("")
+  const [groupId, setGroupId] = useState<string>("")
+  const [groupName, setGroupName ] = useState<string | null>("")
+  const [users, setUsers] = useState<QualifierResponse[]>()
 
   const { data: qualifier } = useFetch<QualifierResponse[]>(
     roundId ? RETRIEVE_QUALIFIER_BY_ROUND(roundId) : ""
   )
-
+  const { data: group_member } = useFetch<QualifierResponse[]>(
+    groupId ? RETRIEVE_GROUP_MEMBER_ID_NAME(groupId) : ""
+  )
   const { data: standingColumns } = useFetch<StandingColumnType[]>(
     roundId ? RETRIEVE_STANDING_COLUMN(roundId) : ""
   )
+
+  const { data: group_info } = useFetch<RoundResponse[]>(roundId ? RETRIEVE_GROUP_ID_NAME_BY_ROUND(roundId) : "")
 
   const { data: matchDetails } = useFetch<any>(
     viewMode === "edit" && matchId ? GET_TIESHEET_BY_ID(matchId) : ""
@@ -88,35 +98,41 @@ export default function TiesheetModel({
     { id: string; name: string }[]
   >([])
 
+
   const [selectedMatch, setSelectedMatch] = useState<SelectedMatch>({
     stage_id: "",
+    group_id :"",
     players: [],
     scheduled_date: "",
     scheduled_time: "",
     status: "scheduled"
   })
 
+  useEffect(() => {
+    if (group_member) {
+      setUsers(group_member);
+    } else if (qualifier) {
+      setUsers(qualifier);
+    }
+  }, [qualifier, group_member]);
+
   /* Populate form with match details in edit mode */
   useEffect(() => {
     if (viewMode === "edit" && matchDetails) {
       setRoundID(matchDetails.stage_id)
       const round = rounds?.find(r => r.id === matchDetails.stage_id)
+      const group = group_info?.find(r => r.id === matchDetails.group_id)
       if (round) setRoundName(round.name)
-      
+      if (group) setGroupName(group.name)
+
+        console.log("Group name:", group?.name)
       setSelectedMatch({
         stage_id: matchDetails.stage_id,
+        group_id : matchDetails.group_id,
         players: matchDetails.player_info?.map((p: any) => p.user_id) || [],
         scheduled_date: matchDetails.scheduled_date,
         scheduled_time: matchDetails.scheduled_time,
         status: matchDetails.status,
-        player_columns: matchDetails.player_info?.map((p: any) => ({
-          user_id: p.user_id,
-          columns: p.columns?.map((c: any) => ({
-            column_id: standingColumns?.find(sc => sc.column_field === c.column_name)?.id || "",
-            value: c.value
-          })) || [],
-          is_winner: p.is_winner
-        })) || []
       })
 
       setSelectedUsers(
@@ -126,7 +142,7 @@ export default function TiesheetModel({
         })) || []
       )
     }
-  }, [viewMode, matchDetails, rounds, standingColumns])
+  }, [viewMode , matchDetails, rounds, standingColumns])
 
   /* Reset players & date/time when round changes */
   useEffect(() => {
@@ -135,12 +151,13 @@ export default function TiesheetModel({
     setSelectedMatch(prev => ({
       ...prev,
       stage_id: roundId,
+      group_id : groupId ? groupId : "",
       players: [],
       scheduled_date: "",
       scheduled_time: ""
     }))
     setSelectedUsers([])
-  }, [roundId, viewMode])
+  }, [roundId, viewMode, groupId])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -156,6 +173,7 @@ export default function TiesheetModel({
       status: selectedMatch.status.toLowerCase()
     }
 
+    // console.log("Payload:",payload)
     try {
       const url = viewMode === "create" ? CREATE_TIESHEET : UPDATE_TIESHEET(matchId!)
       const method = viewMode === "create" ? "POST" : "PUT"
@@ -180,11 +198,24 @@ export default function TiesheetModel({
   }
 
   if (!viewMode) return null
+ const handleClose = () => {
+   setSelectedMatch({
+     stage_id: "",
+     group_id :"",
+     players: [],
+     scheduled_date: "",
+     scheduled_time: "",
+     status: "scheduled"
+   })
+   setGroupName(null)
+  setviewMode(null)
+ }
 
+ console.log("Group Name:", groupName)
   return (
     <ModalWrapper
       title={viewMode === "create" ? "Create TieSheet" : "Edit TieSheet"}
-      onClose={() => setviewMode(null)}
+      onClose={() => handleClose()}
     >
       <form onSubmit={handleSubmit} className="space-y-5">
         {/* Round */}
@@ -213,9 +244,45 @@ export default function TiesheetModel({
               setRoundID(val)
               const round = rounds?.find(r => r.id === val)
               if (round) setRoundName(round.name)
+                setGroupId("" )
             }}
           />
         )}
+
+          { viewMode === "edit" ? (
+            groupName && 
+            (<div>
+              <label className="block mb-2 text-sm font-medium text-gray-700">
+                Group
+              </label>
+              <input
+                type="text"
+                value={groupName}
+                disabled
+                className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm bg-gray-100 cursor-not-allowed"
+              />
+            </div>)
+          ) : (
+            group_info && group_info?.length > 0 && (
+              <SelectField
+                label="Group"
+                required
+                value={groupId}
+                options={group_info.map(r => ({
+                  value: r.id,
+                  label: r.name
+                }))}
+                onChange={val => {
+                  setGroupId(val)
+                  const group = group_info.find(r => r.id === val)
+                  if (group) setGroupName(group.name)
+                }}
+              />
+            )
+          )
+      }
+
+
 
         {/* Status */}
         <SelectField
@@ -256,7 +323,7 @@ export default function TiesheetModel({
                 }))
               }}
             >
-              {qualifier?.map(user => (
+              {users?.map(user => (
                 <option key={user.id} value={user.id}>
                   {user.username}
                 </option>
@@ -285,100 +352,6 @@ export default function TiesheetModel({
           </div>
         )}
 
-        {/* Standing Columns - Only show in edit mode */}
-        {viewMode === "edit" && standingColumns && standingColumns.length > 0 && selectedUsers.length > 0 && (
-          <div>
-            <label className="block mb-3 text-sm font-medium text-gray-700">
-              Player Statistics (Enter values for each player)
-            </label>
-            <div className="space-y-4">
-              {selectedUsers.map((user) => {
-                const playerData = selectedMatch.player_columns?.find(p => p.user_id === user.id)
-                
-                return (
-                  <div key={user.id} className="p-4 border border-gray-200 rounded-lg bg-gray-50">
-                    <h4 className="text-sm font-semibold text-gray-800 mb-3">{user.name}</h4>
-                    <div className="grid grid-cols-2 gap-3">
-                      {standingColumns.map((column) => {
-                        const columnValue = playerData?.columns?.find(c => c.column_id === column.id)
-                        const previousValue = matchDetails?.player_info?.find((p: any) => p.user_id === user.id)?.columns?.find((c: any) => c.column_name === column.column_field)?.value
-                        
-                        return (
-                          <div key={column.id}>
-                            <label className="block mb-1 text-xs font-medium text-gray-700">
-                              {column.column_field}
-                              {previousValue && (
-                                <span className="ml-2 text-gray-500 font-normal">(Previous: {previousValue})</span>
-                              )}
-                            </label>
-                            <input
-                              type="text"
-                              placeholder={previousValue || column.default_value || "0"}
-                              value={columnValue?.value || ""}
-                              onChange={(e) => {
-                                const val = e.target.value
-                                setSelectedMatch(prev => {
-                                  const updatedPlayerColumns = prev.player_columns?.map(p => {
-                                    if (p.user_id === user.id) {
-                                      const existingColumns = p.columns || []
-                                      const columnIdx = existingColumns.findIndex(c => c.column_id === column.id)
-                                      
-                                      if (columnIdx >= 0) {
-                                        existingColumns[columnIdx] = { column_id: column.id, value: val }
-                                      } else {
-                                        existingColumns.push({ column_id: column.id, value: val })
-                                      }
-                                      
-                                      return { ...p, columns: existingColumns }
-                                    }
-                                    return p
-                                  }) || [
-                                    ...selectedUsers.map(u => ({
-                                      user_id: u.id,
-                                      columns: u.id === user.id ? [{ column_id: column.id, value: val }] : [],
-                                      is_winner: false
-                                    }))
-                                  ]
-                                  
-                                  return { ...prev, player_columns: updatedPlayerColumns }
-                                })
-                              }}
-                              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm
-                                       focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
-                            />
-                          </div>
-                        )
-                      })}
-                      <div className="col-span-2">
-                        <label className="flex items-center gap-2 text-sm">
-                          <input
-                            type="checkbox"
-                            checked={selectedMatch.player_columns?.find(p => p.user_id === user.id)?.is_winner || false}
-                            onChange={(e) => {
-                              setSelectedMatch(prev => {
-                                const updatedPlayerColumns = prev.player_columns?.map(p => 
-                                  p.user_id === user.id ? { ...p, is_winner: e.target.checked } : { ...p, is_winner: false }
-                                ) || selectedUsers.map(u => ({
-                                  user_id: u.id,
-                                  columns: [],
-                                  is_winner: u.id === user.id ? e.target.checked : false
-                                }))
-                                
-                                return { ...prev, player_columns: updatedPlayerColumns }
-                              })
-                            }}
-                            className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                          />
-                          <span className="font-medium text-gray-700">Winner</span>
-                        </label>
-                      </div>
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
-          </div>
-        )}
 
         {/* Match Date */}
         <FormField
