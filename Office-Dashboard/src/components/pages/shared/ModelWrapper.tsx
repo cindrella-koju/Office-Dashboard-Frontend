@@ -2,19 +2,21 @@ interface ModalWrapperProps {
   title: string
   children: React.ReactNode
   onClose?: () => void
+  color? : string
 }
 
 export default function ModalWrapper({
   title,
   children,
-  onClose
+  onClose,
+  color = "gray"
 }: ModalWrapperProps) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
       <div className="w-full max-w-2xl bg-white rounded-2xl shadow-xl p-6 max-h-[80vh] overflow-y-auto">
 
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-800">
+          <h2 className={`text-2xl font-bold text-${color}-600`}>
             {title}
           </h2>
           <button

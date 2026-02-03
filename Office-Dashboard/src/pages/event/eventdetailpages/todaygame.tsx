@@ -18,6 +18,7 @@ export default function TodayGame(){
   const permissions = usePermissions("tiesheet")
   const [showMatchDetail, setShowMatchDetail] = useState<boolean>(false)
   const [showAddDetail, setShowAddDetail] = useState<boolean>(false)
+  const [tiesheetId, setTiesheetId ] = useState<string | null>(null)
   const { data: tiesheet, refetch:refetchTiesheet } = useFetch<TiesheetType[] | null>(
     eventId ? RETRIEVE_TODAY_TIESHEET(eventId) : ""
   );
@@ -31,8 +32,9 @@ export default function TodayGame(){
         return acc;
     }, {} as Record<string, typeof tiesheet>));
 
-    const handleMatchDetailView = (status : string) => {
+    const handleMatchDetailView = (status : string, tiesheet_id : string) => {
         status === "completed" && setShowMatchDetail(true)
+        setTiesheetId(tiesheet_id)
     }
 
     return(
@@ -63,7 +65,7 @@ export default function TodayGame(){
                                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                                             {matches.map((match) => (
                                                 <>
-                                                <div key={match.id} className="hover:scale-102 transform transition duration-300 ease-in-out cursor-pointer" onClick={() => handleMatchDetailView(match.status)}>
+                                                <div key={match.id} className="hover:scale-102 transform transition duration-300 ease-in-out cursor-pointer" onClick={() => handleMatchDetailView(match.status, match.id)}>
                                                     <TiesheetCard
                                                         key={match.id}
                                                         id={match.id}
@@ -83,6 +85,7 @@ export default function TodayGame(){
                                                     showAddDetail &&
                                                     <AddMatchModal player1={match.player_info[0]} player2={match.player_info[1]} tiesheetID={match.id} setOpenStartGame={setShowAddDetail}/>
                                                 }
+                                                
                                                 </>
                                             ))}
                                         </div>
@@ -94,8 +97,9 @@ export default function TodayGame(){
                                 <EmptyMessage message="No Game for Today" submessage="Create Tiesheet to see them appear hear" icon={<CgFileDocument size={80}/>}/>
                             )}
                             {
-                                showMatchDetail && <MatchDetail setShowMatchDetail={setShowMatchDetail}/>
+                                showMatchDetail && tiesheetId && <MatchDetail setShowMatchDetail={setShowMatchDetail} tiesheet_id={tiesheetId}/>
                             }
+                           
             </PageContent>
         </PageLayout>
 

@@ -56,3 +56,4 @@ export const UPDATE_USER = (user_id : string ) =>`${BASE_URL}/user?user_id=${use
 
 
 export const CREATE_MATCH = `${BASE_URL}/event/match`
+export const RETRIEVE_MATCH = (tiesheet_id : string ) =>`${BASE_URL}/event/match/score?tiesheet_id=${tiesheet_id}`

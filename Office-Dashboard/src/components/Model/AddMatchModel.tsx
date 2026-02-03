@@ -2,6 +2,7 @@ import React, { useState, type Dispatch, type SetStateAction } from "react";
 import ModalWrapper from "../pages/shared/ModelWrapper";
 import type { PlayerInfoType } from "../../type/tiesheet.type";
 import Button from "../ui/Button";
+import { CREATE_MATCH } from "../../constants/urls";
 
 interface AddMatchModalProps {
   player1: PlayerInfoType;
@@ -25,7 +26,7 @@ export default function AddMatchModal({
     {
       tiesheet_id: tiesheetID,
       match_name: "",
-      usersdetail: [
+      userDetail: [
         {
           user_id: player1.user_id,
           points: "",
@@ -47,7 +48,7 @@ export default function AddMatchModal({
       {
         tiesheet_id: tiesheetID,
         match_name: "",
-        usersdetail: [
+        userDetail: [
           { user_id: player1.user_id, points: "", winner: false },
           { user_id: player2.user_id, points: "", winner: false },
         ],
@@ -78,7 +79,7 @@ export default function AddMatchModal({
         mIdx === matchIndex
           ? {
               ...match,
-              usersdetail: match.usersdetail.map((user, uIdx) =>
+              userDetail: match.userDetail.map((user, uIdx) =>
                 uIdx === userIndex ? { ...user, points: value } : user
               ),
             }
@@ -94,7 +95,7 @@ export default function AddMatchModal({
         mIdx === matchIndex
           ? {
               ...match,
-              usersdetail: match.usersdetail.map((user, uIdx) => ({
+              userDetail: match.userDetail.map((user, uIdx) => ({
                 ...user,
                 winner: uIdx === winnerIndex,
               })),
@@ -105,10 +106,26 @@ export default function AddMatchModal({
   };
 
   // Handle form submission
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async(e: React.FormEvent) => {
     e.preventDefault();
     console.log(matchDetail);
+    try{
+        const response = await fetch(CREATE_MATCH,{
+            method : "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(matchDetail)
+        })
+
+        if (!response.ok) {
+            throw new Error("Failed to save column")
+        }
+        alert(`Match Added successfully`)
+        setOpenStartGame(false)
+    } catch(error){
+        alert("Something Wrong")
+    }
   };
+
 
   return (
     <ModalWrapper
@@ -232,7 +249,7 @@ export default function AddMatchModal({
                           type="number"
                           min="0"
                           placeholder="0"
-                          value={match.usersdetail[0].points}
+                          value={match.userDetail[0].points}
                           onChange={(e) =>
                             updatePoints(index, 0, e.target.value)
                           }
@@ -248,7 +265,7 @@ export default function AddMatchModal({
                           type="number"
                           min="0"
                           placeholder="0"
-                          value={match.usersdetail[1].points}
+                          value={match.userDetail[1].points}
                           onChange={(e) =>
                             updatePoints(index, 1, e.target.value)
                           }
@@ -272,7 +289,7 @@ export default function AddMatchModal({
                         name={`winner-${index}`}
                         id={`winner-p1-${index}`}
                         className="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"
-                        checked={match.usersdetail[0].winner}
+                        checked={match.userDetail[0].winner}
                         onChange={() => updateWinner(index, 0)}
                       />
                       <label
@@ -289,7 +306,7 @@ export default function AddMatchModal({
                         name={`winner-${index}`}
                         id={`winner-p2-${index}`}
                         className="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"
-                        checked={match.usersdetail[1].winner}
+                        checked={match.userDetail[1].winner}
                         onChange={() => updateWinner(index, 1)}
                       />
                       <label

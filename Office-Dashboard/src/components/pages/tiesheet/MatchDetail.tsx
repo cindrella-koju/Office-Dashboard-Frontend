@@ -1,39 +1,39 @@
 import type { Dispatch, SetStateAction } from "react";
 import ModalWrapper from "../shared/ModelWrapper";
+import useFetch from "../../../hooks/useFetch";
+import { RETRIEVE_MATCH } from "../../../constants/urls";
 
-const DUMMY_DATA = [
-  {
-    match_name: "Match 1",
-    userinfo: [
-      { username: "user 3", user_id: "c397aa12-2214-4796-a1d0-4d1dc8c28974", points: "5", winner: false },
-      { username: "user 4", user_id: "04d36c46-d7c1-4e06-8250-cdfd4bbb80f3", points: "6", winner: true },
-    ],
-  },
-  {
-    match_name: "Match 3",
-    userinfo: [
-      { username: "user 3", user_id: "c397aa12-2214-4796-a1d0-4d1dc8c28974", points: "6", winner: true },
-      { username: "user 4", user_id: "04d36c46-d7c1-4e06-8250-cdfd4bbb80f3", points: "5", winner: false },
-    ],
-  },
-];
-interface MatchDetailProps{
-    setShowMatchDetail : Dispatch<SetStateAction<boolean>>
+interface userDetail{
+    username : string;
+    user_id : string;
+    points : string;
+    winner : boolean
 }
-export default function MatchDetail({setShowMatchDetail}:MatchDetailProps) {
+interface MatchInfo{
+    tiesheet_id : string,
+    match_name : string,
+    userinfo : userDetail[]
+}
+interface MatchDetailProps{
+    setShowMatchDetail : Dispatch<SetStateAction<boolean>>;
+    tiesheet_id : string
+}
+export default function MatchDetail({setShowMatchDetail,tiesheet_id}:MatchDetailProps) {
+    const {data : match_info } = useFetch<MatchInfo[]>(RETRIEVE_MATCH(tiesheet_id))
   return (
     <ModalWrapper title="Match Results" onClose={() => setShowMatchDetail(false)}>
       <div className="space-y-5 py-3">
-        {DUMMY_DATA.map((match) => {
+        {match_info && match_info.map((match) => {
           const [playerA, playerB] = match.userinfo;
-          const left = playerA.winner ? playerA : playerB;
-          const right = playerA.winner ? playerB : playerA;
+          const left = playerA;
+          const right =  playerB;
 
           return (
             <div
               key={match.match_name}
               className="rounded-xl border border-gray-200 bg-white shadow-sm overflow-hidden"
             >
+                {/* <h1>{tiesheet_id}</h1> */}
               <div className="bg-gray-50 px-5 py-2.5 border-b border-gray-100">
                 <h3 className="text-base font-semibold text-gray-800 text-center">
                   {match.match_name}

@@ -11,6 +11,7 @@ import EmptyMessage from "../../../components/ui/EmptyMessage";
 import { CgFileDocument } from "react-icons/cg";
 import type { TiesheetType } from "../../../type/tiesheet.type";
 import MatchDetail from "../../../components/pages/tiesheet/MatchDetail";
+import PopUp from "../../../components/ui/PopUp";
 
 
 export default function Tiesheet(){
@@ -18,7 +19,8 @@ export default function Tiesheet(){
   const eventId = localStorage.getItem("eventId");
   const permissions = usePermissions("tiesheet")
   const [showMatchDetail, setShowMatchDetail] = useState<boolean>(false)
-
+  const [showDelete, setShowDelete] = useState<boolean>(false)
+  const [tiesheetId, settiesheetId ] = useState<string | null>(null)
   const { data: tiesheet, refetch: refetchTiesheet } = useFetch<TiesheetType[] | null>(
     eventId ? RETRIEVE_TIESHEET(eventId) : ""
     );
@@ -41,10 +43,11 @@ export default function Tiesheet(){
     setViewMode("edit");
   };
 
-  const handleMatchDetailView = (status : string) => {
+  const handleMatchDetailView = (status : string, tiesheet_id : string) => {
         {
             status === "completed" && setShowMatchDetail(true)
         }
+        settiesheetId(tiesheet_id)
     }
 
     return(
@@ -82,20 +85,23 @@ export default function Tiesheet(){
                                         {/* Match Cards */}
                                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                                             {matches.map((match) => (
-                                                <div key={match.id} className="hover:scale-102 transform transition duration-300 ease-in-out cursor-pointer" onClick={() => handleMatchDetailView(match.status)}>
-                                                <TiesheetCard
-                                                    id={match.id}
-                                                    scheduledDate={match.scheduled_date}
-                                                    scheduledTime={match.scheduled_time}
-                                                    status={match.status}
-                                                    players={match.player_info}
-                                                    onEdit={handleEditMatch}
-                                                    permissions={permissions}
-                                                    tiesheetfrom="tiesheet"
-                                                    tiesheetId={match.id} 
-                                                    refetchMatches={refetchTiesheet}
-                                                />
-                                                </div>
+                                                <>
+                                                    <div key={match.id} className="hover:scale-102 transform transition duration-300 ease-in-out cursor-pointer" onClick={() => handleMatchDetailView(match.status, match.id)}>
+                                                    <TiesheetCard
+                                                        id={match.id}
+                                                        scheduledDate={match.scheduled_date}
+                                                        scheduledTime={match.scheduled_time}
+                                                        status={match.status}
+                                                        players={match.player_info}
+                                                        onEdit={handleEditMatch}
+                                                        permissions={permissions}
+                                                        tiesheetfrom="tiesheet"
+                                                        tiesheetId={match.id} 
+                                                        refetchMatches={refetchTiesheet}
+                                                    />
+                                                    </div>
+                                                    
+                                                </>
                                             ))}
                                         </div>
 
@@ -112,9 +118,14 @@ export default function Tiesheet(){
                       <TiesheetModel viewMode={viewMode} eventId={eventId} setviewMode={setViewMode} matchId={selectedMatchId}/>
                     )
                   }
-                  {
-                        showMatchDetail && <MatchDetail setShowMatchDetail={setShowMatchDetail}/>
+                  
+                    {
+                        showMatchDetail && tiesheetId && <MatchDetail setShowMatchDetail={setShowMatchDetail} tiesheet_id={tiesheetId}/>
                     }
+                    {
+                        showDelete && <PopUp popUpType="delete" pagename="tiesheet" data="user1 vs user 2" setOnClose={setShowDelete}/>
+                    }
+                    
             </PageContent>
         </PageLayout>
 

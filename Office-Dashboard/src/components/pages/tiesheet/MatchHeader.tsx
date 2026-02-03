@@ -78,6 +78,16 @@ export default function MatchHeader({
             Add
           </button>
         )}
+        {
+          permissions.canDelete && (
+            <button
+            className="text-xs font-medium text-red-600 hover:text-red-800 hover:underline transition-colors"
+            onClick={handleStart}
+          >
+            Delete
+          </button>
+          )
+        }
 
     </div>
   );

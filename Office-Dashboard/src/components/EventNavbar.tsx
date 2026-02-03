@@ -10,9 +10,10 @@ const eventNavItems = [
   { icon: <FaTrophy />, label: "Tiesheet", to: "/event/tiesheet" },
   { icon: <MdLeaderboard />, label: "Qualifier", to: "/event/qualifier" },
   { icon: <CgProfile />, label: "Participants", to: "/event/participants" },
-  { icon: <FaChartBar />, label: "Standing Column", to: "/event/standing-column" },
-  { icon: <MdOutlineSportsScore />, label: "Overall Points", to: "/event/overall-points" },
+  { icon: <FaChartBar />, label: "Configure Column", to: "/event/standing-column" },
+  { icon: <MdOutlineSportsScore />, label: "Group Stage Standing", to: "/event/overall-points" },
   { icon: <FaCalendarDay />, label: "Todays Game", to: "/event/todays-game" },
+  // { icon: <FaTrophy />, label: "Event", to: "/event" },
   // { icon: <FaPlay />, label: "Ongoing Game", to: "/event/ongoing-game" },
   // { icon: <FaHome />, label: "Score Board", to: "/event/score-board" },
 ];
