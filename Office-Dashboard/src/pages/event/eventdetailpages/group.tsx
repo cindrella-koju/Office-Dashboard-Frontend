@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import EventNavBar from "../../../components/EventNavbar";
 import { PageContent, PageHeader, PageLayout } from "../../../components/layout/PageLayout";
 import Button from "../../../components/ui/Button";
@@ -16,7 +16,7 @@ import { MdGroups } from "react-icons/md";
 
 export default function Groups(){
     const eventId = localStorage.getItem("eventId")
-    const permissions = usePermissions("group");
+    const permissions = usePermissions();
     const { data: groupsData,refetch } = useFetch<Stage[]>(RETRIEVE_GROUP_AND_MEMBERS(eventId ? eventId : ""));
     const [editingUserId, setEditingUserId] = useState<{ groupId: string; userId: string } | null>(null);
     const [editedUserData, setEditedUserData] = useState<GroupMember | null>(null);

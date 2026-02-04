@@ -1,17 +1,8 @@
 import { FaHome, FaTrophy, FaUsers, FaSignOutAlt } from "react-icons/fa";
 import { CgProfile } from "react-icons/cg";
-import Sidebar from "./layout/SideBar";
-
-
-
-
-const navItems = [
-  { icon: <FaHome />, label: "Home", to: "/home" },
-  { icon: <FaTrophy />, label: "Event", to: "/event" },
-  { icon: <FaUsers />, label: "Users", to: "/user" },
-  { icon: <CgProfile />, label: "Profile", to: "/profile" },
-  { icon: <FaSignOutAlt />, label: "Logout", to: "/logout", danger: true },
-];
+import Sidebar from "./layout/Sidebar";
+import { useContext } from "react";
+import { RoleContext } from "../context/RoleContext";
 
 const logoConfig = {
   // src: teslaTechLogo,
@@ -20,5 +11,28 @@ const logoConfig = {
 };
 
 export default function NavBar() {
+  const role = useContext(RoleContext)
+  const pageaccess = role?.roleaccesspage;
+
+  // Build nav items dynamically
+  const navItems = [];
+
+  
+  if (pageaccess?.home_page) {
+    navItems.push({ icon: <FaHome />, label: "Home", to: "/home" });
+  }
+  if(pageaccess?.user_page){
+    navItems.push({ icon: <FaUsers />, label: "Users", to: "/user" })
+  }
+  if(pageaccess?.event_page){
+    navItems.push({ icon: <FaTrophy />, label: "Event", to: "/event" })
+  }
+  if(pageaccess?.profile_page){
+    navItems.push({ icon: <CgProfile />, label: "Profile", to: "/profile" })
+  }
+  navItems.push(
+    { icon: <FaSignOutAlt />, label: "Logout", to: "/logout", danger: true }
+  );
+
   return <Sidebar items={navItems} logo={logoConfig} />;
 }

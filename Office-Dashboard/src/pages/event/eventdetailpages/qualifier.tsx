@@ -29,7 +29,7 @@ export default function Qualifier() {
     const eventID = localStorage.getItem("eventId");
     
     // Hooks
-    const permissions = usePermissions("qualifier");
+    const permissions = usePermissions();
     const { data: qualifiers } = useFetch<QualifierResponse[]>(
         eventID ? RETRIEVE_QUALIFIER_BY_EVENT(eventID) : ""
     );

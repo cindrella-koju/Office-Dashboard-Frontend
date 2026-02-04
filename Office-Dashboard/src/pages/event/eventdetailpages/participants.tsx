@@ -34,7 +34,7 @@ export default function Participants() {
     const { data: participants } = useFetch<Participants>(
         eventID ? RETRIEVE_PARTICIPANTS(eventID) : ""
     );
-    const permissions = usePermissions("participants");
+    const permissions = usePermissions();
 
     // Local state
     const [viewMode, setViewMode] = useState<ViewMode>("grid");

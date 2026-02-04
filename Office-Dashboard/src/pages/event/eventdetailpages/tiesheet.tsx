@@ -17,7 +17,7 @@ import PopUp from "../../../components/ui/PopUp";
 export default function Tiesheet(){
 
   const eventId = localStorage.getItem("eventId");
-  const permissions = usePermissions("tiesheet")
+  const permissions = usePermissions()
   const [showMatchDetail, setShowMatchDetail] = useState<boolean>(false)
   const [showDelete, setShowDelete] = useState<boolean>(false)
   const [tiesheetId, settiesheetId ] = useState<string | null>(null)

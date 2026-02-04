@@ -1,7 +1,8 @@
 import type { Dispatch, SetStateAction } from "react";
 import { useNavigate } from "react-router-dom";
-import type { Permission } from "../../utils/permissions";
+
 import Button from "../ui/Button";
+import type { Permission } from "../../hooks/userPermission";
 
 type UserRole = "admin" | "member" | "superadmin";
 type Status = "active" | "draft" | "completed";

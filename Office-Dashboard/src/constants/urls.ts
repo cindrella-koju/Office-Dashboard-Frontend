@@ -60,3 +60,5 @@ export const RETRIEVE_MATCH = (tiesheet_id : string ) =>`${BASE_URL}/event/match
 
 export const RETRIEVE_GROUP_ID_NAME_BY_ROUND = (round_id : string) => `${BASE_URL}/event/group/byround?round_id=${round_id}`
 export const RETRIEVE_GROUP_MEMBER_ID_NAME = ( group_id : string ) => `${BASE_URL}/event/group/member?group_id=${group_id}`
+
+export const RETRIEVE_ROLE_DETAIL = (roleId : string) => `${BASE_URL}/role?role_id=${roleId}`

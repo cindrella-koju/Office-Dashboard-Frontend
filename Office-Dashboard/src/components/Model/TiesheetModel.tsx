@@ -121,6 +121,7 @@ export default function TiesheetModel({
     if (viewMode === "edit" && matchDetails) {
       setRoundID(matchDetails.stage_id)
       const round = rounds?.find(r => r.id === matchDetails.stage_id)
+      console.log("Match deftail:", matchDetails.group_id)
       const group = group_info?.find(r => r.id === matchDetails.group_id)
       if (round) setRoundName(round.name)
       if (group) setGroupName(group.name)

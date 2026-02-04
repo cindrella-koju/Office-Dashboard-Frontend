@@ -1,6 +1,7 @@
 import type { Dispatch, SetStateAction } from "react";
 import type { ModelType } from "./main.type";
-import type { Permission } from "../utils/permissions";
+import type { Permission } from "../hooks/userPermission";
+
 
 export interface Round {
     id: string;

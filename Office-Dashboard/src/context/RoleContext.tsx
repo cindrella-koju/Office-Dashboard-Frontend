@@ -1,4 +1,3 @@
 import { createContext } from "react";
 
-const RoleContext = createContext("member")
-export default RoleContext
+export const RoleContext = createContext<any>(null);

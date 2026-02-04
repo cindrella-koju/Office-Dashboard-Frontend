@@ -1,7 +1,8 @@
 import type React from "react";
 import Card from "./Card";
 import { useContext } from "react";
-import RoleContext from "../../context/rolecontext";
+import{ RoleContext} from "../../context/RoleContext";
+
 
 interface EmptyMessageProps{
     message : string,
@@ -10,6 +11,7 @@ interface EmptyMessageProps{
 }
 export default function EmptyMessage({message, submessage,icon}:EmptyMessageProps){
     const role =  useContext(RoleContext);
+    const rolename = role?.rolename;
 
     return(
         <Card className="text-center py-12">
@@ -23,7 +25,7 @@ export default function EmptyMessage({message, submessage,icon}:EmptyMessageProp
             <h3 className="text-lg font-semibold text-gray-700 mb-2">
                 {message}
             </h3>
-            {(role === 'admin' || role === 'superadmin') && (
+            {(rolename === 'admin' || rolename === 'superadmin') && (
                 <p className="text-gray-500">
                     {submessage}
                 </p>

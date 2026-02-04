@@ -1,6 +1,6 @@
 import { type Dispatch, type SetStateAction } from "react";
-import type { Permission } from "../../../utils/permissions";
 import type { PlayerInfoType } from "../../../type/tiesheet.type";
+import type { Permission } from "../../../hooks/userPermission";
 
 interface MatchHeaderProps {
   groupName?: string | null;

@@ -1,22 +1,10 @@
-import { FaHome, FaTrophy, FaCalendarDay, FaPlay, FaChartBar, FaCampground } from "react-icons/fa";
+import { FaTrophy, FaCalendarDay, FaChartBar, FaCampground } from "react-icons/fa";
 import { CgProfile } from "react-icons/cg";
 import { MdGroups, MdLeaderboard, MdOutlineSportsScore } from "react-icons/md";
-import Sidebar from "./layout/SideBar";
+import Sidebar from "./layout/Sidebar";
+import { useContext } from "react";
+import { RoleContext } from "../context/RoleContext";
 
-
-const eventNavItems = [
-  { icon: <MdGroups />, label: "Groups", to: "/event/groups" },
-  { icon: <FaCampground />, label: "Rounds", to: "/event/rounds" },
-  { icon: <FaTrophy />, label: "Tiesheet", to: "/event/tiesheet" },
-  { icon: <MdLeaderboard />, label: "Qualifier", to: "/event/qualifier" },
-  { icon: <CgProfile />, label: "Participants", to: "/event/participants" },
-  { icon: <FaChartBar />, label: "Configure Column", to: "/event/standing-column" },
-  { icon: <MdOutlineSportsScore />, label: "Group Stage Standing", to: "/event/overall-points" },
-  { icon: <FaCalendarDay />, label: "Todays Game", to: "/event/todays-game" },
-  // { icon: <FaTrophy />, label: "Event", to: "/event" },
-  // { icon: <FaPlay />, label: "Ongoing Game", to: "/event/ongoing-game" },
-  // { icon: <FaHome />, label: "Score Board", to: "/event/score-board" },
-];
 
 const logoConfig = {
   alt: "Teslatech Logo",
@@ -24,5 +12,34 @@ const logoConfig = {
 };
 
 export default function EventNavBar() {
+  const role = useContext(RoleContext)
+  const pageaccess = role?.roleaccesspage
+
+  const eventNavItems = []
+
+  if(pageaccess?.group_page){
+    eventNavItems.push({ icon: <MdGroups />, label: "Groups", to: "/event/groups" })
+  }
+  if(pageaccess?.round_config_page){
+    eventNavItems.push({ icon: <FaCampground />, label: "Rounds", to: "/event/rounds" })
+  }
+  if(pageaccess?.tiesheet_page){
+    eventNavItems.push({ icon: <FaTrophy />, label: "Tiesheet", to: "/event/tiesheet" })
+  }
+  if(pageaccess?.qualifier_page){
+    eventNavItems.push({ icon: <MdLeaderboard />, label: "Qualifier", to: "/event/qualifier" })
+  }
+  if(pageaccess?.participants_page){
+    eventNavItems.push({ icon: <CgProfile />, label: "Participants", to: "/event/participants" })
+  }
+  if(pageaccess?.column_config_page){
+    eventNavItems.push({ icon: <FaChartBar />, label: "Configure Column", to: "/event/standing-column" })
+  }
+  if(pageaccess?.group_stage_standing_page){
+    eventNavItems.push({ icon: <MdOutlineSportsScore />, label: "Group Stage Standing", to: "/event/overall-points" })
+  }
+  if(pageaccess?.todays_game_page){
+    eventNavItems.push({ icon: <FaCalendarDay />, label: "Todays Game", to: "/event/todays-game" })
+  }
   return <Sidebar items={eventNavItems} logo={logoConfig} />;
 }

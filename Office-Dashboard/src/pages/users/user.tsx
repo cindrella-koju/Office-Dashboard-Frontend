@@ -26,7 +26,7 @@ import EmptyMessage from "../../components/ui/EmptyMessage";
 import Filters from "../../components/Filters";
 
 export default function UserPage() {
-  const permissions = usePermissions("user");
+  const permissions = usePermissions();
   const { data: retrieve_users, loading, error, refetch } =
     useFetch<UserDetail[]>(RETRIEVE_USERS);
 

@@ -7,7 +7,7 @@ import type { LeaderType } from "./scoreboard.type";
 import { IncDcrButton } from "./scoreboard.services";
 
 export default function ScoreBoard() {
-    const permissions = usePermissions('scoreboard')
+    const permissions = usePermissions()
     const [timer,setTimer] = useState<boolean>(true)
     const [isRunning, setIsRunning] = useState<boolean>(false)
     const [firstUserScore, setFirstUserScore] = useState<number>(20);

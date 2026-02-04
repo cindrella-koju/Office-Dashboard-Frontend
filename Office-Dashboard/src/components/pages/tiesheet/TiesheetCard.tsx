@@ -2,9 +2,9 @@ import MatchHeader from "./MatchHeader";
 import MatchDate from "./MatchDate";
 import OneVsOneMatch from "./OneVsOneMatch";
 import MultiPlayerMatch from "./MultiPlayerMatch";
-import type { Permission } from "../../../utils/permissions";
 import type { PlayerInfoType } from "../../../type/tiesheet.type";
 import type { Dispatch, SetStateAction } from "react";
+import type { Permission } from "../../../hooks/userPermission";
 
 
 interface TiesheetCardProps {

@@ -30,7 +30,7 @@ export default function EventPage() {
   const { data: retrieve_events, loading, error, refetch } =
     useFetch<EventResponse[]>(RETRIEVE_EVENT);
 
-  const permissions = usePermissions("event");
+  const permissions = usePermissions();
 
   const [tablehead, setTablehead] = useState<string[]>([]);
   const [events, setEvents] = useState<EventResponse[]>([]);

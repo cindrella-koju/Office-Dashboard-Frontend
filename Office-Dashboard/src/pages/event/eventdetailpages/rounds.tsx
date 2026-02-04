@@ -25,7 +25,7 @@ interface RoundData{
 
 export default function Rounds(){
     const eventId = localStorage.getItem("eventId");
-    const permissions = usePermissions("rounds")
+    const permissions = usePermissions()
     const {data : retrieve_rounds, loading, error } = useFetch<RoundData[]>( eventId ? RETRIEVE_ROUNDS(eventId) : "") 
     const [rounds, setRounds] = useState<RoundData[]>()
     const [originalRounds, setOriginalRounds] = useState<RoundData | null>(null)
