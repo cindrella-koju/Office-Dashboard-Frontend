@@ -139,7 +139,7 @@ export default function EventPage() {
         <PageHeader
           title="📅 Events"
           actions={
-            permissions.canCreate && (
+            permissions.canCreate  && (
               <Button
                 varient="primary"
                 size="lg"

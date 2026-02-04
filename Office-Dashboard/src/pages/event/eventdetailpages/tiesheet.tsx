@@ -56,7 +56,7 @@ export default function Tiesheet(){
                 <PageHeader
                     title="Tiesheet"
                     actions = {
-                        permissions.canCreate && (
+                        permissions.canCreate && permissions.canManageEvents && (
                             <>
                             <Button onClick={() => setViewMode("create")}>Create Tiesheet</Button>
                             </>

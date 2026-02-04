@@ -59,7 +59,7 @@ export default function MatchHeader({
       
       <span className="text-xs text-gray-400">{matchTime}</span>
 
-      {(status === "scheduled" || status === "ongoing") && permissions.canEdit && tiesheetfrom === "tiesheet" && (
+      {(status === "scheduled" || status === "ongoing") && permissions.canEdit && permissions.canManageEvents && tiesheetfrom === "tiesheet" && (
         <button
           className="text-xs font-medium text-blue-600 hover:text-blue-800 hover:underline transition-colors"
           onClick={onEdit}
@@ -69,7 +69,7 @@ export default function MatchHeader({
       )}
 
       {status === "scheduled" &&
-        permissions.canEdit &&
+        permissions.canEdit && permissions.canManageEvents &&
         tiesheetfrom === "todaystiesheet" && (
           <button
             className="text-xs font-medium text-blue-600 hover:text-blue-800 hover:underline transition-colors"
@@ -79,7 +79,7 @@ export default function MatchHeader({
           </button>
         )}
         {
-          permissions.canDelete && (
+          permissions.canDelete && permissions.canManageEvents&& (
             <button
             className="text-xs font-medium text-red-600 hover:text-red-800 hover:underline transition-colors"
             onClick={handleStart}
