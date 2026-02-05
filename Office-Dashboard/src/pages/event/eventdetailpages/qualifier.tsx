@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import EventNavBar from "../../../components/EventNavbar";
-import { usePermissions } from "../../../hooks/userPermission";
+import { usePermissions, type EventPermission } from "../../../hooks/userPermission";
 import QualifierModule from "../../../components/Model/QualifierModel";
 import useFetch from "../../../hooks/useFetch";
 import { RETRIEVE_QUALIFIER_BY_EVENT } from "../../../constants/urls";
@@ -29,7 +29,7 @@ export default function Qualifier() {
     const eventID = localStorage.getItem("eventId");
     
     // Hooks
-    const permissions = usePermissions();
+    const permissions = usePermissions<EventPermission>({withinevent: true});
     const { data: qualifiers } = useFetch<QualifierResponse[]>(
         eventID ? RETRIEVE_QUALIFIER_BY_EVENT(eventID) : ""
     );

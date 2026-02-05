@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import NavBar from "../../components/Navbar";
-import { usePermissions } from "../../hooks/userPermission";
+import { usePermissions, type Permission } from "../../hooks/userPermission";
 import {
   PageContent,
   PageHeader,
@@ -26,7 +26,7 @@ import EmptyMessage from "../../components/ui/EmptyMessage";
 import Filters from "../../components/Filters";
 
 export default function UserPage() {
-  const permissions = usePermissions();
+  const permissions = usePermissions<Permission>({});
   const { data: retrieve_users, loading, error, refetch } =
     useFetch<UserDetail[]>(RETRIEVE_USERS);
 
@@ -152,7 +152,7 @@ export default function UserPage() {
           title="All Users"
           icon={<HiUsers className="text-indigo-500" />}
           actions={
-            permissions.canCreate && (
+            permissions.canCreateUsers && (
               <Button
                 varient="primary"
                 onClick={() => setUserMode("create")}
@@ -194,6 +194,7 @@ export default function UserPage() {
                 permissions={permissions}
                 setModelType={setUserMode}
                 setValue={setEachUserDetail}
+                tablefor="User"
               />
             ) : (
               <EmptyMessage

@@ -4,7 +4,7 @@ import OneVsOneMatch from "./OneVsOneMatch";
 import MultiPlayerMatch from "./MultiPlayerMatch";
 import type { PlayerInfoType } from "../../../type/tiesheet.type";
 import type { Dispatch, SetStateAction } from "react";
-import type { Permission } from "../../../hooks/userPermission";
+import type { EventPermission } from "../../../hooks/userPermission";
 
 
 interface TiesheetCardProps {
@@ -14,7 +14,7 @@ interface TiesheetCardProps {
   scheduledTime: string;
   players: PlayerInfoType[];
   onEdit?: (id: string) => void;
-  permissions : Permission,
+  permissions : EventPermission,
   tiesheetfrom : string,
   tiesheetId : string,
   refetchMatches: () => void;

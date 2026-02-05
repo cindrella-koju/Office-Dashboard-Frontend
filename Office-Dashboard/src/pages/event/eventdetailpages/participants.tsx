@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import EventNavBar from "../../../components/EventNavbar";
-import { usePermissions } from "../../../hooks/userPermission";
+import { usePermissions, type EventPermission } from "../../../hooks/userPermission";
 import ParticipantsModule from "../../../components/Model/ParticipantsModel";
 import useFetch from "../../../hooks/useFetch";
 import { RETRIEVE_PARTICIPANTS } from "../../../constants/urls";
@@ -34,7 +34,7 @@ export default function Participants() {
     const { data: participants } = useFetch<Participants>(
         eventID ? RETRIEVE_PARTICIPANTS(eventID) : ""
     );
-    const permissions = usePermissions();
+    const permissions = usePermissions<EventPermission>({withinevent : true});
 
     // Local state
     const [viewMode, setViewMode] = useState<ViewMode>("grid");

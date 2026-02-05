@@ -4,6 +4,9 @@ import { MdGroups, MdLeaderboard, MdOutlineSportsScore } from "react-icons/md";
 import Sidebar from "./layout/Sidebar";
 import { useContext } from "react";
 import { RoleContext } from "../context/RoleContext";
+import { useLocation } from "react-router-dom";
+import { EventRoleContext } from "../context/EventRoleContext";
+import { GLOBAL_ROLE } from "../constants/showpage";
 
 
 const logoConfig = {
@@ -12,7 +15,13 @@ const logoConfig = {
 };
 
 export default function EventNavBar() {
-  const role = useContext(RoleContext)
+  const location = useLocation();
+
+  // Decide which context to use based on the URL
+  const isEventRoute = location.pathname.startsWith("/event/");
+  const role = isEventRoute && !["admin", "superadmin"].includes(GLOBAL_ROLE)
+      ? useContext(EventRoleContext)
+      : useContext(RoleContext);
   const pageaccess = role?.roleaccesspage
 
   const eventNavItems = []

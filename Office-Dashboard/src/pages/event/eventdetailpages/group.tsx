@@ -5,7 +5,7 @@ import Button from "../../../components/ui/Button";
 import Card from "../../../components/ui/Card";
 import { RETRIEVE_GROUP_AND_MEMBERS, UPDATE_GROUP_TABLE } from "../../../constants/urls";
 import useFetch from "../../../hooks/useFetch";
-import { usePermissions } from "../../../hooks/userPermission";
+import { usePermissions, type EventPermission } from "../../../hooks/userPermission";
 import type { EachGroupDetail, GroupMember, Stage } from "../../../type/group.type";
 import CreateGroupModal from "../../../components/Model/GroupModel";
 import GroupTable from "../../../components/table/GroupTable";
@@ -16,7 +16,7 @@ import { MdGroups } from "react-icons/md";
 
 export default function Groups(){
     const eventId = localStorage.getItem("eventId")
-    const permissions = usePermissions();
+    const permissions = usePermissions<EventPermission>({withinevent :true});
     const { data: groupsData,refetch } = useFetch<Stage[]>(RETRIEVE_GROUP_AND_MEMBERS(eventId ? eventId : ""));
     const [editingUserId, setEditingUserId] = useState<{ groupId: string; userId: string } | null>(null);
     const [editedUserData, setEditedUserData] = useState<GroupMember | null>(null);

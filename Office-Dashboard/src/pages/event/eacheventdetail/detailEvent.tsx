@@ -12,7 +12,7 @@ import Table from "../../../components/table/Tables";
 
 
 export default function DetailEvent() {
-    const permissions = usePermissions()
+    const permissions = usePermissions({})
     const { data: rounds } = useFetch(RETRIEVE_ROUNDS)
     const { data: group_and_members } = useFetch(RETRIEVE_GROUP_AND_MEMBERS)
 

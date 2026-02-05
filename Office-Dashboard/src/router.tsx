@@ -105,7 +105,7 @@ export const router = createBrowserRouter([
   { 
     path: "/event/overall-points",
     element: (
-      <ProtectedRoute accessKey="column_config_page">
+      <ProtectedRoute accessKey="group_stage_standing_page">
         <OverallPoints />
       </ProtectedRoute>
     ),

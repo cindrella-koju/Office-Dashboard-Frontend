@@ -14,7 +14,6 @@ interface OneVsOneMatchProps {
 export default function OneVsOneMatch({ player1, player2 }: OneVsOneMatchProps) {
   const p1Column = extractToShowColumn(player1.columns);
   const p2Column = extractToShowColumn(player2.columns);
-  console.log("P1:",p1Column, "P2:", p2Column)
 
   return (
     <div className="flex items-center justify-center gap-6 w-full">

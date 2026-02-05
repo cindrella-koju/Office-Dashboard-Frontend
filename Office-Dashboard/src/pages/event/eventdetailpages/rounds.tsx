@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import EventNavBar from "../../../components/EventNavbar";
-import { usePermissions } from "../../../hooks/userPermission";
+import { usePermissions, type EventPermission } from "../../../hooks/userPermission";
 
 import useFetch from "../../../hooks/useFetch";
 import { CREATE_ROUND, EDIT_ROUND, RETRIEVE_ROUNDS } from "../../../constants/urls";
@@ -25,7 +25,7 @@ interface RoundData{
 
 export default function Rounds(){
     const eventId = localStorage.getItem("eventId");
-    const permissions = usePermissions()
+    const permissions = usePermissions<EventPermission>({withinevent :  true})
     const {data : retrieve_rounds, loading, error } = useFetch<RoundData[]>( eventId ? RETRIEVE_ROUNDS(eventId) : "") 
     const [rounds, setRounds] = useState<RoundData[]>()
     const [originalRounds, setOriginalRounds] = useState<RoundData | null>(null)
@@ -133,6 +133,7 @@ export default function Rounds(){
                                 permissions={permissions}
                                 setModelType={setViewMode}
                                 setValue={setRoundVal}
+                                tablefor={"WithinEvent"}
                             />
                             )}
                         </div>

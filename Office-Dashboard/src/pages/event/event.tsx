@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import NavBar from "../../components/Navbar";
 import { type Event, type EventResponse, type EventStatus } from "./event.type";
-import { usePermissions } from "../../hooks/userPermission";
+import { usePermissions, type Permission } from "../../hooks/userPermission";
 import useFetch from "../../hooks/useFetch";
 import {
   CREATE_EVENT,
@@ -30,7 +30,7 @@ export default function EventPage() {
   const { data: retrieve_events, loading, error, refetch } =
     useFetch<EventResponse[]>(RETRIEVE_EVENT);
 
-  const permissions = usePermissions();
+  const permissions = usePermissions<Permission>({});
 
   const [tablehead, setTablehead] = useState<string[]>([]);
   const [events, setEvents] = useState<EventResponse[]>([]);
@@ -139,7 +139,7 @@ export default function EventPage() {
         <PageHeader
           title="📅 Events"
           actions={
-            permissions.canCreate  && (
+            permissions.canCreateEvents  && (
               <Button
                 varient="primary"
                 size="lg"
@@ -180,6 +180,7 @@ export default function EventPage() {
               </div>
             ) : events.length > 0 ? (
               <Table
+                tablefor="Event"
                 tablehead={tablehead}
                 tabledata={events}
                 permissions={permissions}

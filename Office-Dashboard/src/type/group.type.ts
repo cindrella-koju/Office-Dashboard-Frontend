@@ -1,6 +1,6 @@
 import type { Dispatch, SetStateAction } from "react";
 import type { ModelType } from "./main.type";
-import type { Permission } from "../hooks/userPermission";
+import type { EventPermission } from "../hooks/userPermission";
 
 
 export interface Round {
@@ -50,7 +50,7 @@ interface EditedUserIdProps{
 }
 export interface GroupTableProps{
     groupData : Stage[],
-    permissions : Permission,
+    permissions : EventPermission,
     editingUserId : EditedUserIdProps | null,
     editedUserData : GroupMember | null,
     handleUserCellChange : (columnField: string, value: string) => void,

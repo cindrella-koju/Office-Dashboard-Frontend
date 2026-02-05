@@ -49,15 +49,9 @@ export default function OverallPointTable({ users }: OverAllPointsTableProps) {
     <Table
       tablehead={tablehead}
       tabledata={tabledata}
-      permissions={{
-        canView: false,
-        canEdit: false,
-        canDelete: false,
-        canEditByOwn : false,
-        canCreate : false
-      }}
       setModelType={() => {}}
       setValue={() => {}}
+      tablefor={null}
     />
   );
 }

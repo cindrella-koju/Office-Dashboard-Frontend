@@ -15,7 +15,8 @@ import AddMatchModal from "../../../components/Model/AddMatchModel";
 export default function TodayGame(){
 
   const eventId = localStorage.getItem("eventId");
-  const permissions = usePermissions()
+  const permissions = usePermissions({withinevent : true})
+  console.log("Tiesheet Permissions:", permissions)
   const [showMatchDetail, setShowMatchDetail] = useState<boolean>(false)
   const [showAddDetail, setShowAddDetail] = useState<boolean>(false)
   const [tiesheetId, setTiesheetId ] = useState<string | null>(null)

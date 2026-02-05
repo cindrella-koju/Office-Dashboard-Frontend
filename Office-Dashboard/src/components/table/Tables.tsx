@@ -2,7 +2,7 @@ import type { Dispatch, SetStateAction } from "react";
 import { useNavigate } from "react-router-dom";
 
 import Button from "../ui/Button";
-import type { Permission } from "../../hooks/userPermission";
+import type { EventPermission, Permission } from "../../hooks/userPermission";
 
 type UserRole = "admin" | "member" | "superadmin";
 type Status = "active" | "draft" | "completed";
@@ -11,10 +11,11 @@ type ModelType = "create" | "edit" | null;
 interface TableProps {
   tablehead: string[];
   tabledata: Record<string, any>[];
-  permissions: Permission;
+  permissions?: Permission | EventPermission;
   showView?: boolean;
   setModelType: Dispatch<SetStateAction<ModelType>>;
   setValue: Dispatch<SetStateAction<any>>;
+  tablefor : "Event" | "Role" | "User" | null | "WithinEvent"
 }
 
 const roleStyles: Record<UserRole, string> = {
@@ -51,11 +52,35 @@ export default function Table({
   showView = false,
   setModelType,
   setValue,
+  tablefor
 }: TableProps) {
   const navigate = useNavigate();
+  
+  const permissionMap = {
+    Event: {
+      edit: permissions && 'canEditEvents' in permissions ? permissions.canEditEvents : false,
+      delete: permissions && 'canDeleteEvents' in permissions ? permissions.canDeleteEvents : false,
+    },
+    Role: {
+      edit: permissions && 'canEditRoles' in permissions ? permissions.canEditRoles : false,
+      delete: permissions &&  'canDeleteRoles' in permissions ? permissions.canDeleteRoles : false,
+    },
+    User: {
+      edit: permissions && 'canEditUsers' in permissions ? permissions.canEditUsers : false,
+      delete: permissions && 'canDeleteUsers' in permissions ? permissions.canDeleteUsers : false,
+    },
+    WithinEvent: {
+      edit: permissions && 'canEdit' in permissions ? permissions.canEdit : false,
+      delete: permissions && 'canDelete' in permissions ? permissions.canDelete : false
+    }
+  };
 
-  const showActions =
-    permissions.canEdit || permissions.canDelete;
+
+  const editpermission = () => tablefor && permissionMap[tablefor].edit;
+  const deletepermission = () => tablefor && permissionMap[tablefor].delete;
+
+  const showActions = editpermission() || deletepermission();
+
 
   // 🔑 single source of truth
   const hasActionColumn = showActions || showView;
@@ -107,7 +132,7 @@ export default function Table({
                 {hasActionColumn && (
                   <td className="px-6 py-4">
                     <div className="flex justify-end gap-2">
-                      {showView && permissions.canView && (
+                      {showView  && (
                         <Button
                           varient="success"
                           size="sm"
@@ -117,7 +142,7 @@ export default function Table({
                         </Button>
                       )}
 
-                      {permissions.canEdit && (
+                      { editpermission() && (
                         <Button
                           varient="primary"
                           size="sm"
@@ -130,7 +155,7 @@ export default function Table({
                         </Button>
                       )}
 
-                      {permissions.canDelete && (
+                      {deletepermission() && (
                         <Button varient="danger" size="sm">
                           Delete
                         </Button>
@@ -174,7 +199,7 @@ export default function Table({
 
             {hasActionColumn && (
               <div className="flex gap-2 pt-2">
-                {showView && permissions.canView && (
+                {showView && (
                   <Button
                     varient="success"
                     size="sm"
@@ -185,7 +210,7 @@ export default function Table({
                   </Button>
                 )}
 
-                {permissions.canEdit && (
+                {editpermission()&& (
                   <Button
                     varient="primary"
                     size="sm"
@@ -199,7 +224,7 @@ export default function Table({
                   </Button>
                 )}
 
-                {permissions.canDelete && (
+                { deletepermission() && (
                   <Button
                     varient="danger"
                     size="sm"

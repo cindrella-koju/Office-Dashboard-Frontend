@@ -18,7 +18,7 @@ import Table from "../../../components/table/Tables";
 
 export default function StandingColumn() {
   const eventId = localStorage.getItem("eventId");
-  const permissions = usePermissions();
+  const permissions = usePermissions({});
   const [viewMode, setViewMode] = useState<"create" | "edit" | null>(null);
   
 

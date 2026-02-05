@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { usePermissions } from "../../../hooks/userPermission";
+import { usePermissions, type EventPermission } from "../../../hooks/userPermission";
 import EventNavBar from "../../../components/EventNavbar";
 import TiesheetModel from "../../../components/Model/TiesheetModel";
 import TiesheetCard from "../../../components/pages/tiesheet/TiesheetCard";
@@ -15,9 +15,9 @@ import PopUp from "../../../components/ui/PopUp";
 
 
 export default function Tiesheet(){
-
   const eventId = localStorage.getItem("eventId");
-  const permissions = usePermissions()
+  const permissions = usePermissions<EventPermission>({withinevent : true})
+//   console.log("Permissions :", permissions)
   const [showMatchDetail, setShowMatchDetail] = useState<boolean>(false)
   const [showDelete, setShowDelete] = useState<boolean>(false)
   const [tiesheetId, settiesheetId ] = useState<string | null>(null)
@@ -56,7 +56,7 @@ export default function Tiesheet(){
                 <PageHeader
                     title="Tiesheet"
                     actions = {
-                        permissions.canCreate && permissions.canManageEvents && (
+                        permissions.canCreate && (
                             <>
                             <Button onClick={() => setViewMode("create")}>Create Tiesheet</Button>
                             </>
