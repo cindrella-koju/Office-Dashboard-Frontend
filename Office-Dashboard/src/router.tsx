@@ -17,6 +17,7 @@ import Tiesheet from "./pages/event/eventdetailpages/tiesheet";
 import OverallPoints from "./pages/event/eventdetailpages/overallpoints";
 import TodayGame from "./pages/event/eventdetailpages/todaygame";
 import ProtectedRoute from "./routes/ProtectedRoute";
+import RolePage from "./pages/RolePage";
 
 export const router = createBrowserRouter([
   { path: "/login", element: <LoginPage /> },
@@ -131,6 +132,14 @@ export const router = createBrowserRouter([
     element: (
       <ProtectedRoute accessKey="user_page">
         <UserPage />
+      </ProtectedRoute>
+    ),
+  },
+  { 
+    path: "/role",
+    element: (
+      <ProtectedRoute accessKey="role_page">
+        <RolePage />
       </ProtectedRoute>
     ),
   },

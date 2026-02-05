@@ -1,4 +1,5 @@
 import { FaHome, FaTrophy, FaUsers, FaSignOutAlt } from "react-icons/fa";
+import { GiHumanPyramid } from "react-icons/gi";
 import { CgProfile } from "react-icons/cg";
 import Sidebar from "./layout/Sidebar";
 import { useContext } from "react";
@@ -29,6 +30,9 @@ export default function NavBar() {
   }
   if(pageaccess?.profile_page){
     navItems.push({ icon: <CgProfile />, label: "Profile", to: "/profile" })
+  }
+  if(pageaccess?.role_page){
+    navItems.push({ icon: <GiHumanPyramid />, label: "Role", to: "/role" })
   }
   navItems.push(
     { icon: <FaSignOutAlt />, label: "Logout", to: "/logout", danger: true }
