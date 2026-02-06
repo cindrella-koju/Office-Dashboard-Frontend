@@ -18,10 +18,12 @@ import OverallPoints from "./pages/event/eventdetailpages/overallpoints";
 import TodayGame from "./pages/event/eventdetailpages/todaygame";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import RolePage from "./pages/RolePage";
+import SignupPage from "./pages/SignUpPage";
 
 export const router = createBrowserRouter([
   { path: "/login", element: <LoginPage /> },
   { path: "/navbar", element: <NavBar /> },
+  { path: "/signup", element: <SignupPage /> },
 
   { 
     path: "/home",

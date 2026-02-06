@@ -1,40 +1,64 @@
 import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
-import { useState } from 'react';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 export default function LoginPage() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [formData, setFormData] = useState({
+    username : "",
+    password : "",
+  })
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState('');
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
+  const handleSubmit = (e:React.FormEvent) => {
+    e.preventDefault()
+
+    if (!formData.username || !formData.password){
+      setError("All fields are required")
+    }
+    console.log("Login detail:", formData)
+  }
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#1a083f] px-4">
-      <div className="w-80 md:w-2/3 min-h-[70vh] bg-white rounded-2xl shadow-xl flex overflow-hidden">
+<div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#1a083f] via-violet-900 to-purple-800 px-4">
+    <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl p-8 md:p-10">
+      <h1 className="text-3xl md:text-4xl font-bold text-center mb-3 bg-gradient-to-r from-violet-800 to-purple-600 bg-clip-text text-transparent tracking-tight">
+        Office Dashboard
+      </h1>
+      <p className="text-center text-gray-500 text-base font-medium mb-10 tracking-wide">
+        Welcome back! Please login to continue
+      </p>
 
-        <div className="w-full md:w-1/2 flex flex-col justify-center px-6 md:px-12">
-          <h1 className="text-4xl md:text-3xl font-mono font-bold text-center mb-10">
-            Office Dashboard
-          </h1>
-
-          <form className="space-y-6">
+    {error && (
+        <div className="mb-5 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 rounded-lg text-sm font-medium">
+          {error}
+        </div>
+      )}
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="block text-xs md:text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-semibold text-gray-700 mb-2 tracking-wide">
                 Username
               </label>
               <input
                 type="text"
                 placeholder="Enter your username"
-                onChange={(e) => setUsername(e.target.value)}
-                className="w-full text-xs md:text-sm px-4 md:px-2 py-2 border rounded-lg 
-                           focus:outline-none focus:ring-2 focus:ring-violet-600"
+                onChange={(e) => {
+                  setFormData({
+                    ...formData,
+                    username : e.target.value
+                  })
+                }}
+                className="w-full text-base px-4 py-3 border-2 border-gray-200 rounded-xl 
+                           focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent
+                           transition-all duration-200 placeholder:text-gray-400"
               />
             </div>
 
             <div>
-              <label className="block text-xs md:text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-semibold text-gray-700 mb-2 tracking-wide">
                 Password
               </label>
 
@@ -42,9 +66,15 @@ export default function LoginPage() {
                 <input
                   type={showPassword ? 'text' : 'password'}
                   placeholder="Enter your password"
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full text-xs md:text-sm px-4 md:px-2 py-2 pr-10 border rounded-lg 
-                             focus:outline-none focus:ring-2 focus:ring-violet-600"
+                  onChange={(e) => {
+                  setFormData({
+                    ...formData,
+                    password : e.target.value
+                  })
+                }}
+                  className="w-full text-base px-4 py-3 pr-12 border-2 border-gray-200 rounded-xl 
+                             focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent
+                             transition-all duration-200 placeholder:text-gray-400"
                 />
 
                 <span
@@ -58,15 +88,21 @@ export default function LoginPage() {
             </div>
             <button
               type="submit"
-              className="w-full bg-violet-800 text-white py-2 rounded-lg 
-                         hover:bg-violet-900 transition"
+              className="w-full bg-gradient-to-r from-violet-800 to-purple-700 text-white py-3.5 rounded-xl 
+                         hover:from-violet-900 hover:to-purple-800 transition-all duration-200 
+                         disabled:opacity-50 disabled:cursor-not-allowed font-semibold text-base
+                         shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
             >
               Login
             </button>
-          </form>
-        </div>
 
-        <div className="hidden md:block md:w-1/2 bg-gradient-to-r from-[#1A083F] to-violet-800" />
+            <p className="text-center text-base text-gray-600 mt-6 font-medium">
+              Don't have an account?{' '}
+              <Link to="/signup" className="text-violet-700 hover:text-violet-900 font-bold underline decoration-2 underline-offset-2">
+                Sign up here
+              </Link>
+            </p>
+          </form>
         </div>
     </div>
   );

@@ -1,5 +1,9 @@
 const BASE_URL = "http://127.0.0.1:8000"
 
+export const SIGNUP = `${BASE_URL}/user/signup`
+export const LOGIN = `${BASE_URL}/login`
+
+
 export const CREATE_EVENT = `${BASE_URL}/event`
 export const UPDATE_EVENT = (eventId: string) => `${BASE_URL}/event?event_id=${eventId}`
 export const RETRIEVE_EVENT = `${BASE_URL}/event`
