@@ -65,3 +65,5 @@ export const RETRIEVE_ROLE_DETAIL = (roleId : string) => `${BASE_URL}/role?role_
 // export const RETRIEVE_PERMISSION_WITHIN_EVENT = (roleId : string) => `${BASE_URL}/role?role_id=${roleId}`
 export const RETRIEVE_PERMISSION_WITHIN_EVENT = (userId: string, eventId:string) => `${BASE_URL}/role/user/${userId}/event/${eventId}`
 export const RETRIEVE_DETAIL_FOR_ROLE_MANAGEMENT = (detailPage : string) => `${BASE_URL}/role/detail?permission_detail=${detailPage}`
+export const EDIT_DETAIL_FOR_ROLE_MANAGEMENT = (roleId:string) => `${BASE_URL}/role/${roleId}`
+export const CREATE_ROLE_WITH_PERMISSION = `${BASE_URL}/role`

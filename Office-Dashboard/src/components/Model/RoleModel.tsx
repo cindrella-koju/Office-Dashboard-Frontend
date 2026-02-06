@@ -2,6 +2,7 @@ import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
 import ModalWrapper from "../pages/shared/ModelWrapper";
 import type { ModelType } from "../../type/main.type";
 import { RoleFields } from "../../constants/fields";
+import { CREATE_ROLE_WITH_PERMISSION, EDIT_DETAIL_FOR_ROLE_MANAGEMENT } from "../../constants/urls";
 
 
 interface RoleModelProps<T> {
@@ -102,10 +103,58 @@ export default function RoleModel<T>({ modeltype, setModelType, todisplay, eachd
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Submitting role:", permissionDetail);
-    // Call your API or parent function here
+  const handleSubmit = async(e: React.FormEvent) => {
+      e.preventDefault();
+    const edit_role_id = eachdetail.id;
+    try{
+        const url = modeltype === "create" ? CREATE_ROLE_WITH_PERMISSION : EDIT_DETAIL_FOR_ROLE_MANAGEMENT(edit_role_id)
+        const response = await fetch(url,{
+            method : modeltype === "create" ? "POST" : "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(permissionDetail)
+        })  
+        if (response.ok) {
+            alert(`Role ${modeltype === "create" ? "created": "updated"} successfully`)
+            window.location.reload()
+        } else {
+            alert(`Failed to ${modeltype === "create" ? "created": "updated"} role`)
+        }
+
+        setModelType(null)
+        setPermissionDetail({
+            rolename: "",
+            can_edit: false,
+            can_create: false,
+            can_delete: false,
+            can_edit_events: false,
+            can_create_events: false,
+            can_delete_events: false,
+            can_edit_users: false,
+            can_create_users: false,
+            can_delete_users: false,
+            can_edit_roles: false,
+            can_create_roles: false,
+            can_delete_roles: false,
+            roleaccessdetail: {
+            home_page: false,
+            event_page: false,
+            user_page: false,
+            profile_page: false,
+            role_page: false,
+            tiesheet_page: false,
+            group_page: false,
+            round_config_page: false,
+            qualifier_page: false,
+            participants_page: false,
+            column_config_page: false,
+            group_stage_standing_page: false,
+            todays_game_page: false,
+            },
+        })
+    }catch (error) {
+      console.error(error)
+      alert("Something went wrong")
+    }
   };
 
   return (
