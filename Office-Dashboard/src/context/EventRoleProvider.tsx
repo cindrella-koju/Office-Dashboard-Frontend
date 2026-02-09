@@ -1,11 +1,16 @@
-import { RETRIEVE_PERMISSION_WITHIN_EVENT } from "../constants/urls"
+import { RETRIEVE_PERMISSION_WITHIN_EVENT, RETRIEVE_PERMISSION_WITHIN_EVENT_BY_USER_ID } from "../constants/urls"
 import useFetch from "../hooks/useFetch"
 import { EventRoleContext } from "./EventRoleContext"
 
-const eventId = "9416e4bc-c260-45c4-a5ed-d453b58c1bf6"
-const userId = "ae347041-c28c-43ea-aee2-16b7ebecc7b0"
 export const EventRoleProvider = ({children} : { children: React.ReactNode }) => {
-    const {data : eventRoleDetail, loading, error } = useFetch(RETRIEVE_PERMISSION_WITHIN_EVENT(userId, eventId)) 
+    const userId = localStorage.getItem("user_id")
+    const eventId = localStorage.getItem("eventId")
+
+    console.log("EventRole Provider Working:")
+
+
+    const url = userId ? (eventId ? RETRIEVE_PERMISSION_WITHIN_EVENT(userId, eventId) : RETRIEVE_PERMISSION_WITHIN_EVENT_BY_USER_ID(userId)) : ""
+    const {data : eventRoleDetail, loading, error } = useFetch(url) 
     if (loading) return null;
     if (error) return null;
 

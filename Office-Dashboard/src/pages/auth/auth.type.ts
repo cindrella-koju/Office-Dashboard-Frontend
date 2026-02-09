@@ -1,9 +1,12 @@
-export type Role = "admin" | "superadmin" | "member"
+export type Role = "admin" | "user" | "manager" | string;
 
-export interface AuthContextType{
-    token :  string;
-    role : Role;
-    isAuthenticated : boolean;
-    login : (token:string, role : Role) => void;
-    logout : () => void;
+export interface AuthContextType {
+  userId: string | null;
+  roleId: string | null;
+  role: Role | null;
+  accessToken: string | null;
+  isAuthenticated: boolean;
+  isAuthorized: (allowedRoles?: Role[]) => boolean;
+  login: (access_token: string, refresh_token: string) => void;
+  logout: () => void;
 }

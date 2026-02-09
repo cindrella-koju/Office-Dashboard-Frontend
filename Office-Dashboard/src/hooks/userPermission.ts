@@ -17,7 +17,6 @@ export interface Permission {
   canCreateEvents : boolean; 
   canDeleteEvents : boolean; 
   canManageEvents : boolean;  
-
 }
 
 export interface EventPermission{
@@ -33,13 +32,10 @@ interface PermissionProps{
 export function usePermissions<T = Permission | EventPermission>({
   withinevent = false,
 }: PermissionProps): T {
-  const roleContext = useContext(RoleContext);
-  const eventRoleContext = useContext(EventRoleContext);
-
   const role =
     withinevent && !["admin", "superadmin"].includes(GLOBAL_ROLE)
-      ? eventRoleContext
-      : roleContext;
+      ? useContext(EventRoleContext)
+      : useContext(RoleContext);
 
   const permissions = withinevent
     ? {

@@ -67,7 +67,7 @@ export const RoleFields = [
       "User",
       "Profile",
       "Role",
-      "Timesheet",
+      "Tiesheet",
       "Group",
       "Round Config",
       "Qualifier",
