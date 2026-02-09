@@ -12,26 +12,28 @@ import Card from "../../components/ui/Card";
 import useFetch from "../../hooks/useFetch";
 import {
   CREATE_USER,
+  RETRIEVE_ROLE_ID_NAME_NOT_IN_EVENT,
   RETRIEVE_USERS,
-  RETRIEVE_USERS_BY_Role,
+  RETRIEVE_USERS_BY_ROLE,
   UPDATE_USER,
 } from "../../constants/urls";
 import extractHeaders from "../../utils/extractHeader";
 import CreateModel from "../../components/Model/CreateModel";
 import useCreateResource from "../../hooks/useSubmit";
-import { userField } from "../../constants/fields";
-import type { AddUser, RoleType, UserDetail } from "../../type/user.type";
+import type { AddUser,UserDetail } from "../../type/user.type";
 import Table from "../../components/table/Tables";
 import EmptyMessage from "../../components/ui/EmptyMessage";
 import Filters from "../../components/Filters";
+import type { Round } from "../../type/group.type";
+
 
 export default function UserPage() {
   const permissions = usePermissions<Permission>({});
   const { data: retrieve_users, loading, error, refetch } =
     useFetch<UserDetail[]>(RETRIEVE_USERS);
 
-  const filters = ["All", "Admin", "SuperAdmin", "Member"];
-  const [filter, setFilter] = useState<"All" | RoleType>("All");
+  const {data : rounds_id_detail}  = useFetch<Round[]>( RETRIEVE_ROLE_ID_NAME_NOT_IN_EVENT)
+  const [selectedRole, setSelectedRole ] = useState<Round | null>(null)
   const [users, setUsers] = useState<UserDetail[]>([]);
   const [tablehead, setTablehead] = useState<string[]>([]);
   const [userMode, setUserMode] = useState<"create" | "edit" | null>(null);
@@ -41,24 +43,24 @@ export default function UserPage() {
   const [originalUser, setOriginalUser] =
     useState<UserDetail | null>(null);
 
+    
   const [userDetail, setUserDetail] = useState({
     id: "",
     username: "",
     fullname: "",
     email: "",
-    role: "member",
+    role_id : "",
     password: "",
   });
 
   const [submitUser, setSubmitUser] =
     useState<"create" | "edit" | null>(null);
 
-  const filterOptions = [
-    { id: "all", name: "All" },
-    { id: "member", name: "Member" },
-    { id: "admin", name: "Admin" },
-    { id: "superadmin", name: "Superadmin" },
-  ];
+  useEffect(() => {
+    if(rounds_id_detail && rounds_id_detail.length > 0){
+      setSelectedRole(rounds_id_detail[0])
+    }
+  },[rounds_id_detail])
 
   // fetch user
   useEffect(() => {
@@ -76,11 +78,11 @@ export default function UserPage() {
     setOriginalUser(eachUserDetail);
 
     setUserDetail({
-      id: eachUserDetail.id,
+      id: eachUserDetail.user_id,
       username: eachUserDetail.username,
       fullname: eachUserDetail.fullname,
       email: eachUserDetail.email,
-      role: eachUserDetail.role,
+      role_id: eachUserDetail.role_id,
       password: "",
     });
   }, [eachUserDetail]);
@@ -135,7 +137,7 @@ export default function UserPage() {
         username: "",
         fullname: "",
         email: "",
-        role: "member",
+        role_id: "",
         password: "",
       });
       setUserMode(null);
@@ -163,20 +165,21 @@ export default function UserPage() {
           }
         />
 
-        <Card className="mb-6 sm:mb-8 p-4 sm:p-6">
+        {
+          selectedRole && rounds_id_detail &&
+          <Card className="mb-6 sm:mb-8 p-4 sm:p-6">
           <div className="p-4 sm:p-6">
             <Filters<UserDetail[]>
-              defaultVal={filterOptions[0]}
-              filters={filterOptions}
-              urlFunction={RETRIEVE_USERS_BY_Role}
+              defaultVal={selectedRole}
+              filters={rounds_id_detail}
+              urlFunction={RETRIEVE_USERS_BY_ROLE}
               label="Select Status"
               setSelectVal={setUsers}
-              onSelectFilter={(f:any) =>
-                setFilter(f.id as "All" | RoleType)
-              }
+              onSelectFilter={setSelectedRole}
+              allUrl={RETRIEVE_USERS}
             />
           </div>
-        </Card>
+        </Card>}
         <Card className="p-4 sm:p-6">
           <div className="max-h-[500px] lg:max-h-[800px] overflow-y-auto">
             {loading ? (
@@ -213,7 +216,6 @@ export default function UserPage() {
             formData={userDetail}
             setFormData={setUserDetail}
             setSubmit={setSubmitUser}
-            fields={userField}
           />
         )}
       </PageContent>

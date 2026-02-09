@@ -1,6 +1,11 @@
 import type { Dispatch, SetStateAction } from "react";
 import Button from "../ui/Button";
 import type { ModelType } from "../../type/main.type";
+import useFetch from "../../hooks/useFetch";
+import { RETRIEVE_ROLE_ID_NAME } from "../../constants/urls";
+import InputField from "../signup/InputField";
+import SelectField from "../pages/shared/SelectField";
+import type { Round } from "../../type/group.type";
 
 
 
@@ -14,13 +19,6 @@ interface CreateModelProps<T extends Record<string, any>> {
 
   setSubmit: Dispatch<SetStateAction<"create" | "edit" | null>>;
 
-  fields: {
-    label: string;
-    name: keyof T;
-    type: string;
-    required?: boolean;
-    options?: string[];
-  }[];
 }
 
 export default function CreateModel<T extends Record<string, any>>({
@@ -29,40 +27,21 @@ export default function CreateModel<T extends Record<string, any>>({
   title,
   formData,
   setFormData,
-  fields,
   setSubmit
 }: CreateModelProps<T>) {
 
-  const resetFormData = () => {
-    setFormData(
-      fields.reduce((acc, field) => {
-        if (field.type === "select" && field.options?.length) {
-          (acc as any)[field.name] = field.options[0]; 
-        } else {
-          (acc as any)[field.name] = "";
-        }
-        return acc;
-      }, {} as T)
-    );
-  };
-
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
+  const {data : roles} = useFetch<Round[]>(RETRIEVE_ROLE_ID_NAME)
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setFormData((prev) => ({ ...prev, [name]: value }));
+        // setError("");
+    };
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     modelType === "create" ? setSubmit("create") : setSubmit("edit");
   };
 
-  return (
+  return roles && (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
       <div
         className="
@@ -80,7 +59,6 @@ export default function CreateModel<T extends Record<string, any>>({
           </h2>
           <button
             onClick={() => {
-              resetFormData();  // Reset form data when closing the modal
               setModelType(null);
             }}
             className="text-gray-500 hover:text-gray-700 text-2xl font-bold"
@@ -90,46 +68,46 @@ export default function CreateModel<T extends Record<string, any>>({
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="flex flex-col">
-          <div className="grid grid-cols-1 gap-4">
-            {fields.map((field, index) => {
-              if (modelType === "edit" && field.type === "password") return null;
+        <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
+            <InputField
+              label="Username"
+              type="text"
+              name="username"
+              placeholder="Enter a username"
+              value={formData.username}
+              onChange={handleChange}
+            />
 
-              return (
-                <div key={index}>
-                  <label className="block mb-1 text-sm font-semibold text-gray-700">
-                    {field.label}
-                    {field.required && <span className="text-red-500">*</span>}
-                  </label>
+            <InputField
+              label="Full Name"
+              type="text"
+              name="fullname"
+              placeholder="Enter your fullname"
+              value={formData.fullname}
+              onChange={handleChange}
+            />
 
-                  {field.type === "select" ? (
-                    <select
-                      name={String(field.name)}
-                      value={formData[field.name]}
-                      onChange={handleChange}
-                      required={field.required}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
-                    >
-                      {field.options?.map(option => (
-                        <option key={option} value={option.toLowerCase()}>
-                          {option}
-                        </option>
-                      ))}
-                    </select>
-                  ) : (
-                    <input
-                      type={field.type}
-                      name={String(field.name)}
-                      value={formData[field.name]}
-                      onChange={handleChange}
-                      required={field.required}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
-                    />
-                  )}
-                </div>
-              );
-            })}
-          </div>
+            <InputField
+                label="Email"
+                type="email"
+                name="email"
+                placeholder="Enter your email"
+                value={formData.email}
+                onChange={handleChange}
+            />
+
+            
+              <SelectField
+                label="Roles"
+                value={formData.role_id}
+                options={roles.map(r => ({
+                  value : r.id,
+                  label : r.name
+                }))}
+                name = "round_id"
+                onChange={(value) => setFormData(prev => ({ ...prev, role_id: value }))}
+                required
+              />
 
           {/* Footer Button */}
           <div className="flex justify-end mt-6">

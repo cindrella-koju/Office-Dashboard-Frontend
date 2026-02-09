@@ -7,34 +7,44 @@ export interface FilterOption {
 
 interface FilterProps<T> {
   urlFunction?: (id: string) => string;
+  allUrl?: string;
   twoIdUrlFunction?: (eventId: string, roundId: string) => string;
   filters: FilterOption[];
   label: string;
   defaultVal: FilterOption;
   setSelectVal: Dispatch<SetStateAction<T>>;
   onSelectFilter?: (filter: FilterOption) => void;
-  eventUrl?: () => string
 }
 
 export default function Filters<T>({
   defaultVal,
   urlFunction,
+  allUrl,
   twoIdUrlFunction,
   filters,
   label,
   setSelectVal,
   onSelectFilter,
 }: FilterProps<T>) {
-  const eventId = localStorage.getItem("eventID");
-  const [selectedFilter, setSelectedFilter] =
-    useState<FilterOption>(defaultVal);
+  const ALL_FILTER: FilterOption = { id: "all", name: "All" };
+
+  const initialFilter = allUrl ? ALL_FILTER : defaultVal;
+
+  const [selectedFilter, setSelectedFilter] = useState<FilterOption>(initialFilter);
+  const [eventId, setEventId] = useState<string | null>(null);
+
+  useEffect(() => {
+    setEventId(localStorage.getItem("eventID"));
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         let url: string | undefined;
 
-        if (urlFunction) {
+        if (selectedFilter.id === "all" && allUrl) {
+          url = allUrl;
+        } else if (urlFunction) {
           url = urlFunction(selectedFilter.id);
         } else if (twoIdUrlFunction && eventId) {
           url = twoIdUrlFunction(eventId, selectedFilter.id);
@@ -51,24 +61,20 @@ export default function Filters<T>({
     };
 
     fetchData();
-  }, [
-    selectedFilter,
-    urlFunction,
-    twoIdUrlFunction,
-    eventId,
-    setSelectVal,
-  ]);
+  }, [selectedFilter, urlFunction, allUrl, twoIdUrlFunction, eventId, setSelectVal]);
 
   const handleClick = (filter: FilterOption) => {
     setSelectedFilter(filter);
     onSelectFilter?.(filter);
   };
 
+  const filtersToRender = allUrl ? [ALL_FILTER, ...filters] : filters;
+
   return (
     <div className="space-y-4">
       <p className="font-bold text-xl sm:text-2xl text-gray-800">{label}</p>
       <div className="flex gap-3 sm:gap-4 flex-wrap">
-        {filters.map((filter) => (
+        {filtersToRender.map((filter) => (
           <button
             key={filter.id}
             onClick={() => handleClick(filter)}

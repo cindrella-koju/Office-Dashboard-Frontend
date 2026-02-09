@@ -2,7 +2,7 @@ export default function extractHeaders(response: any[]): string[] {
   if (!Array.isArray(response) || response.length === 0) {
     return [];
   }
-  const excludeKeys = ["id", "created_at", "updated_at","progress_note","stage_id"];
+  const excludeKeys = ["id", "created_at", "updated_at","progress_note","stage_id","user_id", "role_id"];
   const allKeys = Object.keys(response[0] as Record<string, any>);
   const headers = allKeys.filter(key => !excludeKeys.includes(key));
 

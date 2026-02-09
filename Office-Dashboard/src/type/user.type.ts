@@ -1,18 +1,17 @@
-export type RoleType = "admin" | "superadmin" | "member"
-
-export type UserDetail = {
-    id: string,
-    username : string,
-    fullname : string,
-    email : string,
-    role : RoleType,
-    created_at : string,
-    updated_at : string
-}
-
-export interface AddUser {
+export interface UserDetail {
+  user_id: string; 
   username: string;
   fullname: string;
   email: string;
-  role: string;
+  role_id: string;
+  role : string
+}
+
+export interface AddUser {
+  id?: string;  
+  username: string;
+  fullname: string;
+  email: string;
+  role_id: string;
+  password: string; 
 }
