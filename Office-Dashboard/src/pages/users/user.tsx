@@ -92,7 +92,8 @@ export default function UserPage() {
               allUrl={RETRIEVE_USERS}
             />
           </div>
-        </Card>}
+        </Card>
+        }
         <Card className="p-4 sm:p-6">
           <div className="max-h-[500px] lg:max-h-[800px] overflow-y-auto">
             {loading ? (

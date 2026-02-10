@@ -1,15 +1,10 @@
-import { useEffect, useState } from "react";
+import React, {  useState } from "react";
 import NavBar from "../../components/Navbar";
-import { type Event, type EventResponse, type EventStatus } from "./event.type";
+import { type Event, type EventResponse } from "./event.type";
 import { usePermissions, type Permission } from "../../hooks/userPermission";
-import useFetch from "../../hooks/useFetch";
 import {
-  CREATE_EVENT,
-  RETRIEVE_EVENT,
   RETRIEVE_EVENT_BY_STATUS,
-  UPDATE_EVENT,
 } from "../../constants/urls";
-import extractHeaders from "../../utils/extractHeader";
 import {
   PageContent,
   PageHeader,
@@ -17,39 +12,40 @@ import {
 } from "../../components/layout/PageLayout";
 import Button from "../../components/ui/Button";
 import Card from "../../components/ui/Card";
-import CreateModel from "../../components/Model/CreateModel";
-import useCreateResource from "../../hooks/useSubmit";
-import { editEventFields, eventFields } from "../../constants/fields";
 import EmptyMessage from "../../components/ui/EmptyMessage";
 import Table from "../../components/table/Tables";
 import Filters from "../../components/Filters";
 import { FaTrophy } from "react-icons/fa";
+import { useEvent } from "../../hooks/event/useEvent";
+import { useEventForm } from "../../hooks/event/useEventForm";
+import EventModel from "../../components/Model/EventModel";
+import ConfirmationModal from "../../components/Model/ConfirmationPopUp";
 
 export default function EventPage() {
-  // Fetch events
-  const { data: retrieve_events, loading, error, refetch } =
-    useFetch<EventResponse[]>(RETRIEVE_EVENT);
 
   const permissions = usePermissions<Permission>({});
+  const {
+    events,
+    setEvents,
+    createEvent,
+    updateEvent,
+    loading,
+    error,
+    tablehead,
+    deleteEvent
+  } = useEvent()
 
-  const [tablehead, setTablehead] = useState<string[]>([]);
-  const [events, setEvents] = useState<EventResponse[]>([]);
   const [eventMode, setEventMode] = useState<"create" | "edit" | null>(null);
+  const [ editEvent, setEditEvent] = useState<Event | undefined>(undefined);
+  const [popUpDelete, setPopUpDelete] = useState<boolean>(false)
 
-  const [eachEventDetail, setEachEventDetail] = useState<EventResponse>();
-  const [originalEvent, setOriginalEvent] = useState<EventResponse | null>(null);
-
-  const [eventDetail, setEventDetail] = useState<Event>({
-    id: "",
-    title: "",
-    description: "",
-    startdate: "",
-    enddate: "",
-    status: "draft",
-    progress_note: "",
-  });
-
-  const [submitEvent, setSubmitEvent] = useState<"create" | "edit" | null>(null);
+  const {
+    eventDetail,
+    setEventDetail,
+    getChangedFields, 
+    closeFunction,
+    handleChange
+  } = useEventForm(editEvent)
 
   // Filter setup
   const filterOptions = [
@@ -58,81 +54,23 @@ export default function EventPage() {
     { id: "completed", name: "Completed" },
     { id: "draft", name: "Draft" },
   ];
-  const [filter, setFilter] = useState<"All" | EventStatus>("All");
 
-  // Populate table headers and events
-  useEffect(() => {
-    if (retrieve_events) {
-      const headers = extractHeaders(retrieve_events);
-      setTablehead(headers);
-      setEvents(retrieve_events);
+
+  const handleSubmit = async(e:React.FormEvent) => {
+    e.preventDefault()
+    if (eventMode === "create") await createEvent(eventDetail);
+    if (eventMode === "edit") {
+      if (!editEvent?.id) return;
+      await updateEvent(editEvent.id, getChangedFields());
     }
-  }, [retrieve_events]);
+    setEventMode(null)
+    setEditEvent(undefined)
+  }
 
-  // Set edit data when user selects an event
-  useEffect(() => {
-    if (!eachEventDetail) return;
-
-    setOriginalEvent(eachEventDetail);
-
-    setEventDetail({
-      id: eachEventDetail.id,
-      title: eachEventDetail.title,
-      description: eachEventDetail.description,
-      startdate: eachEventDetail.startdate,
-      enddate: eachEventDetail.enddate,
-      status: eachEventDetail.status,
-      progress_note: eachEventDetail.progress_note,
-    });
-  }, [eachEventDetail]);
-
-  // Get changed fields for PATCH request
-  const getChangedFields = (
-    original: EventResponse | null,
-    current: typeof eventDetail
-  ) => {
-    if (!original) return {};
-
-    const changed: Partial<typeof eventDetail> = {};
-
-    (Object.keys(current) as (keyof typeof eventDetail)[]).forEach((key) => {
-      if (key !== "id" && current[key] !== (original as any)[key]) {
-        changed[key] = current[key] as any;
-      }
-    });
-
-    return changed;
-  };
-
-  // Submit create or edit event
-  useCreateResource({
-    trigger: submitEvent,
-    method: submitEvent === "create" ? "POST" : "PATCH",
-    endpoint: submitEvent === "create" ? CREATE_EVENT : UPDATE_EVENT(eventDetail.id),
-    payload:
-      submitEvent === "create"
-        ? eventDetail
-        : getChangedFields(originalEvent, eventDetail),
-    page: "Event",
-    refetch: () => {
-      refetch();
-    },
-    onSuccess: () => {
-      setEventDetail({
-        id: "",
-        title: "",
-        description: "",
-        startdate: "",
-        enddate: "",
-        status: "draft",
-        progress_note: "",
-      });
-      setEventMode(null);
-      setOriginalEvent(null);
-    },
-    resetTrigger: () => setSubmitEvent(null),
-  });
-
+  const onClose = () => {
+    setEventMode(null)
+    closeFunction()
+  }
   return (
     <PageLayout sidebar={<NavBar />}>
       <PageContent>
@@ -151,7 +89,7 @@ export default function EventPage() {
           }
         />
 
-        {/* Filter Section */}
+
         <Card className="mb-6 sm:mb-8 p-4 sm:p-6">
           <div className="p-4 sm:p-6">
             <Filters<EventResponse[]>
@@ -160,9 +98,6 @@ export default function EventPage() {
               urlFunction={RETRIEVE_EVENT_BY_STATUS}
               label="Select Status"
               setSelectVal={setEvents}
-              onSelectFilter={(f:any) =>
-                setFilter(f.id as "All" | EventStatus)
-              }
             />
           </div>
         </Card>
@@ -186,7 +121,8 @@ export default function EventPage() {
                 permissions={permissions}
                 showView
                 setModelType={setEventMode}
-                setValue={setEachEventDetail}
+                setValue={setEditEvent}
+                setOnDelete={setPopUpDelete}
               />
             ) : (
               <EmptyMessage
@@ -199,17 +135,30 @@ export default function EventPage() {
         </Card>
 
         {/* Create/Edit Modal */}
-        {eventMode && (
-          <CreateModel
-            modelType={eventMode}
-            setModelType={setEventMode}
-            title="Event"
+        {eventMode  && (
+          <EventModel
+            mode={eventMode}
+            onClose={onClose}
             formData={eventDetail}
+            handleChange={handleChange}
+            handleSubmit={handleSubmit}
             setFormData={setEventDetail}
-            fields={eventMode === "edit" ? editEventFields : eventFields}
-            setSubmit={setSubmitEvent}
           />
         )}
+
+        {
+          editEvent &&
+          <ConfirmationModal
+            isOpen={popUpDelete}
+            title="Delete"
+            message={`Are you sure you want to delete ${editEvent.title}`}
+            onCancel={() => setPopUpDelete(false)}
+            onConfirm={() => {
+              deleteEvent(editEvent.id)
+              setPopUpDelete(false)
+            }}
+          />
+        }
       </PageContent>
     </PageLayout>
   );

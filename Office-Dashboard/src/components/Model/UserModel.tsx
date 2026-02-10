@@ -23,7 +23,7 @@ export default function UserModel({ mode, formData, handleChange, onClose, roles
     const {showPassword, togglePasswordVisibility, error} = useUser()
     
     return (
-        <ModalWrapper title={mode === "edit" ? "Edit Group" : "Create New Group"} onClose={onClose}>
+        <ModalWrapper title={mode === "edit" ? "Edit User" : "Create New User"} onClose={onClose}>
             {error && (
                 <div className="mb-5 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 rounded-lg text-sm font-medium">
                 {error}

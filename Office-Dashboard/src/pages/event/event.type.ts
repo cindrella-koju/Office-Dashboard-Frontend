@@ -12,7 +12,7 @@ export type EventDetail = {
     enddate : string,
     status : EventStatus,
     participants : Participants[],
-    note : string
+    note? : string
 }
 
 export interface EventResponse{

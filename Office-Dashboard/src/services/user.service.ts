@@ -11,11 +11,10 @@ const headers = {
 
 
 export const getUser = async (): Promise<UserDetail[]> => {
-    console.log("Headers:", headers)
     try {
         const response = await fetch(RETRIEVE_USERS, { headers });
         if (!response.ok) {
-            throw new Error(`Retrieve User Request Failed: ${response.status}`);
+            throw new Error(`Retrieve User Request Failed`);
         }
         return (await response.json()) as UserDetail[];
     } catch (err) {
@@ -94,7 +93,7 @@ export const updateUser = async (id: string, payload: Partial<AddUser>, showToas
 
 
 export const deleteUser = async( id : string, showToast: (msg: string, type?: ToastType)=> void) => {
-     try {
+  try {
     const res = await fetch(`${DELETE_USER(id)}`, {
       method: "DELETE",
       headers: headers,

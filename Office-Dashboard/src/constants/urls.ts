@@ -6,6 +6,7 @@ export const LOGIN = `${BASE_URL}/user/login`
 
 export const CREATE_EVENT = `${BASE_URL}/event`
 export const UPDATE_EVENT = (eventId: string) => `${BASE_URL}/event?event_id=${eventId}`
+export const DELETE_EVENT = (eventId: string) => `${BASE_URL}/event/${eventId}`
 export const RETRIEVE_EVENT = `${BASE_URL}/event`
 export const RETRIEVE_EVENT_BY_STATUS = (status : string) => `${BASE_URL}/event?status=${status}`
 export const RETRIEVE_GROUP_AND_MEMBERS  = (eventId: string ) => `${BASE_URL}/event/group/event/${eventId}`
