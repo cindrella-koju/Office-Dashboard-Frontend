@@ -15,7 +15,8 @@ interface TableProps {
   showView?: boolean;
   setModelType: Dispatch<SetStateAction<ModelType>>;
   setValue: Dispatch<SetStateAction<any>>;
-  tablefor : "Event" | "Role" | "User" | null | "WithinEvent"
+  tablefor : "Event" | "Role" | "User" | null | "WithinEvent";
+  setOnDelete : Dispatch<SetStateAction<boolean>>
 }
 
 const roleStyles: Record<UserRole, string> = {
@@ -52,7 +53,8 @@ export default function Table({
   showView = false,
   setModelType,
   setValue,
-  tablefor
+  tablefor,
+  setOnDelete
 }: TableProps) {
   const navigate = useNavigate();
   
@@ -82,7 +84,6 @@ export default function Table({
   const showActions = editpermission() || deletepermission();
 
 
-  // 🔑 single source of truth
   const hasActionColumn = showActions || showView;
 
   const handleClick = (id: string) => {
@@ -156,7 +157,10 @@ export default function Table({
                       )}
 
                       {deletepermission() && (
-                        <Button varient="danger" size="sm">
+                        <Button varient="danger" size="sm" onClick={() => {
+                          setOnDelete(true);
+                          setValue(row);
+                        }}>
                           Delete
                         </Button>
                       )}
@@ -229,6 +233,7 @@ export default function Table({
                     varient="danger"
                     size="sm"
                     className="flex-1"
+                    onClick={() => setOnDelete(true)}
                   >
                     Delete
                   </Button>

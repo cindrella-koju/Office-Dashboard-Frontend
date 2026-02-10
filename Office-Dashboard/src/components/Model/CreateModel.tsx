@@ -96,7 +96,6 @@ export default function CreateModel<T extends Record<string, any>>({
                 onChange={handleChange}
             />
 
-            
               <SelectField
                 label="Roles"
                 value={formData.role_id}

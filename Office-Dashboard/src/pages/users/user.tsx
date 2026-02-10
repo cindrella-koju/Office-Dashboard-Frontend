@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import NavBar from "../../components/Navbar";
 import { usePermissions, type Permission } from "../../hooks/userPermission";
 import {
@@ -9,143 +9,56 @@ import {
 import { HiUsers } from "react-icons/hi";
 import Button from "../../components/ui/Button";
 import Card from "../../components/ui/Card";
-import useFetch from "../../hooks/useFetch";
 import {
-  CREATE_USER,
-  RETRIEVE_ROLE_ID_NAME_NOT_IN_EVENT,
   RETRIEVE_USERS,
   RETRIEVE_USERS_BY_ROLE,
-  UPDATE_USER,
 } from "../../constants/urls";
-import extractHeaders from "../../utils/extractHeader";
-import CreateModel from "../../components/Model/CreateModel";
-import useCreateResource from "../../hooks/useSubmit";
-import type { AddUser,UserDetail } from "../../type/user.type";
+import type { UserDetail } from "../../type/user.type";
 import Table from "../../components/table/Tables";
 import EmptyMessage from "../../components/ui/EmptyMessage";
 import Filters from "../../components/Filters";
-import type { Round } from "../../type/group.type";
+import { useUser } from "../../hooks/useUser";
+import { useUserForm } from "../../hooks/useUserForm";
+import UserModel from "../../components/Model/UserModel";
+import ConfirmationModal from "../../components/Model/ConfirmationPopUp";
 
 
 export default function UserPage() {
   const permissions = usePermissions<Permission>({});
-  const { data: retrieve_users, loading, error, refetch } =
-    useFetch<UserDetail[]>(RETRIEVE_USERS);
+  const {
+    users,
+    rounds,
+    selectedRole,
+    setSelectedRole,
+    loading,
+    error,
+    createUser,
+    updateUser,
+    tablehead,
+    roles,
+    setUsers,
+    deleteUser
+  } = useUser()
 
-  const {data : rounds_id_detail}  = useFetch<Round[]>( RETRIEVE_ROLE_ID_NAME_NOT_IN_EVENT)
-  const [selectedRole, setSelectedRole ] = useState<Round | null>(null)
-  const [users, setUsers] = useState<UserDetail[]>([]);
-  const [tablehead, setTablehead] = useState<string[]>([]);
   const [userMode, setUserMode] = useState<"create" | "edit" | null>(null);
+  const [editUser, setEditUser] = useState<UserDetail | undefined>(undefined);
+  const [popUpDelete, setPopUpDelete] = useState<boolean>(false)
+  const { userDetail, setUserDetail, getChangedFields, closeFunction, handleChange  } = useUserForm(editUser);
 
-  const [eachUserDetail, setEachUserDetail] =
-    useState<UserDetail>();
-  const [originalUser, setOriginalUser] =
-    useState<UserDetail | null>(null);
-
-    
-  const [userDetail, setUserDetail] = useState({
-    id: "",
-    username: "",
-    fullname: "",
-    email: "",
-    role_id : "",
-    password: "",
-  });
-
-  const [submitUser, setSubmitUser] =
-    useState<"create" | "edit" | null>(null);
-
-  useEffect(() => {
-    if(rounds_id_detail && rounds_id_detail.length > 0){
-      setSelectedRole(rounds_id_detail[0])
-    }
-  },[rounds_id_detail])
-
-  // fetch user
-  useEffect(() => {
-    if (retrieve_users) {
-      const headers = extractHeaders(retrieve_users);
-      setTablehead(headers);
-      setUsers(retrieve_users);
-    }
-  },[retrieve_users]);
-
-  // set Edit data
-  useEffect(() => {
-    if (!eachUserDetail) return;
-
-    setOriginalUser(eachUserDetail);
-
-    setUserDetail({
-      id: eachUserDetail.user_id,
-      username: eachUserDetail.username,
-      fullname: eachUserDetail.fullname,
-      email: eachUserDetail.email,
-      role_id: eachUserDetail.role_id,
-      password: "",
-    });
-  }, [eachUserDetail]);
-
-  // Get only changed field
-  const getChangedFields = (
-    original: UserDetail| null,
-    current: typeof userDetail
-  ) => {
-    if (!original) return {};
-
-    const changed: Partial<typeof userDetail> = {};
-
-    (Object.keys(current) as (keyof typeof userDetail)[]).forEach(
-      (key) => {
-        if (
-          key !== "id" &&
-          key !== "password" &&
-          current[key] !== (original as any)[key]
-        ) {
-          changed[key] = current[key];
-        }
-      }
-    );
-
-    return changed;
+  const handleSubmit = async (e:React.FormEvent) => {
+    e.preventDefault();
+    if (userMode === "create") await createUser(userDetail);
+    else if (userMode === "edit" && editUser) await updateUser(editUser.id, getChangedFields());
+    setUserMode(null);
+    setEditUser(undefined);
   };
 
-  // Submit
-  useCreateResource<AddUser>({
-    trigger: submitUser,
-    method: submitUser === "create" ? "POST" : "PATCH",
-    endpoint:
-      submitUser === "create"
-        ? CREATE_USER
-        : UPDATE_USER(userDetail.id),
 
-    payload:
-      submitUser === "create"
-        ? userDetail
-        : getChangedFields(originalUser, userDetail),
-      
-    refetch : () => {
-      refetch()
-    },
-
-    page: "User",
-
-    onSuccess: () => {
-      setUserDetail({
-        id: "",
-        username: "",
-        fullname: "",
-        email: "",
-        role_id: "",
-        password: "",
-      });
-      setUserMode(null);
-      setOriginalUser(null);
-    },
-
-    resetTrigger: () => setSubmitUser(null),
-  });
+  
+  const onClose = () => {
+    setUserMode(null)
+    closeFunction()
+  }
 
   return (
     <PageLayout sidebar={<NavBar />}>
@@ -166,12 +79,12 @@ export default function UserPage() {
         />
 
         {
-          selectedRole && rounds_id_detail &&
+          selectedRole && rounds &&
           <Card className="mb-6 sm:mb-8 p-4 sm:p-6">
           <div className="p-4 sm:p-6">
             <Filters<UserDetail[]>
               defaultVal={selectedRole}
-              filters={rounds_id_detail}
+              filters={rounds}
               urlFunction={RETRIEVE_USERS_BY_ROLE}
               label="Select Status"
               setSelectVal={setUsers}
@@ -196,8 +109,9 @@ export default function UserPage() {
                 tabledata={users}
                 permissions={permissions}
                 setModelType={setUserMode}
-                setValue={setEachUserDetail}
+                setValue={setEditUser}
                 tablefor="User"
+                setOnDelete={setPopUpDelete}
               />
             ) : (
               <EmptyMessage
@@ -208,16 +122,30 @@ export default function UserPage() {
           </div>
         </Card>
 
-        {userMode && (
-          <CreateModel
-            modelType={userMode}
-            setModelType={setUserMode}
-            title="User"
-            formData={userDetail}
-            setFormData={setUserDetail}
-            setSubmit={setSubmitUser}
-          />
+        {userMode && roles && (
+            <UserModel
+              mode={userMode}
+              formData={userDetail}
+              setFormData={setUserDetail}
+              handleChange={handleChange}
+              onClose={onClose}
+              roles={roles}
+              handleSubmit={handleSubmit}
+            />
         )}
+
+       { editUser &&
+       <ConfirmationModal 
+          isOpen={popUpDelete} 
+          title="Delete" 
+          message={`Are you sure you wanna delete ${editUser.username}?`}
+          onConfirm={() => {
+            deleteUser(editUser.id)
+            setPopUpDelete(false)
+          }}
+          onCancel={() => setPopUpDelete(false)}
+        />}
+
       </PageContent>
     </PageLayout>
   );

@@ -6,15 +6,18 @@ import { AuthProvider } from "./pages/auth/authProvider";
 import { router } from "./router";
 import { RoleProvider } from "./context/RoleProvide";
 import { EventRoleProvider } from "./context/EventRoleProvider";
+import { ToastProvider } from "./context/ToastContext";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <AuthProvider>
-      <RoleProvider>
-        <EventRoleProvider>
-          <RouterProvider router={router} />
-        </EventRoleProvider>
-      </RoleProvider>
+      <ToastProvider>
+        <RoleProvider>
+          <EventRoleProvider>
+            <RouterProvider router={router} />
+          </EventRoleProvider>
+        </RoleProvider>
+      </ToastProvider>
     </AuthProvider>
   </StrictMode>
 );
