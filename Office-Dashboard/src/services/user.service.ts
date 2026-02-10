@@ -3,13 +3,26 @@ import { CREATE_USER, DELETE_USER, RETRIEVE_ROLE_ID_NAME, RETRIEVE_ROLE_ID_NAME_
 import type { Round } from "../type/group.type";
 import type { AddUser, UserDetail } from "../type/user.type";
 
-export const getUser = async():Promise<UserDetail[]> => {
-    const response = await fetch(RETRIEVE_USERS);
-    if (!response.ok) {
-        throw new Error("Retrieve User Request Fail")
-    }
-    return response.json()
+const authorizarion_token = sessionStorage.getItem("access_token")
+const headers = { 
+  "Content-Type": "application/json",
+  "Authorization": `Bearer ${authorizarion_token}`
 }
+
+
+export const getUser = async (): Promise<UserDetail[]> => {
+    console.log("Headers:", headers)
+    try {
+        const response = await fetch(RETRIEVE_USERS, { headers });
+        if (!response.ok) {
+            throw new Error(`Retrieve User Request Failed: ${response.status}`);
+        }
+        return (await response.json()) as UserDetail[];
+    } catch (err) {
+        console.error("Error fetching users:", err);
+        throw err;
+    }
+};
 
 export const getRoleNotInEvent = async():Promise<Round[]> => {
     const response = await fetch(RETRIEVE_ROLE_ID_NAME_NOT_IN_EVENT)
@@ -84,7 +97,7 @@ export const deleteUser = async( id : string, showToast: (msg: string, type?: To
      try {
     const res = await fetch(`${DELETE_USER(id)}`, {
       method: "DELETE",
-      headers: { "Content-Type": "application/json" },
+      headers: headers,
     });
 
     const data = await res.json()

@@ -5,7 +5,7 @@ interface ConfirmationModalProps {
   isOpen: boolean;
   title: string;
   message: string;
-  onConfirm?: (id:string) => void;
+  onConfirm?: () => void;
   onCancel?: () => void;
 }
 
@@ -37,7 +37,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
             Cancel
           </button>
 
-            <Button varient="danger" onClick={() => onConfirm}>Confirm</Button>
+            <Button varient="danger" onClick={onConfirm}>Confirm</Button>
         </div>
       </div>
     </div>

@@ -5,6 +5,7 @@ export interface FilterOption {
   name: string;
 }
 
+
 interface FilterProps<T> {
   urlFunction?: (id: string) => string;
   allUrl?: string;

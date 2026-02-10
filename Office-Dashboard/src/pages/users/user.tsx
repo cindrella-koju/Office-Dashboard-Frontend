@@ -134,7 +134,7 @@ export default function UserPage() {
             />
         )}
 
-       { editUser &&
+       { editUser &&  
        <ConfirmationModal 
           isOpen={popUpDelete} 
           title="Delete" 
