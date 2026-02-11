@@ -4,15 +4,19 @@ import ModalWrapper from "../pages/shared/ModelWrapper";
 import SelectField from "../pages/shared/SelectField";
 import type { CreateGroupModalProps, Participant, Round } from "../../type/group.type";
 import useFetch from "../../hooks/useFetch";
-import { CREATE_GROUP, GET_QUALIFIER_NOT_IN_GROUP, GET_QUALIFIER_NOT_IN_GROUP_FOR_EDIT, GET_ROUNDS_BY_EVENT, UPDATE_GROUP } from "../../constants/urls";
+import { CREATE_GROUP, GET_QUALIFIER_NOT_IN_GROUP, GET_QUALIFIER_NOT_IN_GROUP_FOR_EDIT, UPDATE_GROUP } from "../../constants/urls";
 import MultiSelect from "../pages/shared/MultiSelect";
 import Button from "../ui/Button";
+import { useGroup } from "../../hooks/group/useGroup";
 
 
 
 export default function CreateGroupModal({mode, eventId, groupId, setIsModalOpen, eachGroupData}:CreateGroupModalProps){
+  const {
+    rounds
+  } = useGroup()
   const [roundId, setRoundId] = useState<string>();
-  const {data:rounds} = useFetch<Round[]>(GET_ROUNDS_BY_EVENT(eventId ? eventId : ""))
+
   const participantsUrl =
   mode === "create"
     ? roundId && eventId

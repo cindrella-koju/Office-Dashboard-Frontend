@@ -1,5 +1,6 @@
 import type { ToastType } from "../components/Toast";
-import { CREATE_ROUND, DELETE_ROUND, EDIT_ROUND, RETRIEVE_ROUNDS } from "../constants/urls";
+import { CREATE_ROUND, DELETE_ROUND, EDIT_ROUND, GET_ROUNDS_BY_EVENT, RETRIEVE_ROUNDS } from "../constants/urls";
+import type { Round } from "../type/group.type";
 import type { RoundData } from "../type/round.type";
 
 export const getRound = async(eventId:string):Promise<RoundData[]> => {
@@ -85,4 +86,17 @@ export const deleteRounds = async(round_id : string, showToast: (msg: string, ty
         showToast((error as Error).message, "error");
         throw error;
       }
+}
+
+export const getRoundByEvent = async(eventId: string) :Promise<Round[]> => {
+    try{
+        const response = await fetch(GET_ROUNDS_BY_EVENT(eventId))
+        if(!response.ok){
+            throw new Error("Retrieve Round By Event Request Failed")
+        }
+        return (await response.json()) as Round[];
+    } catch(err){
+        console.error("Error fetching Round By Event:", err)
+        throw err;
+    }
 }

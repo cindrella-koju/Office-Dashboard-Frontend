@@ -11,6 +11,7 @@ import CreateGroupModal from "../../../components/Model/GroupModel";
 import GroupTable from "../../../components/table/GroupTable";
 import EmptyMessage from "../../../components/ui/EmptyMessage";
 import { MdGroups } from "react-icons/md";
+import type { ModelType } from "../../../type/main.type";
 
 
 
@@ -20,7 +21,7 @@ export default function Groups(){
     const { data: groupsData,refetch } = useFetch<Stage[]>(RETRIEVE_GROUP_AND_MEMBERS(eventId ? eventId : ""));
     const [editingUserId, setEditingUserId] = useState<{ groupId: string; userId: string } | null>(null);
     const [editedUserData, setEditedUserData] = useState<GroupMember | null>(null);
-    const [modalMode, setModalMode] = useState<'create' | 'edit' | null>(null);
+    const [modalMode, setModalMode] = useState<ModelType>(null);
     const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null);
     const [eachGroupData,setEachGroupData] = useState<EachGroupDetail>({
         group_id : "",
