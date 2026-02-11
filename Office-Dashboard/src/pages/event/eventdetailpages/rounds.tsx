@@ -1,107 +1,58 @@
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import EventNavBar from "../../../components/EventNavbar";
 import { usePermissions, type EventPermission } from "../../../hooks/userPermission";
 
-import useFetch from "../../../hooks/useFetch";
-import { CREATE_ROUND, EDIT_ROUND, RETRIEVE_ROUNDS } from "../../../constants/urls";
 import { PageContent, PageHeader, PageLayout } from "../../../components/layout/PageLayout";
 import Button from "../../../components/ui/Button";
 import Card from "../../../components/ui/Card";
-import extractHeaders from "../../../utils/extractHeader";
-import CreateModel from "../../../components/Model/CreateModel";
-import { roundFields } from "../../../constants/fields";
-import useCreateResource from "../../../hooks/useSubmit";
 import EmptyMessage from "../../../components/ui/EmptyMessage";
 import { GrGroup } from "react-icons/gr";
 import Table from "../../../components/table/Tables";
-// import type { RoundData } from "../../../type/round.type";
+import { useRound } from "../../../hooks/round/useRound";
+import { useRoundForm } from "../../../hooks/round/useRoundForm";
+import RoundModel from "../../../components/Model/RoundModel";
+import type { ModelType } from "../../../type/main.type";
+import ConfirmationModal from "../../../components/Model/ConfirmationPopUp";
 
-
-interface RoundData{
-    id : string,
-    name : string,
-    round_order : number
-}
 
 export default function Rounds(){
     const eventId = localStorage.getItem("eventId");
     const permissions = usePermissions<EventPermission>({withinevent :  true})
-    const {data : retrieve_rounds, loading, error } = useFetch<RoundData[]>( eventId ? RETRIEVE_ROUNDS(eventId) : "") 
-    const [rounds, setRounds] = useState<RoundData[]>()
-    const [originalRounds, setOriginalRounds] = useState<RoundData | null>(null)
-    const [viewMode, setViewMode] = useState<"create" | "edit" | null>(null)
-    const [roundVal, setRoundVal] = useState<RoundData | null>(null)
-    const [tablehead, setTableHead] = useState<string[]>([])
-    const [submitRound, setSubmitRound] = useState<"create" | "edit" | null>(null);
-    const [roundDetail, setRoundDetail] = useState<RoundData>({
-        id : "",
-        name : "",
-        round_order : 0
-    })
 
-    // Extract Table head and set rounds
-    useEffect(() => {
-        if(!retrieve_rounds) return;
-        const headers = extractHeaders(retrieve_rounds);
-        setTableHead(headers)
-        setRounds(retrieve_rounds)
-    },[retrieve_rounds])
+    const {
+        rounds,
+        tablehead,
+        loading,
+        error,
+        editRound,
+        setEditRound,
+        createRound,
+        updateRound,
+        deleteRound
+    } = useRound()
 
-    // set edit data
-    useEffect(() => {
-        if (!roundVal) return;
+    const {
+        roundDetail,
+        originalRounds,
+        setOriginalRounds,
+        getChangedFields,
+        handleChange,
+        closeFunction
+    } = useRoundForm(editRound)
 
-        setOriginalRounds(roundVal)
-        setRoundDetail({
-            id : roundVal.id,
-            name :  roundVal.name,
-            round_order : roundVal.round_order
-        })
-    },[roundVal])
+    const [viewMode, setViewMode] = useState<ModelType>(null)
+    const [popUpDelete, setPopUpDelete] = useState<boolean>(false)
+    const handleSubmit = async(e:React.FormEvent) => {
+        if(!eventId) return;
 
-    const getChangedFields = (
-        original: RoundData | null,
-        current: typeof roundDetail
-    ) => {
-        // Early return if original is null
-        if (!original) return {}; 
-
-        const changed: Partial<typeof roundDetail> = {};
-
-        (Object.keys(current) as (keyof typeof roundDetail)[]).forEach((key) => {
-            if (
-                key !== "id" &&
-                current[key] !== (original as any)[key]
-            ) {
-                changed[key] = current[key] as any;
-            }
-        });
-
-        return changed;
-    };
-
-    useCreateResource({
-        trigger : submitRound,
-        method: submitRound === "create" ? "POST" : "PATCH",
-        endpoint:
-            submitRound === "create" ? CREATE_ROUND(eventId ? eventId:"") : EDIT_ROUND(roundDetail.id),
-
-        payload:
-            submitRound === "create" ? roundDetail : getChangedFields(originalRounds, roundDetail),
-
-        page: "Round",
-        onSuccess: () => {
-            setRoundDetail({
-                id : "",
-                name : "",
-                round_order : 0
-            });
-            setViewMode(null)
-            setOriginalRounds(null)
-        },
-        resetTrigger: () => setSubmitRound(null)
-
-    })
+        e.preventDefault();
+        if (viewMode === "create") await createRound(roundDetail, eventId);
+        else if( viewMode === "edit" ) await updateRound(eventId, roundDetail.id, getChangedFields(originalRounds,roundDetail))
+        setViewMode(null)
+        setOriginalRounds(null)
+    }
+   
+    console.log("Rounds", rounds)
     return(
         <PageLayout sidebar={<EventNavBar/>}>
             <PageContent>
@@ -132,8 +83,9 @@ export default function Rounds(){
                                 tabledata={rounds}
                                 permissions={permissions}
                                 setModelType={setViewMode}
-                                setValue={setRoundVal}
+                                setValue={setEditRound}
                                 tablefor={"WithinEvent"}
+                                setOnDelete={setPopUpDelete}
                             />
                             )}
                         </div>
@@ -147,16 +99,32 @@ export default function Rounds(){
 
                 {
                     viewMode && (
-                        <CreateModel
-                            modelType={viewMode}
-                            setModelType={setViewMode}
-                            title="Round"
+                        <RoundModel
+                            mode={viewMode}
                             formData={roundDetail}
-                            setFormData={setRoundDetail}
-                            setSubmit={setSubmitRound}
-                            fields={roundFields}
+                            handleChange={handleChange}
+                            handleSubmit={handleSubmit}
+                            onClose={() => 
+                                {
+                                    setViewMode(null)
+                                    closeFunction()
+                                }
+                            }
                         />
                     )
+                }
+                {
+                    editRound && 
+                        <ConfirmationModal
+                            isOpen = {popUpDelete}
+                            title="Delete"
+                            message={`Are you sure you want to delete Round ${editRound.name}`}
+                            onCancel={() => setPopUpDelete(false)}
+                            onConfirm={() => {
+                                deleteRound(editRound.id)
+                                setPopUpDelete(false)
+                            }}
+                        />
                 }
             </PageContent>
         </PageLayout>

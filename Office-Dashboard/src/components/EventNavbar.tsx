@@ -50,5 +50,7 @@ export default function EventNavBar() {
   if(pageaccess?.todays_game_page){
     eventNavItems.push({ icon: <FaCalendarDay />, label: "Todays Game", to: "/event/todays-game" })
   }
+  eventNavItems.push({ icon: <FaTrophy />, label: "Events", to: "/event" })
+  
   return <Sidebar items={eventNavItems} logo={logoConfig} />;
 }

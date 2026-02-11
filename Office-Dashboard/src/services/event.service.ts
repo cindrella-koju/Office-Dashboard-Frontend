@@ -42,7 +42,7 @@ export const createEvent = async( payload : Event, showToast: (msg: string, type
 export const updateEvent = async(id: string, payload:Partial<Event>, showToast: (msg: string, type?: ToastType) => void) => {
     try{
         const res = await fetch(`${UPDATE_EVENT(id)}`,{
-             method: "PATCH",
+            method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
         })

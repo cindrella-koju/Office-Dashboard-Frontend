@@ -36,7 +36,8 @@ export const UPDATE_TIESHEET = (tiesheetId: string) => `${BASE_URL}/event/tieshe
 
 export const RETRIEVE_ROUNDS = (eventId : string) => `${BASE_URL}/event/stage?event_id=${eventId}`
 export const CREATE_ROUND = (eventId : string) => `${BASE_URL}/event/stage?event_id=${eventId}`
-export const EDIT_ROUND = (stageId : string) => `${BASE_URL}/event/stage?stage_id=${stageId}`
+export const EDIT_ROUND = (stageId : string) => `${BASE_URL}/event/stage/${stageId}`
+export const DELETE_ROUND = (stageId : string) => `${BASE_URL}/event/stage/${stageId}`
 
 export const RETRIEVE_PARTICIPANTS = (eventId : string) => `${BASE_URL}/participant?event_id=${eventId}`
 export const RETEIEVE_NOT_PARTICIPANTS = (eventId : string) => `${BASE_URL}/participant/not-participants?event_id=${eventId}`
