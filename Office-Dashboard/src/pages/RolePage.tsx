@@ -1,62 +1,58 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Filters from "../components/Filters";
 import { PageContent, PageHeader, PageLayout } from "../components/layout/PageLayout";
 import NavBar from "../components/Navbar";
 import Button from "../components/ui/Button";
 import Card from "../components/ui/Card";
 import { usePermissions, type Permission } from "../hooks/userPermission";
-import { RETRIEVE_DETAIL_FOR_ROLE_MANAGEMENT } from "../constants/urls";
-import { extractPageHeader, extractPermissionHeaders } from "../utils/extractHeader";
 import type { ModelType } from "../type/main.type";
-import type { selectPermsission } from "../type/role.type";
 import RoleModel from "../components/Model/RoleModel";
+import { useUserRole } from "../hooks/role/useRole";
+import ConfirmationModal from "../components/Model/ConfirmationPopUp";
+import { useRoleForm } from "../hooks/role/useRoleForm";
+
 
 
 export default function RolePage() {
     const permissions = usePermissions<Permission>({})
-    const filterOptions = [
-        { id:"event", name: "Events" },
-        { id:"role", name: "Roles" },
-        { id:"user", name: "Users" },
-        { id:"within_event", name: "Within Events" },
-        { id:"page", name: "Pages" },
-    ]
-    const [filterfor, setFilterFor] = useState<string>(filterOptions[0].id)
-    const [details, setDetails] = useState<selectPermsission>()
-    const urlFunction = useCallback(() => {
-        return RETRIEVE_DETAIL_FOR_ROLE_MANAGEMENT(filterfor)
-    }, [filterfor])
 
-    const [header,setHeader] = useState<string[]>([])
-    const [dataKeys, setDataKeys] = useState<string[]>([])
+    const {
+        filterOptions,
+        filterfor,
+        setFilterFor,
+        setDetails,
+        details,
+        header,
+        dataKeys,
+        selectedRole,
+        setSelectedRole,
+        urlFunction,
+        deleteRole,
+        createRole,
+        updateRole
+    } = useUserRole()
+
+    const {
+        permissionDetail,
+        setPermissionDetail,
+        reset,
+        handleBoolValue
+    } = useRoleForm(selectedRole)
+    
     const [modelType, setModelType] = useState<ModelType>(null)
-    const [selectedRole, setSelectedRole] = useState<string | undefined>(undefined)
+    const [popUpDelete, setPopUpDelete] = useState<boolean>(false)
 
-    useEffect(() => {
-        if(!details || !Array.isArray(details) || details.length === 0) {
-            setHeader([])
-            setDataKeys([])
-            return;
-        }
-        
-        if(filterfor === "page"){
-            setHeader(extractPageHeader(details))
-            // For page filter, first key is role name, rest are from roleaccesspage
-            if(details[0].roleaccesspage) {
-                setDataKeys(["rolename", ...Object.keys(details[0].roleaccesspage)])
-            } else {
-                setDataKeys(["rolename"])
-            }
-        }
-        else{
-            setHeader(extractPermissionHeaders(details))
-            // For permissions, get the original keys
-            const excludeKeys = ["id", "created_at", "updated_at"];
-            const keys = Object.keys(details[0]).filter(key => !excludeKeys.includes(key));
-            setDataKeys(keys)
-        }
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
 
-    },[details, filterfor])
+        if(modelType === "create") await createRole(permissionDetail)
+        if( modelType === "edit" ){
+        if (selectedRole && !selectedRole.id) return;
+        await updateRole(selectedRole && selectedRole.id,permissionDetail)
+        }
+        setModelType(null)
+        reset()
+    };
 
     return ( 
         <PageLayout sidebar={<NavBar/>}>
@@ -153,7 +149,10 @@ export default function RolePage() {
                                                     </Button>
                                                 )}
                                                 {permissions.canDeleteRoles && (
-                                                    <Button size="sm" varient="danger">
+                                                    <Button size="sm" varient="danger" onClick={() => {
+                                                        setPopUpDelete(prev => !prev)
+                                                        setSelectedRole(row)
+                                                    }}> 
                                                         Delete
                                                     </Button>
                                                 )}
@@ -167,7 +166,28 @@ export default function RolePage() {
                 </Card>
 
                 {
-                    modelType != null && <RoleModel setModelType={setModelType} modeltype={modelType} todisplay={filterfor} eachdetail={selectedRole}/>
+                    modelType != null && <RoleModel
+                     setModelType={setModelType} 
+                     modeltype={modelType} 
+                     todisplay={filterfor} 
+                     handleSubmit={handleSubmit}
+                     permissionDetail={permissionDetail}
+                     setPermissionDetail={setPermissionDetail}
+                     handleBoolValue={handleBoolValue}
+                    />
+                }
+
+                { selectedRole &&
+                    <ConfirmationModal
+                        isOpen = {popUpDelete}
+                        title="Delete"
+                        message={`Are you sure you want to delete Role ${selectedRole.rolename}`}
+                        onConfirm={() => {
+                            deleteRole(selectedRole.id)
+                            setPopUpDelete(false)
+                        }}
+                        onCancel={() => setPopUpDelete(false)}
+                    />
                 }
             </PageContent>
 

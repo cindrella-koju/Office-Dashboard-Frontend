@@ -1,15 +1,19 @@
-import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
+import { type Dispatch, type SetStateAction } from "react";
 import ModalWrapper from "../pages/shared/ModelWrapper";
 import type { ModelType } from "../../type/main.type";
 import { RoleFields } from "../../constants/fields";
-import { CREATE_ROLE_WITH_PERMISSION, EDIT_DETAIL_FOR_ROLE_MANAGEMENT } from "../../constants/urls";
+import type { RolePayload } from "../../services/role.service";
 
 
-interface RoleModelProps<T> {
+
+interface RoleModelProps {
   modeltype: ModelType;
   setModelType: Dispatch<SetStateAction<ModelType>>;
-  todisplay?: string;
-  eachdetail?: T; // Generic type here
+  todisplay: string;
+  permissionDetail : RolePayload  
+  setPermissionDetail : Dispatch<SetStateAction<RolePayload>>;
+  handleSubmit : (e:React.FormEvent) => void;
+  handleBoolValue: (id: string, boolFor: string, checked: boolean) => void; 
 }
 
 const extractPageInsert = (pagename: string) => {
@@ -17,145 +21,7 @@ const extractPageInsert = (pagename: string) => {
   return `${str}_page`;
 };
 
-export default function RoleModel<T>({ modeltype, setModelType, todisplay, eachdetail }: RoleModelProps<T>) {
-
-  const [permissionDetail, setPermissionDetail] = useState({
-    rolename: "",
-    can_edit: false,
-    can_create: false,
-    can_delete: false,
-    can_edit_events: false,
-    can_create_events: false,
-    can_delete_events: false,
-    can_edit_users: false,
-    can_create_users: false,
-    can_delete_users: false,
-    can_edit_roles: false,
-    can_create_roles: false,
-    can_delete_roles: false,
-    roleaccessdetail: {
-      home_page: false,
-      event_page: false,
-      user_page: false,
-      profile_page: false,
-      role_page: false,
-      tiesheet_page: false,
-      group_page: false,
-      round_config_page: false,
-      qualifier_page: false,
-      participants_page: false,
-      column_config_page: false,
-      group_stage_standing_page: false,
-      todays_game_page: false,
-    },
-  });
-
-      console.log("EachDetail:", eachdetail)
-      console.log("Permissions:", permissionDetail)
-  // Populate state if editing an existing role
-  useEffect(() => {
-    if (eachdetail) {
-      setPermissionDetail({
-        rolename: eachdetail.rolename || "",
-        can_edit: eachdetail.can_edit || false,
-        can_create: eachdetail.can_create || false,
-        can_delete: eachdetail.can_delete || false,
-        can_edit_events: eachdetail.can_edit_events || false,
-        can_create_events: eachdetail.can_create_events || false,
-        can_delete_events: eachdetail.can_delete_events || false,
-        can_edit_users: eachdetail.can_edit_users || false,
-        can_create_users: eachdetail.can_create_users || false,
-        can_delete_users: eachdetail.can_delete_users || false,
-        can_edit_roles: eachdetail.can_edit_roles || false,
-        can_create_roles: eachdetail.can_create_roles || false,
-        can_delete_roles: eachdetail.can_delete_roles || false,
-        roleaccessdetail: {
-          ...permissionDetail.roleaccessdetail,
-          ...eachdetail.roleaccesspage,
-        },
-      });
-    }
-  }, [eachdetail]);
-
-  const handleBoolvalue = (id: string, bool_for: string, checked_val: boolean) => {
-    if (id === "event" || id === "user" || id === "role") {
-      setPermissionDetail({
-        ...permissionDetail,
-        [`can_${bool_for}_${id}s`]: checked_val,
-      });
-      return;
-    }
-    if (id === "within_event") {
-      setPermissionDetail({
-        ...permissionDetail,
-        [`can_${bool_for}`]: checked_val,
-      });
-      return;
-    }
-    if (id === "page") {
-      setPermissionDetail({
-        ...permissionDetail,
-        roleaccessdetail: {
-          ...permissionDetail.roleaccessdetail,
-          [extractPageInsert(bool_for)]: checked_val,
-        },
-      });
-    }
-  };
-
-  const handleSubmit = async(e: React.FormEvent) => {
-      e.preventDefault();
-    const edit_role_id = eachdetail.id;
-    try{
-        const url = modeltype === "create" ? CREATE_ROLE_WITH_PERMISSION : EDIT_DETAIL_FOR_ROLE_MANAGEMENT(edit_role_id)
-        const response = await fetch(url,{
-            method : modeltype === "create" ? "POST" : "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(permissionDetail)
-        })  
-        if (response.ok) {
-            alert(`Role ${modeltype === "create" ? "created": "updated"} successfully`)
-            window.location.reload()
-        } else {
-            alert(`Failed to ${modeltype === "create" ? "created": "updated"} role`)
-        }
-
-        setModelType(null)
-        setPermissionDetail({
-            rolename: "",
-            can_edit: false,
-            can_create: false,
-            can_delete: false,
-            can_edit_events: false,
-            can_create_events: false,
-            can_delete_events: false,
-            can_edit_users: false,
-            can_create_users: false,
-            can_delete_users: false,
-            can_edit_roles: false,
-            can_create_roles: false,
-            can_delete_roles: false,
-            roleaccessdetail: {
-            home_page: false,
-            event_page: false,
-            user_page: false,
-            profile_page: false,
-            role_page: false,
-            tiesheet_page: false,
-            group_page: false,
-            round_config_page: false,
-            qualifier_page: false,
-            participants_page: false,
-            column_config_page: false,
-            group_stage_standing_page: false,
-            todays_game_page: false,
-            },
-        })
-    }catch (error) {
-      console.error(error)
-      alert("Something went wrong")
-    }
-  };
+export default function RoleModel({ modeltype, setModelType, todisplay, setPermissionDetail, permissionDetail, handleSubmit, handleBoolValue }: RoleModelProps) {
 
   return (
     <ModalWrapper
@@ -193,7 +59,7 @@ export default function RoleModel<T>({ modeltype, setModelType, todisplay, eachd
             permission_name={fr.permission_name}
             label={fr.permission_type}
             todisplay={todisplay}
-            handleBoolValue={handleBoolvalue}
+            handleBoolValue={handleBoolValue}
             permissionDetail={permissionDetail}
           />
         ))}
