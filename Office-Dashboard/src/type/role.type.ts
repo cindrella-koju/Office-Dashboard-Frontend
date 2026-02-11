@@ -1,3 +1,9 @@
+import type { Dispatch, SetStateAction } from "react";
+import type RoleModel from "../components/Model/RoleModel";
+import type { ModelType } from "./main.type";
+import type { RolePayload } from "../services/role.service";
+import type { Permission } from "../hooks/userPermission";
+
 interface RolePermission{
     id : string,
     rolename : string,
@@ -84,4 +90,35 @@ interface RoleAccessDetailType{
     column_config_page: boolean,
     group_stage_standing_page: boolean,
     todays_game_page: boolean,
+}
+
+export interface RenderCheckBoxProps {
+  modeltype: ModelType;
+  id: string;
+  permission_name: string;
+  label: string[];
+  todisplay?: string;
+  handleBoolValue: (id: string, bool_for: string, checked_val: boolean) => void;
+  permissionDetail: typeof RoleModel.prototype.permissionDetail;
+}
+
+export interface RoleModelProps {
+  modeltype: ModelType;
+  setModelType: Dispatch<SetStateAction<ModelType>>;
+  todisplay: string;
+  permissionDetail : RolePayload  
+  setPermissionDetail : Dispatch<SetStateAction<RolePayload>>;
+  handleSubmit : (e:React.FormEvent) => void;
+  handleBoolValue: (id: string, boolFor: string, checked: boolean) => void; 
+}
+
+export interface RoleTableProps{
+    header : string[],
+    details : selectPermsission | undefined,
+    permissions : Permission,
+    dataKeys : string[],
+    filterfor : string,
+    setModelType : Dispatch<SetStateAction<ModelType>>;
+    setSelectedRole : Dispatch<SetStateAction<string | undefined>>;
+    setPopUpDelete : Dispatch<SetStateAction<boolean>>;
 }
