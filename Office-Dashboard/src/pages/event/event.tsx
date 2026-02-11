@@ -1,6 +1,6 @@
 import React, {  useState } from "react";
 import NavBar from "../../components/Navbar";
-import { type Event, type EventResponse } from "./event.type";
+import { type Event, type EventResponse } from "../../type/event.type";
 import { usePermissions, type Permission } from "../../hooks/userPermission";
 import {
   RETRIEVE_EVENT_BY_STATUS,

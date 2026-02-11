@@ -1,23 +1,10 @@
-import type { Dispatch, SetStateAction } from "react";
-import type { ModelType } from "../../type/main.type";
-import type { AddUser } from "../../type/user.type";
+import type { UserModelProps } from "../../type/user.type";
 import ModalWrapper from "../pages/shared/ModelWrapper";
 import InputField from "../signup/InputField";
-import type { Round } from "../../type/group.type";
 import SelectField from "../pages/shared/SelectField";
 import Button from "../ui/Button";
-import type React from "react";
 import { useUser } from "../../hooks/useUser";
 
-interface UserModelProps {
-    mode: ModelType;
-    formData: AddUser;
-    setFormData : Dispatch<SetStateAction<AddUser>>;
-    handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    onClose : () => void;
-    handleSubmit : (e:React.FormEvent) => void;
-    roles : Round[]
-}
 
 export default function UserModel({ mode, formData, handleChange, onClose, roles,setFormData, handleSubmit }: UserModelProps) {
     const {showPassword, togglePasswordVisibility, error} = useUser()

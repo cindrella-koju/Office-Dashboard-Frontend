@@ -1,19 +1,10 @@
-import type { Dispatch, SetStateAction } from "react";
-import type { Event, EventStatus } from "../../pages/event/event.type";
-import type { ModelType } from "../../type/main.type";
+import type { EventModelProps, EventStatus } from "../../type/event.type";
 import ModalWrapper from "../pages/shared/ModelWrapper";
 import SelectField from "../pages/shared/SelectField";
 import InputField from "../signup/InputField";
 import Button from "../ui/Button";
 
-interface EventModelProps{
-    mode : ModelType,
-    onClose : () => void;
-    handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    formData :Event;
-    setFormData : Dispatch<SetStateAction<Event>>;
-    handleSubmit : (e:React.FormEvent) => void;
-}
+
 
 const status = [
     { "id" : "draft", "label" : "Draft"},

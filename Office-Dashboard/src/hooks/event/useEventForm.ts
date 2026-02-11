@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { Event } from "../../pages/event/event.type";
+import type { Event } from "../../type/event.type";
 
 export const useEventForm = (initial?:Event) => {
     const [eventDetail, setEventDetail] = useState<Event>({

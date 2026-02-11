@@ -1,6 +1,6 @@
 import type { ToastType } from "../components/Toast";
 import { CREATE_EVENT, DELETE_EVENT, RETRIEVE_EVENT, UPDATE_EVENT } from "../constants/urls"
-import type { Event, EventResponse } from "../pages/event/event.type";
+import type { Event, EventResponse } from "../type/event.type";
 
 export const getEvent = async():Promise<EventResponse[]> => {
     try{

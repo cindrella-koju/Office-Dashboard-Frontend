@@ -1,3 +1,6 @@
+import type { Dispatch, SetStateAction } from "react"
+import type { ModelType } from "./main.type"
+
 export type EventStatus = "active" | "completed" | "draft" 
 
 type Participants = {
@@ -63,3 +66,12 @@ export type OngoingMatch = {
     round: string;
     court: string;
 };
+
+export interface EventModelProps{
+    mode : ModelType,
+    onClose : () => void;
+    handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    formData :Event;
+    setFormData : Dispatch<SetStateAction<Event>>;
+    handleSubmit : (e:React.FormEvent) => void;
+}

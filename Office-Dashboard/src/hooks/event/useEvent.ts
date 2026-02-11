@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useToast } from "../../context/ToastContext"
-import type { Event, EventResponse } from "../../pages/event/event.type";
+import type { Event, EventResponse } from "../../type/event.type";
 import * as eventService from "../../services/event.service";
 import extractHeaders from "../../utils/extractHeader";
 
