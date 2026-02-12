@@ -14,11 +14,14 @@ export interface Participant {
 }
 
 export interface CreateGroupModalProps {
-    groupId?: string | null;
     mode: 'create' | 'edit';
-    eventId: string;
     setIsModalOpen : Dispatch<SetStateAction<ModelType>>;
-    eachGroupData : EachGroupDetail
+    roundId : string | undefined,
+    setRoundId : Dispatch<SetStateAction<string | undefined>>;
+    formData : FormDataType,
+    setFormData : Dispatch<SetStateAction<FormDataType>>;
+    handleSubmit : (e:React.FormEvent) => void;
+    participants : Participant[]
 }
 
 export interface Stage{
@@ -58,7 +61,9 @@ export interface GroupTableProps{
     handleSave : (groupId : string) => void,
     handleEditUser : ( groupId: string, member : GroupMember) => void,
     handleEditGroup : (groupTd : string ) => void,
-    setEachGroupData : Dispatch<SetStateAction<EachGroupDetail>>
+    setEachGroupData : Dispatch<SetStateAction<EachGroupDetail>>;
+    handleDeleteGroup : (groupTd : string ) => void,
+    handleDeleteMember : ( groupId: string, member : GroupMember) => void,
 }
 
 export interface EachGroupDetail{
@@ -67,4 +72,16 @@ export interface EachGroupDetail{
     stage_id : string,
     stage_name : string,
     participants_id : string[]
+}
+
+export interface FormDataType{
+    group_name : string,
+    round_id : string,
+    participants_ids : string[] 
+}
+
+export interface PayloadType{
+    name : string,
+    round_id : string,
+    participants_ids : string[] 
 }

@@ -4,7 +4,20 @@ import { extractColumnFieldsFromMembers, extractColumnsAndValues } from "../../u
 
 
 
-export default function GroupTable({groupData, permissions, editingUserId, editedUserData, handleUserCellChange, handleCancel, handleEditUser, handleSave, handleEditGroup, setEachGroupData}:GroupTableProps){
+export default function GroupTable({
+    groupData, 
+    permissions, 
+    editingUserId, 
+    editedUserData, 
+    handleUserCellChange, 
+    handleCancel, 
+    handleEditUser, 
+    handleSave, 
+    handleEditGroup, 
+    setEachGroupData,
+    handleDeleteGroup,
+    handleDeleteMember
+}:GroupTableProps){
     return(
         <div className="space-y-8">
             {
@@ -37,7 +50,9 @@ export default function GroupTable({groupData, permissions, editingUserId, edite
                                                 }
                                                 {
                                                     permissions.canDelete && (
-                                                        <Button varient="danger">Delete Group</Button>
+                                                        <Button varient="danger" onClick={() => {
+                                                            handleDeleteGroup(group.group_id)
+                                                        }}>Delete Group</Button>
                                                     )
                                                 }
                                             </div>
@@ -115,7 +130,7 @@ export default function GroupTable({groupData, permissions, editingUserId, edite
                                                                                             }
                                                                                             {
                                                                                                 permissions.canDelete && (
-                                                                                                    <Button size="sm" varient="danger">
+                                                                                                    <Button size="sm" varient="danger" onClick={() => handleDeleteMember(group.group_id,originalMember)}>
                                                                                                         Delete
                                                                                                     </Button>
                                                                                                 )

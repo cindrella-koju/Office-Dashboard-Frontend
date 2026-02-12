@@ -1,99 +1,83 @@
-import { useState } from "react";
 import EventNavBar from "../../../components/EventNavbar";
 import { PageContent, PageHeader, PageLayout } from "../../../components/layout/PageLayout";
 import Button from "../../../components/ui/Button";
 import Card from "../../../components/ui/Card";
-import { RETRIEVE_GROUP_AND_MEMBERS, UPDATE_GROUP_TABLE } from "../../../constants/urls";
-import useFetch from "../../../hooks/useFetch";
-import { usePermissions, type EventPermission } from "../../../hooks/userPermission";
-import type { EachGroupDetail, GroupMember, Stage } from "../../../type/group.type";
 import CreateGroupModal from "../../../components/Model/GroupModel";
 import GroupTable from "../../../components/table/GroupTable";
 import EmptyMessage from "../../../components/ui/EmptyMessage";
 import { MdGroups } from "react-icons/md";
-import type { ModelType } from "../../../type/main.type";
+import { useGroup } from "../../../hooks/group/useGroup";
+import type React from "react";
+import { useEffect } from "react";
+import ConfirmationModal from "../../../components/Model/ConfirmationPopUp";
 
 
 
 export default function Groups(){
     const eventId = localStorage.getItem("eventId")
-    const permissions = usePermissions<EventPermission>({withinevent :true});
-    const { data: groupsData,refetch } = useFetch<Stage[]>(RETRIEVE_GROUP_AND_MEMBERS(eventId ? eventId : ""));
-    const [editingUserId, setEditingUserId] = useState<{ groupId: string; userId: string } | null>(null);
-    const [editedUserData, setEditedUserData] = useState<GroupMember | null>(null);
-    const [modalMode, setModalMode] = useState<ModelType>(null);
-    const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null);
-    const [eachGroupData,setEachGroupData] = useState<EachGroupDetail>({
-        group_id : "",
-        name : "",
-        stage_id : "",
-        stage_name : "",
-        participants_id : []
-    })
+    const {
+        groupdata,
+        permissions,
+        handleSave,
+        handleUserCellChange,
+        handleEditUser,
+        handleCreateGroup,
+        editingUserId,
+        editedUserData,
+        handleEditGroup,
+        handleCancel,
+        modalMode,
+        selectedGroupId,
+        setModalMode,
+        setEachGroupData,
+        roundId,
+        setRoundId,
+        formData,
+        setFormData,
+        createGroup,
+        updateGroup,
+        participants,
+        fetchQualifierNotInGroupInGroup,
+        fetchQualifierNotInGroupInGroupForEdits,
+        handleDeleteGroup,
+        handleDeleteMember,
+        popUpDelete,
+        setPopUpDelete,
+        deleteGroup,
+        deleteGroupMember,
+        setDeleteType,
+        deleteType,
+        setEditingUserId,
+        setEditedUserData
+    } = useGroup()
 
-    const handleEditUser = (groupId: string, member: GroupMember) => {
-        setEditingUserId({ groupId, userId: member.user_id });
-        setEditedUserData(JSON.parse(JSON.stringify(member)));
-    };
+    const handleSubmit = async ( e : React.FormEvent) => {
+        if(!eventId) return;
+        e.preventDefault();
+        const payload = {
+            name : formData.group_name,
+            round_id : formData.round_id,
+            participants_ids : formData.participants_ids
 
-    const handleUserCellChange = (columnField: string, value: string) => {
-        if (!editedUserData) return;
-        const updatedUser = { ...editedUserData };
-        const columnIndex = updatedUser.columns.findIndex((col) => col.column_field === columnField);
-        
-        if (columnIndex !== -1) {
-            updatedUser.columns[columnIndex].value = value;
-        }        
-        setEditedUserData(updatedUser);
-    };
-
-    const handleSave = async (groupId : string) => {
-        if (!editedUserData) return;
-
-        try {
-            const membersData = [{
-                user_id: editedUserData.user_id,
-                columns: editedUserData.columns.map((col) => ({
-                    column_id: col.column_id,
-                    value: col.value
-                }))
-            }];
-            
-            const response = await fetch(UPDATE_GROUP_TABLE(groupId), {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ members: membersData })
-            });
-            
-            if (response.ok) {
-                alert('User data updated successfully!');
-                refetch()
-            } else {
-                alert('Failed to update user data.');
-            }
-            
-            setEditingUserId(null);
-            setEditedUserData(null);
-        } catch (error) {
-            console.error('Error saving user data:', error);
-            alert('Failed to save changes. Please try again.');
         }
+        if(modalMode  === "create"){
+            createGroup( payload)
+        } 
+        if(modalMode  === "edit"){
+            if(!selectedGroupId) return;
+            updateGroup( selectedGroupId,payload)
+        } 
+        setModalMode(null)
     }
 
-    const handleCancel = () => {
-        setEditingUserId(null);
-        setEditedUserData(null);
-    }
+    useEffect(() => {
+        if(!roundId) return;
 
-    const handleCreateGroup = () => {
-        setModalMode('create');
-        setSelectedGroupId(null);
-    };
-
-    const handleEditGroup = (groupId: string) => {
-        setModalMode('edit');
-        setSelectedGroupId(groupId);
-    };
+        modalMode === "create" ? 
+        fetchQualifierNotInGroupInGroup(roundId)
+        : 
+        fetchQualifierNotInGroupInGroupForEdits(roundId,selectedGroupId ? selectedGroupId : "")
+    },[roundId, selectedGroupId])
 
     return(
         <PageLayout sidebar={<EventNavBar/>}>
@@ -107,11 +91,11 @@ export default function Groups(){
                     }
                 />
                 {
-                groupsData && groupsData.length > 0 &&
+                groupdata && groupdata.length > 0 &&
                     <Card className="p-4 sm:p-6">
                         <div className="space-y-8">
                             <GroupTable
-                                groupData={groupsData}
+                                groupData={groupdata}
                                 permissions={permissions}
                                 editingUserId={editingUserId}
                                 editedUserData={editedUserData}
@@ -121,6 +105,8 @@ export default function Groups(){
                                 handleEditUser={handleEditUser}
                                 handleEditGroup={handleEditGroup}
                                 setEachGroupData={setEachGroupData}
+                                handleDeleteGroup={handleDeleteGroup}
+                                handleDeleteMember={handleDeleteMember}
                             />
                         </div>
                     </Card>
@@ -129,21 +115,59 @@ export default function Groups(){
                 {
                     eventId && modalMode!= null &&(
                         <CreateGroupModal 
-                            // isOpen={isModalOpen} 
-                            // onClose={() => setIsModalOpen(false)}
-                            groupId={selectedGroupId}
                             mode={modalMode}
-                            eventId={eventId}
                             setIsModalOpen={setModalMode}
-                            eachGroupData={eachGroupData}
+                            formData={formData}
+                            setFormData={setFormData}
+                            roundId={roundId}
+                            setRoundId={setRoundId}
+                            handleSubmit={handleSubmit}
+                            participants={participants ? participants : [] }
                         />
                     )
                 }
 
                 {
-                    groupsData && groupsData.length === 0 && (
+                    groupdata && groupdata.length === 0 && (
                         <EmptyMessage message="No Group Yet" submessage="Create Group to see them appear hear" icon={<MdGroups size={80} />}/>
                     )
+                }
+
+                {
+                    selectedGroupId && deleteType === "group" &&
+                    <ConfirmationModal
+                        isOpen={popUpDelete}
+                        title="Delete"
+                        message={`Are you sure you want to delete this Group?`}
+                        onCancel={() => {
+                            setPopUpDelete(false)
+                            setDeleteType(null)
+                        }}
+                        onConfirm={() => {
+                        deleteGroup (selectedGroupId)
+                        setPopUpDelete(false)
+                        setDeleteType(null)
+                        }}
+                    />
+                }
+                {
+                    editingUserId && deleteType === "member" &&
+                    <ConfirmationModal
+                        isOpen={popUpDelete}
+                        title="Delete"
+                        message={`Are you sure you want to delete member ${editedUserData?.username}`}
+                        onCancel={() => {
+                            setPopUpDelete(false)
+                            setDeleteType(null)
+                            setEditingUserId(null)
+                            setEditedUserData(null)
+                        }}
+                        onConfirm={() => {
+                        deleteGroupMember(editingUserId.groupId,editingUserId.userId)
+                        setPopUpDelete(false)
+                        setDeleteType(null)
+                        }}
+                    />
                 }
             </PageContent>
         </PageLayout>

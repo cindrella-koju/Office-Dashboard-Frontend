@@ -10,6 +10,7 @@ interface SelectFieldProps {
   value: string
   onChange: (val: string) => void
   required?: boolean
+  disable? : boolean
 }
 
 export default function SelectField({
@@ -18,7 +19,8 @@ export default function SelectField({
   value,
   onChange,
   name,
-  required
+  required,
+  disable
 }: SelectFieldProps) {
   return (
     <div className="mb-4">
@@ -29,6 +31,7 @@ export default function SelectField({
       <select
         value={value}
         required={required}
+        disabled={disable}
         onChange={(e) => onChange(e.target.value)}
         name={name}
         className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-800
