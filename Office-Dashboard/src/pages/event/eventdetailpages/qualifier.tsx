@@ -1,77 +1,40 @@
-import { useState, useCallback } from "react";
 import EventNavBar from "../../../components/EventNavbar";
-import { usePermissions, type EventPermission } from "../../../hooks/userPermission";
 import QualifierModule from "../../../components/Model/QualifierModel";
-import useFetch from "../../../hooks/useFetch";
-import { RETRIEVE_QUALIFIER_BY_EVENT } from "../../../constants/urls";
 import { PageContent, PageHeader, PageLayout } from "../../../components/layout/PageLayout";
 import Button from "../../../components/ui/Button";
 import { Card } from "../../../components/ui/Card";
 import { UserToolbar, UserCard } from "../../../components/shared";
-import type { ViewMode, UserCardData } from "../../../components/shared";
+import type { UserCardData } from "../../../components/shared";
 import EmptyMessage from "../../../components/ui/EmptyMessage";
 import { IoPeople } from "react-icons/io5";
-import { type ModelType } from "../../../type/main.type";
+import { useQualifier } from "../../../hooks/qualifier/useQualifier";
 
-interface EachQualifier {
-    user_id: number;
-    username: string;
-}
-
-interface QualifierResponse {
-    round_name: string;
-    qualifier: EachQualifier[];
-}
 
 
 export default function Qualifier() {
-    // Get event ID from local storage
-    const eventID = localStorage.getItem("eventId");
+    const {
+        permissions,
+        qualifiers,
+        handleViewModeChange,
+        viewMode,
+        handleSearchChange,
+        handleOpenAddModal,
+        searchQuery,
+        modelType,
+        setModelType,
+        getFilteredQualifiers,
+        hasAnyQualifiers,
+        handleRemoveQualifier,
+        createQualifier,
+        roundId,
+        selected,
+        setSelected
+    } = useQualifier()
     
-    // Hooks
-    const permissions = usePermissions<EventPermission>({withinevent: true});
-    const { data: qualifiers } = useFetch<QualifierResponse[]>(
-        eventID ? RETRIEVE_QUALIFIER_BY_EVENT(eventID) : ""
-    );
-    
-    // Local state
-    const [viewMode, setViewMode] = useState<ViewMode>('grid');
-    const [searchQuery, setSearchQuery] = useState<string>('');
-    const [modelType, setModelType] = useState<ModelType>(null)
-    // const [showAddModal, setShowAddModal] = useState<boolean>(false);
-
-    // Handlers
-    const handleViewModeChange = useCallback((mode: ViewMode) => {
-        setViewMode(mode);
-    }, []);
-
-    const handleSearchChange = useCallback((query: string) => {
-        setSearchQuery(query);
-    }, []);
-
-    const handleOpenAddModal = useCallback(() => {
-        // setShowAddModal(true);
-        setModelType("create")
-    }, []);
-
-    const handleRemoveQualifier = useCallback((userId: number | string) => {
-        // TODO: Implement remove qualifier functionality
-        console.log('Remove qualifier:', userId);
-    }, []);
-
-    // Filter qualifiers based on search query
-    const getFilteredQualifiers = (qualifierList: EachQualifier[]) => {
-        if (!searchQuery) return qualifierList;
-        return qualifierList.filter((q) =>
-            q.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            String(q.user_id).includes(searchQuery)
-        );
-    };
-
-    // Check if there are any qualifiers after filtering
-    const hasAnyQualifiers = qualifiers?.some(
-        (round) => getFilteredQualifiers(round.qualifier).length > 0
-    );
+    const handleSubmit =  async (e: React.FormEvent) => {
+        e.preventDefault()
+        await createQualifier(roundId, { user_id: selected })
+    }
 
     const gridClassName = viewMode === "grid" 
         ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4"
@@ -169,8 +132,12 @@ export default function Qualifier() {
 
                 {/* Add Qualifier Modal */}
                 {modelType!=null && (
-                    // <EventDetailModule modelType={modelType} setModelType={setModelType} title="Qualifier"/>
-                    <QualifierModule eventID={eventID} setModelType={setModelType}/>
+                    <QualifierModule 
+                        selected={selected}
+                        setModelType={setModelType}
+                        setSelected={setSelected}
+                        handleSubmit={handleSubmit}
+                    />
                 )}
             </PageContent>
         </PageLayout>

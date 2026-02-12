@@ -1,63 +1,26 @@
-import { useState, type Dispatch, type SetStateAction } from "react"
-import useFetch from "../../hooks/useFetch"
-import {
-  ADD_QUALIFIER,
-  GET_ROUNDS_BY_EVENT,
-  RETRIEVE_USER_PARTICIPANT_NOT_IN_QUALIFIER
-} from "../../constants/urls"
-import type { Round } from "../../type/group.type"
+import {  type Dispatch, type SetStateAction } from "react"
 import ModalWrapper from "../pages/shared/ModelWrapper"
 import MultiSelect from "../pages/shared/MultiSelect"
 import type { ModelType } from "../../type/main.type"
+import { useQualifier } from "../../hooks/qualifier/useQualifier"
 
 interface QualifierModelType {
-  eventID: string | null,
-  setModelType : Dispatch<SetStateAction<ModelType>>
+  selected : string[],
+  setModelType : Dispatch<SetStateAction<ModelType>>,
+  handleSubmit : (e:React.FormEvent) => void;
+  setSelected : Dispatch<SetStateAction<string[]>>
 }
 
-interface Participant {
-  user_id: string
-  username: string
-}
 
-export default function QualifierModule({ eventID, setModelType }: QualifierModelType) {
-  const [roundId, setRoundId] = useState<string>("")
-  const [selected, setSelected] = useState<string[]>([])
+export default function QualifierModule({ selected,setModelType, setSelected, handleSubmit }: QualifierModelType) {
 
-  const { data: rounds } = useFetch<Round[]>(
-    eventID ? GET_ROUNDS_BY_EVENT(eventID) : ""
-  )
-
-  const { data: participants } = useFetch<Participant[]>(
-    eventID && roundId
-      ? RETRIEVE_USER_PARTICIPANT_NOT_IN_QUALIFIER(eventID, roundId)
-      : ""
-  )
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-
-    try {
-      const res = await fetch(
-        eventID && roundId ? ADD_QUALIFIER(eventID, roundId) : "",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ user_id: selected })
-        }
-      )
-
-      if (res.ok) {
-        alert("Qualifier added successfully!")
-        window.location.reload()
-      } else {
-        alert("Failed to add qualifier")
-      }
-    } catch (err) {
-      console.error(err)
-      alert("Something went wrong")
-    }
-  }
+  const {
+    rounds,
+    participants,
+    roundId,
+    setRoundId
+  } = useQualifier()
+  
 
   return (
     <ModalWrapper title="Add Qualifier" onClose={() => setModelType(null)}>

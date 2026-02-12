@@ -3,6 +3,7 @@ import { CREATE_ROUND, DELETE_ROUND, EDIT_ROUND, GET_ROUNDS_BY_EVENT, RETRIEVE_R
 import type { Round } from "../type/group.type";
 import type { RoundData } from "../type/round.type";
 
+
 export const getRound = async(eventId:string):Promise<RoundData[]> => {
     try{
         const response = await fetch(RETRIEVE_ROUNDS(eventId));
