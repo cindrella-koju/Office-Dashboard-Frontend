@@ -8,6 +8,7 @@ import type { ViewMode } from "../../components/shared";
 import type { ModelType } from "../../type/main.type";
 import { useToast } from "../../context/ToastContext";
 
+
 export const useQualifier = () => {
     const { showToast } = useToast()
     const eventID = localStorage.getItem("eventId");

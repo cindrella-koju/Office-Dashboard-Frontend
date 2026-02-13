@@ -3,6 +3,7 @@ import ModalWrapper from "../pages/shared/ModelWrapper";
 import type { PlayerInfoType } from "../../type/tiesheet.type";
 import Button from "../ui/Button";
 import { CREATE_MATCH } from "../../constants/urls";
+import SelectField from "../pages/shared/SelectField";
 
 interface AddMatchModalProps {
   player1: PlayerInfoType;
@@ -19,6 +20,19 @@ export default function AddMatchModal({
   setOpenStartGame,
 //   refetchMatches,
 }: AddMatchModalProps) {
+  console.log("Player 1:", player1)
+  console.log("Player 2:", player2)
+  const statusOptions = [
+    { label: "Scheduled", value: "scheduled" },
+    { label: "Completed", value: "completed" },
+    { label : "Ongoing", value : "ongoing"}
+  ] as const
+
+  const winnerOptions = [
+    { label: player1.username, value: player1.user_id },
+    { label: player2.username, value: player2.user_id },
+  ] as const
+
   const [showPoints, setShowPoints] = useState(false);
   const [showWinner, setShowWinner] = useState(true);
 
@@ -133,6 +147,25 @@ export default function AddMatchModal({
       onClose={() => setOpenStartGame(false)}
     >
       <form className="space-y-6" onSubmit={handleSubmit}>
+        <SelectField
+          label="Status"
+          required
+          value="SDSD"
+          options={[...statusOptions]}
+          onChange={val =>
+            console.log("VAlue")
+          }
+        />
+
+        <SelectField
+          label="Overall Winner"
+          required
+          value="SDSD"
+          options={[...winnerOptions]}
+          onChange={val =>
+            console.log("VAlue")
+          }
+        />
         {/* Options */}
         <div className="bg-gray-50 border border-gray-200 rounded-xl p-5 shadow-sm">
           <p className="text-sm font-medium text-gray-700 mb-3">

@@ -8,9 +8,7 @@ interface MatchHeaderProps {
   status: "scheduled" | "completed" | "ongoing";
   onEdit?: () => void;
   permissions: EventPermission;
-  tiesheetfrom: string;
   tiesheetId: string;
-  refetchMatches: () => void;
   player1: PlayerInfoType;
   player2: PlayerInfoType;
   setShowAddDetail? : Dispatch<SetStateAction<boolean>>
@@ -22,7 +20,6 @@ export default function MatchHeader({
   status,
   onEdit,
   permissions,
-  tiesheetfrom,
   setShowAddDetail
 }: MatchHeaderProps) {
 
@@ -59,18 +56,26 @@ export default function MatchHeader({
       
       <span className="text-xs text-gray-400">{matchTime}</span>
 
-      {(status === "scheduled" || status === "ongoing") && permissions.canEdit && tiesheetfrom === "tiesheet" && (
+      {(status === "scheduled" || status === "ongoing") && permissions.canEdit && (
         <button
           className="text-xs font-medium text-blue-600 hover:text-blue-800 hover:underline transition-colors"
           onClick={onEdit}
         >
-          Edit
+          Edit Schedule
+        </button>
+      )}
+
+      {(status === "scheduled" || status === "ongoing") && permissions.canEdit && (
+        <button
+          className="text-xs font-medium text-blue-600 hover:text-blue-800 hover:underline transition-colors"
+          onClick={onEdit}
+        >
+          Edit Score
         </button>
       )}
 
       {status === "scheduled" &&
-        permissions.canEdit  &&
-        tiesheetfrom === "todaystiesheet" && (
+        permissions.canEdit  && (
           <button
             className="text-xs font-medium text-blue-600 hover:text-blue-800 hover:underline transition-colors"
             onClick={handleStart}

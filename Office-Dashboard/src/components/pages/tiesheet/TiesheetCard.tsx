@@ -15,9 +15,7 @@ interface TiesheetCardProps {
   players: PlayerInfoType[];
   onEdit?: (id: string) => void;
   permissions : EventPermission,
-  tiesheetfrom : string,
   tiesheetId : string,
-  refetchMatches: () => void;
   setShowAddDetail? : Dispatch<SetStateAction<boolean>>
 }
 
@@ -30,9 +28,7 @@ export default function TiesheetCard({
   players,
   onEdit,
   permissions ,
-  tiesheetfrom,
   tiesheetId,
-  refetchMatches,
   setShowAddDetail
 }: TiesheetCardProps) {
   const matchDate = new Date(`${scheduledDate}T${scheduledTime}`);
@@ -50,9 +46,7 @@ export default function TiesheetCard({
         onEdit={onEdit ? () => onEdit(id) : undefined}
         status = {status}
         permissions={permissions}
-        tiesheetfrom={tiesheetfrom}
         tiesheetId={tiesheetId}
-        refetchMatches={refetchMatches}
         player1={players[0]}
         player2={players[1]}
         setShowAddDetail={setShowAddDetail}

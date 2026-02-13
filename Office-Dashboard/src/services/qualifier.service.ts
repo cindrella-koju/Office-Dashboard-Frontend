@@ -1,5 +1,5 @@
 import type { ToastType } from "../components/Toast";
-import { ADD_QUALIFIER, DELETE_QUALIFIER, RETRIEVE_QUALIFIER_BY_EVENT, RETRIEVE_USER_PARTICIPANT_NOT_IN_QUALIFIER } from "../constants/urls";
+import { ADD_QUALIFIER, DELETE_QUALIFIER, RETRIEVE_QUALIFIER_BY_EVENT, RETRIEVE_QUALIFIER_BY_ROUND, RETRIEVE_USER_PARTICIPANT_NOT_IN_QUALIFIER } from "../constants/urls";
 import type { Participant, QualifierPayload, QualifierResponse } from "../type/qualifier.type";
 
 export const getQualifier = async(eventId : string):Promise<QualifierResponse[]> => {
@@ -11,6 +11,19 @@ export const getQualifier = async(eventId : string):Promise<QualifierResponse[]>
         return (await response.json()) as QualifierResponse[]
     } catch(err){
         console.error("Error fetching Qualifier Detail:", err)
+        throw err; 
+    }
+}
+
+export const getQualifierByRound = async(roundID : string) : Promise<QualifierResponse[]> => {
+    try{
+        const response = await fetch(RETRIEVE_QUALIFIER_BY_ROUND(roundID))
+        if(!response.ok){
+            throw new Error("Retrieve Qualifier By Round Request Failed")
+        }
+        return (await response.json()) as QualifierResponse[]
+    } catch(err){
+        console.error("Error fetching Qualifier By Round Detail:", err)
         throw err; 
     }
 }
