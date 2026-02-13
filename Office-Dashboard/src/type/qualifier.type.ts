@@ -1,6 +1,6 @@
 export interface EachQualifier {
     qualifier_id : string
-    user_id: number;
+    user_id: string;
     username: string;
 }
 

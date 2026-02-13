@@ -1,3 +1,4 @@
+import type { Dispatch, SetStateAction } from "react";
 import { Card } from "../ui/Card";
 import UserCard from "./UserCard";
 import type { UserCardData, ViewMode } from "./UserCard.types";
@@ -13,19 +14,24 @@ interface UserListProps<T extends UserCardData> {
     hoverColor?: string;
     title?: string;
     showCount?: boolean;
+    setPopUpDelete : Dispatch<SetStateAction<boolean>>;
+    setSelectedUser : Dispatch<SetStateAction<string>>;
+    setParticipantId : Dispatch<SetStateAction<string >>
 }
 
 export default function UserList<T extends UserCardData>({
     users,
     viewMode,
     searchQuery,
-    onRemoveUser,
     canDelete = true,
     emptyTitle = "No Users Yet",
     emptyDescription = "Add users to see them appear here.",
     hoverColor = "blue",
     title,
     showCount = true,
+    setPopUpDelete,
+    setSelectedUser,
+    setParticipantId,
 }: UserListProps<T>) {
     // Filter users based on search query
     const filteredUsers = users?.filter((user) =>
@@ -118,9 +124,13 @@ export default function UserList<T extends UserCardData>({
                     <UserCard
                         key={user.user_id}
                         user={user}
-                        onRemove={onRemoveUser}
+                        onClick={() => {
+                            setSelectedUser(user.username)
+                            setParticipantId(user.user_id)
+                        }}
                         canDelete={canDelete}
                         hoverColor={hoverColor}
+                        setPopUpDelete={setPopUpDelete}
                     />
                 ))}
             </div>

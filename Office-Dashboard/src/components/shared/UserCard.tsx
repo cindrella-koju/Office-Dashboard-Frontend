@@ -1,16 +1,10 @@
-import { useMemo, type Dispatch, type SetStateAction } from "react";
+import { useMemo  } from "react";
 import { RiDeleteBin6Fill } from "react-icons/ri";
 import { getInitials, getRandomAvatarColor } from "./avatarUtils";
-import type { UserCardData } from "./UserCard.types";
+import type {  UserCardProps } from "./UserCard.types";
 
 
-interface UserCardProps {
-    user: UserCardData;
-    canDelete?: boolean;
-    hoverColor?: string;
-    setPopUpDelete : Dispatch<SetStateAction<boolean>>;
-    onClick : () => void;
-}
+
 
 export default function UserCard({ 
     user, 

@@ -1,14 +1,13 @@
-import { useState, useCallback } from "react";
 import EventNavBar from "../../../components/EventNavbar";
-import { usePermissions, type EventPermission } from "../../../hooks/userPermission";
 import ParticipantsModule from "../../../components/Model/ParticipantsModel";
-import useFetch from "../../../hooks/useFetch";
-import { RETRIEVE_PARTICIPANTS } from "../../../constants/urls";
 import { PageContent, PageHeader, PageLayout } from "../../../components/layout/PageLayout";
 import Button from "../../../components/ui/Button";
 import { UserToolbar, UserList } from "../../../components/shared";
-import type { ViewMode, UserCardData } from "../../../components/shared";
-import type { ModelType } from "../../../type/main.type";
+import type { UserCardData } from "../../../components/shared";
+import { useParticipants } from "../../../hooks/participants/useParticipants";
+import type React from "react";
+import { useState } from "react";
+import ConfirmationModal from "../../../components/Model/ConfirmationPopUp";
 
 // Re-export getInitials for backward compatibility
 export { getInitials } from "../../../components/shared";
@@ -19,7 +18,7 @@ interface ParticipantsInfo {
     email: string;
 }
 
-export interface Participants {
+export interface EventParticipants {
     participants: ParticipantsInfo[];
 }
 
@@ -30,37 +29,31 @@ const transformToUserCard = (participant: ParticipantsInfo): UserCardData => ({
 });
 
 export default function Participants() {
-    const eventID = localStorage.getItem("eventId");
-    const { data: participants } = useFetch<Participants>(
-        eventID ? RETRIEVE_PARTICIPANTS(eventID) : ""
-    );
-    const permissions = usePermissions<EventPermission>({withinevent : true});
-
-    // Local state
-    const [viewMode, setViewMode] = useState<ViewMode>("grid");
-    const [searchQuery, setSearchQuery] = useState<string>("");
-    // const [showAddModal, setShowAddModal] = useState<boolean>(false);
-    const [modelType, setModelType] = useState<ModelType>(null)
-
-    // Handlers
-    const handleViewModeChange = useCallback((mode: ViewMode) => {
-        setViewMode(mode);
-    }, []);
-
-    const handleSearchChange = useCallback((query: string) => {
-        setSearchQuery(query);
-    }, []);
-
-    const handleOpenAddModal = useCallback(() => {
-        setModelType("create")
-    }, []);
-
-    const handleRemoveParticipant = () => {
-        console.log("Dummy")
-    }
-    // Transform participants to UserCardData format
+    const{
+        permissions,
+        participants,
+        viewMode,
+        searchQuery,
+        handleOpenAddModal,
+        handleSearchChange,
+        handleViewModeChange,
+        modelType,
+        selected,
+        setSelected,
+        setModelType,
+        createParticipants,
+        deleteParticipants
+    } = useParticipants()
+    const [popUpDelete, setPopUpDelete] = useState<boolean>(false);
+    const [participantId, setParticipantId] = useState<string>("")
+    const [selectedUser, setSelectedUser ] = useState<string>("")
     const userCardData = participants?.participants.map(transformToUserCard) || null;
-
+    const handleSubmit = async(e:React.FormEvent) => {
+        e.preventDefault()
+        await createParticipants({ user_id : selected })
+        setModelType(null)
+        setSelected([])
+    }
     return (
         <PageLayout sidebar={<EventNavBar />}>
             <PageContent>
@@ -93,19 +86,40 @@ export default function Participants() {
                     users={userCardData}
                     viewMode={viewMode}
                     searchQuery={searchQuery}
-                    onRemoveUser={handleRemoveParticipant}
                     canDelete={permissions.canDelete}
                     emptyTitle="No Participants Yet"
                     emptyDescription="Add participants to see them appear here."
                     hoverColor="emerald"
                     title="Participants"
                     showCount={true}
+                    setPopUpDelete={setPopUpDelete}
+                    setSelectedUser={setSelectedUser}
+                    setParticipantId={setParticipantId}
                 />
 
                 {/* Add Participant Modal */}
                 { modelType!=null && (
-                    <ParticipantsModule eventId={eventID} setModelType={setModelType}/>
+                    <ParticipantsModule 
+                        selected={selected}
+                        setSelected={setSelected}
+                        setModelType={setModelType}
+                        handleSubmit={handleSubmit}
+                    />
                 )}
+
+                {
+                    participantId && 
+                    <ConfirmationModal
+                        isOpen={popUpDelete}
+                        title="Delete"
+                        message={`Are you sure you want to selete ${selectedUser} from Participants?`}
+                        onCancel={() => setPopUpDelete(false)}
+                        onConfirm={() => {
+                        deleteParticipants(participantId)
+                        setPopUpDelete(false)
+                        }}
+                    />
+                }
             </PageContent>
         </PageLayout>
     );

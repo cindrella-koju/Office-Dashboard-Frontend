@@ -40,8 +40,9 @@ export const EDIT_ROUND = (stageId : string) => `${BASE_URL}/event/stage/${stage
 export const DELETE_ROUND = (stageId : string) => `${BASE_URL}/event/stage/${stageId}`
 
 export const RETRIEVE_PARTICIPANTS = (eventId : string) => `${BASE_URL}/participant?event_id=${eventId}`
-export const RETEIEVE_NOT_PARTICIPANTS = (eventId : string) => `${BASE_URL}/participant/not-participants?event_id=${eventId}`
+export const RETRIEVE_NOT_PARTICIPANTS = (eventId : string) => `${BASE_URL}/participant/not-participants?event_id=${eventId}`
 export const ADD_PARTICIPANTS = (eventID : string) =>  `${BASE_URL}/participant?event_id=${eventID}`
+export const DELETE_PARTICIPANTS = (eventId: string, userId:string) => `${BASE_URL}/participant/${userId}/event/${eventId}`
 
 export const ADD_QUALIFIER = (eventId:string,roundId:string) =>`${BASE_URL}/event/qualifier?event_id=${eventId}&stage_id=${roundId}`
 export const RETRIEVE_QUALIFIER_BY_EVENT = (eventId : string) => `${BASE_URL}/event/qualifier/event?event_id=${eventId}`

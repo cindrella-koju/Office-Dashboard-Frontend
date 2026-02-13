@@ -127,7 +127,7 @@ export default function Qualifier() {
                                         {filteredQualifiers.map((q) => (
                                             <UserCard
                                                 key={q.user_id}
-                                                user={q as UserCardData}
+                                                user={q}
                                                 canDelete={permissions.canDelete}
                                                 hoverColor="blue"
                                                 setPopUpDelete={setPopUpDelete}
@@ -158,14 +158,14 @@ export default function Qualifier() {
                 )}
 
                 {
-                    selectedQualifier && 
+                    selectedQualifier  && 
                     <ConfirmationModal
                         isOpen={popUpDelete}
                         title="Delete"
                         message={`Are you sure you want to delete ${selectedQualifier.username} from round ${roundName}`}
                         onCancel={() => setPopUpDelete(false)}
                         onConfirm={() => {
-                        deleteQualifier(selectedQualifier.qualifier_id)
+                        deleteQualifier(selectedQualifier.qualifier_id ? selectedQualifier.qualifier_id : "")
                         setPopUpDelete(false)
                         }}
                     />

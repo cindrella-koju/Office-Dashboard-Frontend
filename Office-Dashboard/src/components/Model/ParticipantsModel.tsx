@@ -1,58 +1,36 @@
-import { useState, type Dispatch, type SetStateAction } from "react"
-import useFetch from "../../hooks/useFetch"
-import {
-  ADD_PARTICIPANTS,
-  RETEIEVE_NOT_PARTICIPANTS
-} from "../../constants/urls"
+import {  type Dispatch, type SetStateAction } from "react"
 import ModalWrapper from "../pages/shared/ModelWrapper"
 import MultiSelect from "../pages/shared/MultiSelect"
 import type { ModelType } from "../../type/main.type"
+import { useParticipants } from "../../hooks/participants/useParticipants"
 
 
 interface ParticipantsModuleType {
-  eventId: string | null,
-  setModelType : Dispatch<SetStateAction<ModelType>>
+  selected : string[],
+  setSelected : Dispatch<SetStateAction<string[]>>,
+  setModelType : Dispatch<SetStateAction<ModelType>>;
+  handleSubmit : (e:React.FormEvent) => void;
 }
 
-interface User {
+export interface User {
   id: string
   username: string
 }
 
-export default function ParticipantsModule({ eventId , setModelType}: ParticipantsModuleType) {
-  const [selected, setSelected] = useState<string[]>([])
+export default function ParticipantsModule({ selected, setSelected, setModelType, handleSubmit }: ParticipantsModuleType) {
 
-  const { data: users } = useFetch<User[]>(
-    eventId ? RETEIEVE_NOT_PARTICIPANTS(eventId) : ""
-  )
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const {
+    users
+  } = useParticipants()
 
-    try {
-      const res = await fetch(
-        eventId ? ADD_PARTICIPANTS(eventId) : "",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ user_id: selected })
-        }
-      )
 
-      if (res.ok) {
-        alert("Participants added successfully!")
-        window.location.reload()
-      } else {
-        alert("Failed to add participants")
-      }
-    } catch (err) {
-      console.error(err)
-      alert("Something went wrong")
-    }
-  }
 
   return (
-    <ModalWrapper title="Add Participants" onClose={() => setModelType(null)}>
+    <ModalWrapper title="Add Participants" onClose={() => {
+      setModelType(null)
+      setSelected([])
+    }}>
       <form onSubmit={handleSubmit}>
         <MultiSelect
           label="Players"
