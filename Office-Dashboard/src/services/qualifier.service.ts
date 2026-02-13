@@ -1,5 +1,5 @@
 import type { ToastType } from "../components/Toast";
-import { ADD_QUALIFIER, RETRIEVE_QUALIFIER_BY_EVENT, RETRIEVE_USER_PARTICIPANT_NOT_IN_QUALIFIER } from "../constants/urls";
+import { ADD_QUALIFIER, DELETE_QUALIFIER, RETRIEVE_QUALIFIER_BY_EVENT, RETRIEVE_USER_PARTICIPANT_NOT_IN_QUALIFIER } from "../constants/urls";
 import type { Participant, QualifierPayload, QualifierResponse } from "../type/qualifier.type";
 
 export const getQualifier = async(eventId : string):Promise<QualifierResponse[]> => {
@@ -49,4 +49,27 @@ export const createQualifier = async(eventId : string, roundId : string, payload
         showToast(errMsg, "error");
         throw error;
     }
+}
+
+export const deleteQualifier = async(qualifier_id : string,showToast: (msg: string, type?: ToastType)=> void) => {
+    try {
+        const res = await fetch(`${DELETE_QUALIFIER(qualifier_id)}`, {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+        });
+    
+        const data = await res.json()
+    
+        if (!res.ok) {
+            const message = data?.detail || "Failed to Delete Qualifier";
+            showToast(message, "error");
+            return Promise.reject(new Error(message));
+        }
+    
+        showToast(data?.message || "Qualifier Deleted successfully!", "success");
+        return data;
+        } catch (error) {
+        showToast((error as Error).message, "error");
+        throw error;
+        }
 }

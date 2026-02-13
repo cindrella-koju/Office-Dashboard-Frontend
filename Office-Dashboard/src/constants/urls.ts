@@ -45,7 +45,7 @@ export const ADD_PARTICIPANTS = (eventID : string) =>  `${BASE_URL}/participant?
 
 export const ADD_QUALIFIER = (eventId:string,roundId:string) =>`${BASE_URL}/event/qualifier?event_id=${eventId}&stage_id=${roundId}`
 export const RETRIEVE_QUALIFIER_BY_EVENT = (eventId : string) => `${BASE_URL}/event/qualifier/event?event_id=${eventId}`
-
+export const DELETE_QUALIFIER = (qualifierID : string) => `${BASE_URL}/event/qualifier/${qualifierID}`
 // export const RETRIEVE_OVERALL_TIESHEET = (eventId : string, roundId:string) => `${BASE_URL}/event/overalltiesheet?event_id=${eventId}&stage_id=${roundId}`
 export const RETRIEVE_OVERALL_TIESHEET = (eventId : string) => `${BASE_URL}/event/overalltiesheet?event_id=${eventId}`
 export const RETRIEVE_OVERALL_TIESHEET_BY_ROUND = (eventId:string, roundId : string) => `${BASE_URL}/event/overalltiesheet?event_id=${eventId}&stage_id=${roundId}`

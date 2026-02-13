@@ -1,4 +1,5 @@
 export interface UserCardData {
+    qualifier_id : string;
     user_id: number | string;
     username: string;
 }

@@ -62,6 +62,7 @@ export const useQualifier = () => {
     }
 
     const createQualifier = async( roundID : string, payload : QualifierPayload ) => {
+        console.log("Round Id:", roundID)
         if(!eventID) return;
         await qualifierServices.createQualifier(eventID, roundID, payload, showToast)
         fetchQualifier()
@@ -80,8 +81,15 @@ export const useQualifier = () => {
     }, []);
 
     useEffect(() => {
+        setParticipants([])
+        setRoundId("")
+    },[modelType])
+
+    useEffect(() => {
+        if(!roundId) return;
         fetchParticipants(roundId)
     },[roundId])
+    
     const getFilteredQualifiers = (qualifierList: EachQualifier[]) => {
         if (!searchQuery) return qualifierList;
         return qualifierList.filter((q) =>
@@ -94,10 +102,11 @@ export const useQualifier = () => {
         (round) => getFilteredQualifiers(round.qualifier).length > 0
     );
 
-    const handleRemoveQualifier = useCallback((userId: number | string) => {
-        // TODO: Implement remove qualifier functionality
-        console.log('Remove qualifier:', userId);
-    }, []);
+    const deleteQualifier = async(qualifierID : string) => {
+        await qualifierServices.deleteQualifier(qualifierID, showToast);
+        fetchQualifier()
+    }
+
 
     useEffect(() => {
         fetchRound()
@@ -116,8 +125,8 @@ export const useQualifier = () => {
         handleSearchChange,
         handleOpenAddModal,
         getFilteredQualifiers,
+        deleteQualifier,
         hasAnyQualifiers,
-        handleRemoveQualifier,
         rounds,
         participants,
         roundId,
@@ -125,6 +134,7 @@ export const useQualifier = () => {
         createQualifier,
         selected,
         setSelected,
+        setParticipants,
         loading,
         error
     }

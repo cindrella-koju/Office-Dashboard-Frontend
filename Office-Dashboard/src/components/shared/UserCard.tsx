@@ -1,20 +1,23 @@
-import { useMemo } from "react";
+import { useMemo, type Dispatch, type SetStateAction } from "react";
 import { RiDeleteBin6Fill } from "react-icons/ri";
 import { getInitials, getRandomAvatarColor } from "./avatarUtils";
-import type { UserCardData } from "./userCard.types";
+import type { UserCardData } from "./UserCard.types";
+
 
 interface UserCardProps {
     user: UserCardData;
-    onRemove?: (userId: number | string) => void;
     canDelete?: boolean;
     hoverColor?: string;
+    setPopUpDelete : Dispatch<SetStateAction<boolean>>;
+    onClick : () => void;
 }
 
 export default function UserCard({ 
     user, 
-    onRemove,
     canDelete = true,
-    hoverColor = "blue"
+    hoverColor = "blue",
+    setPopUpDelete,
+    onClick
 }: UserCardProps) {
     // Random color generated once per component mount
     const avatarColor = useMemo(() => getRandomAvatarColor(), []);
@@ -50,9 +53,12 @@ export default function UserCard({
                 </div>
 
                 {/* Delete Button */}
-                {canDelete && onRemove && (
+                {canDelete && (
                     <button
-                        onClick={() => onRemove(user.user_id)}
+                        onClick={() => {
+                            onClick()
+                            setPopUpDelete(true)
+                        }}
                         className="text-red-500 hover:text-red-700 hover:bg-red-50 
                                  p-1.5 sm:p-2 rounded-lg transition-colors duration-200
                                  opacity-0 group-hover:opacity-100"

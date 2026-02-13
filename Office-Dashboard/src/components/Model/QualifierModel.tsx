@@ -3,22 +3,24 @@ import ModalWrapper from "../pages/shared/ModelWrapper"
 import MultiSelect from "../pages/shared/MultiSelect"
 import type { ModelType } from "../../type/main.type"
 import { useQualifier } from "../../hooks/qualifier/useQualifier"
+import type { Participant } from "../../type/qualifier.type"
+
 
 interface QualifierModelType {
   selected : string[],
   setModelType : Dispatch<SetStateAction<ModelType>>,
   handleSubmit : (e:React.FormEvent) => void;
-  setSelected : Dispatch<SetStateAction<string[]>>
+  setSelected : Dispatch<SetStateAction<string[]>>;
+  roundId : string;
+  setRoundId : Dispatch<SetStateAction<string>>;
+  participants : Participant[]
 }
 
 
-export default function QualifierModule({ selected,setModelType, setSelected, handleSubmit }: QualifierModelType) {
+export default function QualifierModule({ selected,setModelType, setSelected, handleSubmit, roundId, setRoundId, participants }: QualifierModelType) {
 
   const {
     rounds,
-    participants,
-    roundId,
-    setRoundId
   } = useQualifier()
   
 
@@ -35,6 +37,7 @@ export default function QualifierModule({ selected,setModelType, setSelected, ha
           <select
             value={roundId}
             onChange={e => {
+              console.log("Round Id from field:", e.target.value)
               setRoundId(e.target.value)
               setSelected([])
             }}

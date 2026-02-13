@@ -1,9 +1,11 @@
 export interface EachQualifier {
+    qualifier_id : string
     user_id: number;
     username: string;
 }
 
 export interface QualifierResponse {
+    // id : string;
     round_name: string;
     qualifier: EachQualifier[];
 }

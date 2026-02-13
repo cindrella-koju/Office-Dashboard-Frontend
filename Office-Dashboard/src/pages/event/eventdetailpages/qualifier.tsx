@@ -8,6 +8,8 @@ import type { UserCardData } from "../../../components/shared";
 import EmptyMessage from "../../../components/ui/EmptyMessage";
 import { IoPeople } from "react-icons/io5";
 import { useQualifier } from "../../../hooks/qualifier/useQualifier";
+import { useState } from "react";
+import ConfirmationModal from "../../../components/Model/ConfirmationPopUp";
 
 
 
@@ -24,17 +26,25 @@ export default function Qualifier() {
         setModelType,
         getFilteredQualifiers,
         hasAnyQualifiers,
-        handleRemoveQualifier,
         createQualifier,
         roundId,
+        setRoundId,
         selected,
-        setSelected
+        setSelected, 
+        participants,
+        deleteQualifier
     } = useQualifier()
     
     const handleSubmit =  async (e: React.FormEvent) => {
+        console.log("RoundID :", roundId)
         e.preventDefault()
         await createQualifier(roundId, { user_id: selected })
+        setModelType(null)
     }
+
+    const [popUpDelete, setPopUpDelete] = useState<boolean>(false)
+    const [ selectedQualifier, setSelectedQualifier] = useState<UserCardData | null>(null)
+    const [ roundName, setRoundName ] = useState<string | null>(null)
 
     const gridClassName = viewMode === "grid" 
         ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4"
@@ -118,9 +128,13 @@ export default function Qualifier() {
                                             <UserCard
                                                 key={q.user_id}
                                                 user={q as UserCardData}
-                                                onRemove={handleRemoveQualifier}
                                                 canDelete={permissions.canDelete}
                                                 hoverColor="blue"
+                                                setPopUpDelete={setPopUpDelete}
+                                                onClick = {() => {
+                                                    setRoundName(round.round_name)
+                                                    setSelectedQualifier(q)
+                                                }}
                                             />
                                         ))}
                                     </div>
@@ -137,8 +151,25 @@ export default function Qualifier() {
                         setModelType={setModelType}
                         setSelected={setSelected}
                         handleSubmit={handleSubmit}
+                        roundId={roundId}
+                        setRoundId={setRoundId}
+                        participants={participants}
                     />
                 )}
+
+                {
+                    selectedQualifier && 
+                    <ConfirmationModal
+                        isOpen={popUpDelete}
+                        title="Delete"
+                        message={`Are you sure you want to delete ${selectedQualifier.username} from round ${roundName}`}
+                        onCancel={() => setPopUpDelete(false)}
+                        onConfirm={() => {
+                        deleteQualifier(selectedQualifier.qualifier_id)
+                        setPopUpDelete(false)
+                        }}
+                    />
+                }
             </PageContent>
         </PageLayout>
     );
