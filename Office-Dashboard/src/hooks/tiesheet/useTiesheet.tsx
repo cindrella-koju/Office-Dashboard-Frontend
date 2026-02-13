@@ -26,7 +26,7 @@ export const useTiesheet = () => {
     const [selectedMatchId, setSelectedMatchId] = useState<string | null>(null);
     const [loading, setLoading ] = useState(true)
     const [error, setError] = useState<string | null>(null)
-
+    const [showAddDetail, setShowAddDetail] = useState<boolean>(false)
 
     // For tiesheet model
     const [rounds, setRounds] = useState<Round[]>([])
@@ -287,6 +287,9 @@ export const useTiesheet = () => {
         setUsers,
 
         createTiesheet,
-        updateTiesheet
+        updateTiesheet,
+
+        showAddDetail,
+        setShowAddDetail
     }
 }

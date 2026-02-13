@@ -8,6 +8,7 @@ import { CgFileDocument } from "react-icons/cg";
 import MatchDetail from "../../../components/pages/tiesheet/MatchDetail";
 import PopUp from "../../../components/ui/PopUp";
 import { useTiesheet } from "../../../hooks/tiesheet/useTiesheet";
+import AddMatchModal from "../../../components/Model/AddMatchModel";
 
 
 export default function Tiesheet(){
@@ -43,7 +44,10 @@ export default function Tiesheet(){
         users,
 
         createTiesheet,
-        updateTiesheet
+        updateTiesheet,
+
+        showAddDetail,
+        setShowAddDetail
     } = useTiesheet()
 
     const handleClose = () => {
@@ -130,9 +134,16 @@ export default function Tiesheet(){
                                             onEdit={handleEditMatch}
                                             permissions={permissions}
                                             tiesheetId={match.id} 
+                                            setShowAddDetail={setShowAddDetail}
                                         />
                                         </div>
-                                        
+
+                                        {/* Yeta sabai user gairaxa kina ki loop bhitra xa:- solve this */}
+                                        {
+                                            showAddDetail &&
+                                            <AddMatchModal player1={match.player_info[0]} player2={match.player_info[1]} tiesheetID={match.id} setOpenStartGame={setShowAddDetail}/>
+                                        }
+                                                                
                                     </>
                                 ))}
                             </div>
@@ -187,6 +198,7 @@ export default function Tiesheet(){
                     />
                 }
                     
+
             </PageContent>
         </PageLayout>
 
