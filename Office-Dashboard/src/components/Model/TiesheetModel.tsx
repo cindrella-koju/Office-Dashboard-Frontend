@@ -134,18 +134,22 @@ export default function TiesheetModel({
 
 
         {/* Status */}
-        <SelectField
-          label="Status"
-          required
-          value={selectedMatch.status}
-          options={[...statusOptions]}
-          onChange={val =>
-            setSelectedMatch(prev => ({
-              ...prev,
-              status: val.toLowerCase() as "scheduled" | "completed"
-            }))
-          }
-        />
+        {
+          viewMode === "create" && (
+            <SelectField
+              label="Status"
+              required
+              value={selectedMatch.status}
+              options={[...statusOptions]}
+              onChange={val =>
+                setSelectedMatch(prev => ({
+                  ...prev,
+                  status: val.toLowerCase() as "scheduled" | "completed"
+                }))
+              }
+            />
+          )
+        }
 
         {/* Match Between - Only show in create mode */}
         {viewMode === "create" && (

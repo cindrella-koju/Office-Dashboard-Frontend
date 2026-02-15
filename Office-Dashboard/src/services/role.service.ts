@@ -4,6 +4,7 @@ import {
   DELETE_ROLE,
   EDIT_DETAIL_FOR_ROLE_MANAGEMENT,
   RETRIEVE_DETAIL_FOR_ROLE_MANAGEMENT,
+  RETRIEVE_ROLE_DETAIL,
 } from "../constants/urls";
 
 export interface RolePayload {
@@ -34,6 +35,19 @@ export const roleService = {
             return response.json()
         }catch(err){
             console.error("Error fetching Role permission:", err)
+            throw err;
+        }
+    },
+
+    async getRoleDetail(roleId: string){
+        try{
+            const response = await fetch(RETRIEVE_ROLE_DETAIL(roleId));
+            if(!response.ok){
+                throw new Error("Retrieve Role Detail Failed")
+            }
+            return response.json()
+        }catch(err){
+            console.error("Error fetching role detail:", err)
             throw err;
         }
     },

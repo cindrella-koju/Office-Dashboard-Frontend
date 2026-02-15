@@ -1,6 +1,6 @@
 import { useState, useEffect, type ReactNode } from "react";
 import type { Role } from "./auth.type";
-import { AuthContext } from "./authContect";
+import { AuthContext } from "./authContext";
 import { jwtDecode } from "jwt-decode";
 
 interface AuthProviderProps {
@@ -97,6 +97,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     login,
     logout,
   };
+  console.log("AuthContext Value:", value);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

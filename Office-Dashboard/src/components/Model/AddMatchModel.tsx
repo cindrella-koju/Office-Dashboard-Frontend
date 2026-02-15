@@ -20,8 +20,7 @@ export default function AddMatchModal({
   setOpenStartGame,
 //   refetchMatches,
 }: AddMatchModalProps) {
-  console.log("Player 1:", player1)
-  console.log("Player 2:", player2)
+
   const statusOptions = [
     { label: "Scheduled", value: "scheduled" },
     { label: "Completed", value: "completed" },
@@ -36,50 +35,55 @@ export default function AddMatchModal({
   const [showPoints, setShowPoints] = useState(false);
   const [showWinner, setShowWinner] = useState(true);
 
-  const [matchDetail, setMatchDetail] = useState([
-    {
-      tiesheet_id: tiesheetID,
-      match_name: "",
-      userDetail: [
-        {
-          user_id: player1.user_id,
-          points: "",
-          winner: false,
-        },
-        {
-          user_id: player2.user_id,
-          points: "",
-          winner: false,
-        },
-      ],
-    },
-  ]);
-
-  // Add new match
-  const addMatch = () => {
-    setMatchDetail((prev) => [
-      ...prev,
+  const [matchDetail, setMatchDetail] = useState({
+    overallwinner: "",
+    status: "scheduled",
+    tiesheet_id: tiesheetID,
+    matchDetail: [
       {
-        tiesheet_id: tiesheetID,
         match_name: "",
         userDetail: [
           { user_id: player1.user_id, points: "", winner: false },
           { user_id: player2.user_id, points: "", winner: false },
         ],
       },
-    ]);
-  };
+    ],
+  });
+
+
+  // Add new match
+  const addMatch = () => {
+  setMatchDetail((prev) => ({
+    ...prev,
+    matchDetail: [
+      ...prev.matchDetail,
+      {
+        match_name: "",
+        userDetail: [
+          { user_id: player1.user_id, points: "", winner: false },
+          { user_id: player2.user_id, points: "", winner: false },
+        ],
+      },
+    ],
+  }));
+};
 
   const removeMatch = (index: number) => {
-    if (matchDetail.length <= 1) return;
-    setMatchDetail((prev) => prev.filter((_, i) => i !== index));
+      if (matchDetail.matchDetail.length <= 1) return;
+      setMatchDetail((prev) => ({
+      ...prev,
+      matchDetail: prev.matchDetail.filter((_, i) => i !== index),
+    }));
   };
 
   const updateMatchName = (index: number, value: string) => {
     setMatchDetail((prev) =>
-      prev.map((match, i) =>
-        i === index ? { ...match, match_name: value } : match
-      )
+      ({
+        ...prev,
+        matchDetail: prev.matchDetail.map((match, mIdx) =>    
+          mIdx === index ? { ...match, match_name: value } : match
+        ),
+      } as any)
     );
   };
 
@@ -89,55 +93,59 @@ export default function AddMatchModal({
     value: string
   ) => {
     setMatchDetail((prev) =>
-      prev.map((match, mIdx) =>
-        mIdx === matchIndex
-          ? {
-              ...match,
-              userDetail: match.userDetail.map((user, uIdx) =>
-                uIdx === userIndex ? { ...user, points: value } : user
-              ),
-            }
-          : match
-      )
-    );
+      ({
+        ...prev,
+        matchDetail: prev.matchDetail.map((match, mIdx) =>
+          mIdx === matchIndex
+            ? {
+                ...match,
+                userDetail: match.userDetail.map((user, uIdx) =>
+                    uIdx === userIndex ? { ...user, points: value } : user
+                ),
+              }
+            : match
+      )}
+    ));
   };
 
   // Update winner for a match
   const updateWinner = (matchIndex: number, winnerIndex: number) => {
     setMatchDetail((prev) =>
-      prev.map((match, mIdx) =>
-        mIdx === matchIndex
-          ? {
-              ...match,
-              userDetail: match.userDetail.map((user, uIdx) => ({
-                ...user,
+      ({
+        ...prev,
+        matchDetail: prev.matchDetail.map((match, mIdx) =>
+          mIdx === matchIndex
+            ? {
+                ...match,
+                userDetail: match.userDetail.map((user, uIdx) => ({
+                  ...user,
                 winner: uIdx === winnerIndex,
               })),
             }
           : match
-      )
-    );
+      )}
+    ));
   };
 
   // Handle form submission
   const handleSubmit = async(e: React.FormEvent) => {
     e.preventDefault();
-    console.log(matchDetail);
-    try{
-        const response = await fetch(CREATE_MATCH,{
-            method : "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(matchDetail)
-        })
+    console.log("Match Detail",matchDetail);
+    // try{
+    //     const response = await fetch(CREATE_MATCH,{
+    //         method : "POST",
+    //         headers: { "Content-Type": "application/json" },
+    //         body: JSON.stringify(matchDetail)
+    //     })
 
-        if (!response.ok) {
-            throw new Error("Failed to save column")
-        }
-        alert(`Match Added successfully`)
-        setOpenStartGame(false)
-    } catch(error){
-        alert("Something Wrong")
-    }
+    //     if (!response.ok) {
+    //         throw new Error("Failed to save column")
+    //     }
+    //     alert(`Match Added successfully`)
+    //     setOpenStartGame(false)
+    // } catch(error){
+    //     alert("Something Wrong")
+    // }
   };
 
 
@@ -150,21 +158,23 @@ export default function AddMatchModal({
         <SelectField
           label="Status"
           required
-          value="SDSD"
+          value={matchDetail.status}
           options={[...statusOptions]}
-          onChange={val =>
-            console.log("VAlue")
-          }
+          onChange={(val) => {
+            setMatchDetail((prev) => ({ ...prev, status: val }));
+            console.log("Status value:", val);
+          }}
         />
 
         <SelectField
           label="Overall Winner"
-          required
-          value="SDSD"
+          required = {matchDetail.status === "completed"}
+          value={matchDetail.overallwinner}
           options={[...winnerOptions]}
-          onChange={val =>
-            console.log("VAlue")
-          }
+          onChange={(val) => {
+            setMatchDetail((prev) => ({ ...prev, overallwinner: val }));
+            console.log("Overall Winner value:", val);
+          }}
         />
         {/* Options */}
         <div className="bg-gray-50 border border-gray-200 rounded-xl p-5 shadow-sm">
@@ -220,7 +230,7 @@ export default function AddMatchModal({
           </div>
 
           <div className="space-y-4">
-            {matchDetail.map((match, index) => (
+            {matchDetail.matchDetail.map((match, index) => (
               <div
                 key={index}
                 className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm hover:shadow transition-shadow group"
@@ -242,7 +252,7 @@ export default function AddMatchModal({
                     />
                   </div>
 
-                  {matchDetail.length > 1 && (
+                  {matchDetail.matchDetail.length > 1 && (
                     <button
                       type="button"
                       onClick={() => removeMatch(index)}

@@ -1,20 +1,45 @@
-import { RETRIEVE_PERMISSION_WITHIN_EVENT, RETRIEVE_PERMISSION_WITHIN_EVENT_BY_USER_ID } from "../constants/urls"
-import useFetch from "../hooks/useFetch"
-import { EventRoleContext } from "./EventRoleContext"
+import { useEffect, useState } from "react";
+import { getPermissionWithinEvent, getPermissionWithinEventByUser } from "../services/eventprovider.service";
+import { EventRoleContext } from "./EventRoleContext";
 
 export const EventRoleProvider = ({children} : { children: React.ReactNode }) => {
-    const userId = localStorage.getItem("user_id")
-    const eventId = localStorage.getItem("eventId")
+    const [eventRoleDetail, setEventRoleDetail] = useState(null);
+    const [loading, setLoading] = useState(true);
 
-    console.log("EventRole Provider Working:")
+    useEffect(() => {
+        const userId = localStorage.getItem("user_id");
+        const eventId = localStorage.getItem("eventId");
 
+        console.log("EventRole Provider Working:");
 
-    const url = userId ? (eventId ? RETRIEVE_PERMISSION_WITHIN_EVENT(userId, eventId) : RETRIEVE_PERMISSION_WITHIN_EVENT_BY_USER_ID(userId)) : ""
-    const {data : eventRoleDetail, loading, error } = useFetch(url) 
+        if (!userId) {
+            setLoading(false);
+            return;
+        }
+
+        const fetchEventRoleDetail = async () => {
+            try {
+                let data;
+                if (eventId) {
+                    data = await getPermissionWithinEvent(userId, eventId);
+                } else {
+                    data = await getPermissionWithinEventByUser(userId);
+                }
+                setEventRoleDetail(data);
+                console.log("EventDetail:", data);
+            } catch (error) {
+                console.error("Failed to fetch event role detail:", error);
+                setEventRoleDetail(null);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchEventRoleDetail();
+    }, []);
+
     if (loading) return null;
-    if (error) return null;
 
-    console.log("EventDetail:",eventRoleDetail)
     return(
         <EventRoleContext.Provider value={eventRoleDetail}>
             {children}

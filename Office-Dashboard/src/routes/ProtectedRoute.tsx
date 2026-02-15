@@ -38,13 +38,13 @@ const ProtectedRoute = ({ children, accessKey }: ProtectedRouteProps) => {
 
 export default ProtectedRoute;
 
-const EventAccessPage = () => {
-  const userId = localStorage.getItem("user_id")
-  const eventId = localStorage.getItem("event_id")
+// const EventAccessPage = () => {
+//   const userId = localStorage.getItem("user_id")
+//   const eventId = localStorage.getItem("event_id")
 
-  const {data : eventRoleDetail, loading, error } = useFetch(RETRIEVE_PERMISSION_WITHIN_EVENT(userId ? userId : "", eventId ? eventId : "")) 
-  if (loading) return null;
-  if (error) return null;
-  console.log(eventRoleDetail)
-  return eventRoleDetail
-}
+//   const {data : eventRoleDetail, loading, error } = useFetch(RETRIEVE_PERMISSION_WITHIN_EVENT(userId ? userId : "", eventId ? eventId : "")) 
+//   if (loading) return null;
+//   if (error) return null;
+//   console.log(eventRoleDetail)
+//   return eventRoleDetail
+// }

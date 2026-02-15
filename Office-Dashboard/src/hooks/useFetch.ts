@@ -18,7 +18,12 @@ function useFetch<T = unknown>(url: string, options?: RequestInit): FetchState<T
   }, []);
 
   useEffect(() => {
-    if (!url) return;
+    if (!url) {
+      setLoading(false);
+      setData(null);
+      setError(null);
+      return;
+    }
 
     const controller = new AbortController(); // for canceling fetch
     const { signal } = controller;

@@ -19,8 +19,10 @@ import TodayGame from "./pages/event/eventdetailpages/todaygame";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import RolePage from "./pages/RolePage";
 import SignupPage from "./pages/SignUpPage";
+import NotFound from "./pages/NotFound";
 
 export const router = createBrowserRouter([
+  { path: "/", element: <NotFound /> }, // Redirect root based on auth status
   { path: "/login", element: <LoginPage /> },
   { path: "/navbar", element: <NavBar /> },
   { path: "/signup", element: <SignupPage /> },
@@ -144,5 +146,10 @@ export const router = createBrowserRouter([
         <RolePage />
       </ProtectedRoute>
     ),
+  },
+  // Catch-all route for undefined paths
+  { 
+    path: "*", 
+    element: <NotFound /> 
   },
 ]);
