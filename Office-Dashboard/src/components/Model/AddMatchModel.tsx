@@ -92,20 +92,40 @@ export default function AddMatchModal({
     userIndex: number,
     value: string
   ) => {
-    setMatchDetail((prev) =>
-      ({
+    setMatchDetail((prev) => {
+      const updatedMatches = prev.matchDetail.map((match, mIdx) => {
+        if (mIdx === matchIndex) {
+          const updatedUserDetail = match.userDetail.map((user, uIdx) =>
+            uIdx === userIndex ? { ...user, points: value } : user
+          );
+
+          // Auto-select winner based on points if both players have points
+          const player1Points = parseFloat(updatedUserDetail[0].points) || 0;
+          const player2Points = parseFloat(updatedUserDetail[1].points) || 0;
+
+          if (updatedUserDetail[0].points && updatedUserDetail[1].points) {
+            if (player1Points > player2Points) {
+              updatedUserDetail[0].winner = true;
+              updatedUserDetail[1].winner = false;
+            } else if (player2Points > player1Points) {
+              updatedUserDetail[0].winner = false;
+              updatedUserDetail[1].winner = true;
+            }
+          }
+
+          return {
+            ...match,
+            userDetail: updatedUserDetail,
+          };
+        }
+        return match;
+      });
+
+      return {
         ...prev,
-        matchDetail: prev.matchDetail.map((match, mIdx) =>
-          mIdx === matchIndex
-            ? {
-                ...match,
-                userDetail: match.userDetail.map((user, uIdx) =>
-                    uIdx === userIndex ? { ...user, points: value } : user
-                ),
-              }
-            : match
-      )}
-    ));
+        matchDetail: updatedMatches,
+      };
+    });
   };
 
   // Update winner for a match
@@ -130,22 +150,43 @@ export default function AddMatchModal({
   // Handle form submission
   const handleSubmit = async(e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Match Detail",matchDetail);
-    // try{
-    //     const response = await fetch(CREATE_MATCH,{
-    //         method : "POST",
-    //         headers: { "Content-Type": "application/json" },
-    //         body: JSON.stringify(matchDetail)
-    //     })
 
-    //     if (!response.ok) {
-    //         throw new Error("Failed to save column")
-    //     }
-    //     alert(`Match Added successfully`)
-    //     setOpenStartGame(false)
-    // } catch(error){
-    //     alert("Something Wrong")
-    // }
+    // Validation: If status is completed, overall winner must be selected
+    if (matchDetail.status === "completed" && !matchDetail.overallwinner) {
+      alert("Please select an overall winner for completed matches");
+      return;
+    }
+
+    // Validation: Check if all matches have names
+    const hasEmptyMatchName = matchDetail.matchDetail.some(
+      (match) => !match.match_name.trim()
+    );
+    if (hasEmptyMatchName) {
+      alert("Please provide names for all matches");
+      return;
+    }
+
+    console.log("Match Detail to send:", matchDetail);
+    
+    try{
+        const response = await fetch(CREATE_MATCH,{
+            method : "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(matchDetail)
+        })
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.detail || "Failed to save match");
+        }
+        
+        const result = await response.json();
+        alert(result.message || "Match added successfully");
+        setOpenStartGame(false);
+    } catch(error: any){
+        console.error("Error creating match:", error);
+        alert(error.message || "Something went wrong");
+    }
   };
 
 
