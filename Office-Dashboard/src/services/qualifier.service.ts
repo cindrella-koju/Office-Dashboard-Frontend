@@ -1,5 +1,6 @@
 import type { ToastType } from "../components/Toast";
 import { ADD_QUALIFIER, DELETE_QUALIFIER, RETRIEVE_QUALIFIER_BY_EVENT, RETRIEVE_QUALIFIER_BY_ROUND, RETRIEVE_USER_PARTICIPANT_NOT_IN_QUALIFIER } from "../constants/urls";
+import type { TiesheetQualifierResponse } from "../hooks/tiesheet/useTiesheet";
 import type { Participant, QualifierPayload, QualifierResponse } from "../type/qualifier.type";
 
 export const getQualifier = async(eventId : string):Promise<QualifierResponse[]> => {
@@ -15,13 +16,13 @@ export const getQualifier = async(eventId : string):Promise<QualifierResponse[]>
     }
 }
 
-export const getQualifierByRound = async(roundID : string) : Promise<QualifierResponse[]> => {
+export const getQualifierByRound = async(roundID : string) : Promise<TiesheetQualifierResponse[]> => {
     try{
         const response = await fetch(RETRIEVE_QUALIFIER_BY_ROUND(roundID))
         if(!response.ok){
             throw new Error("Retrieve Qualifier By Round Request Failed")
         }
-        return (await response.json()) as QualifierResponse[]
+        return (await response.json()) as TiesheetQualifierResponse[]
     } catch(err){
         console.error("Error fetching Qualifier By Round Detail:", err)
         throw err; 

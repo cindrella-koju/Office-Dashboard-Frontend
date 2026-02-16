@@ -67,6 +67,7 @@ export const DELETE_USER = (user_id : string ) =>`${BASE_URL}/user/user/${user_i
 
 export const CREATE_MATCH = `${BASE_URL}/event/match`
 export const RETRIEVE_MATCH = (tiesheet_id : string ) =>`${BASE_URL}/event/match/score?tiesheet_id=${tiesheet_id}`
+export const RETRIEVE_MATCH_BY_TIESHEET_ID = (tiesheet_id : string) => `${BASE_URL}/event/match/tiesheet/${tiesheet_id}`
 
 export const RETRIEVE_GROUP_ID_NAME_BY_ROUND = (round_id : string) => `${BASE_URL}/event/group/byround?round_id=${round_id}`
 export const RETRIEVE_GROUP_MEMBER_ID_NAME = ( group_id : string ) => `${BASE_URL}/event/group/member?group_id=${group_id}`

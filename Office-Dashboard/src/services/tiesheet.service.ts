@@ -1,8 +1,8 @@
 import type { SelectedMatch } from "../components/Model/TiesheetModel";
 import type { ToastType } from "../components/Toast";
-import { CREATE_TIESHEET, GET_TIESHEET_BY_ID, RETRIEVE_STANDING_COLUMN, RETRIEVE_TIESHEET, UPDATE_TIESHEET } from "../constants/urls"
+import { CREATE_MATCH, CREATE_TIESHEET, GET_TIESHEET_BY_ID, RETRIEVE_MATCH_BY_TIESHEET_ID, RETRIEVE_STANDING_COLUMN, RETRIEVE_TIESHEET, UPDATE_TIESHEET } from "../constants/urls"
 import type { StandingColumnType } from "../type/standingcolumn.type";
-import type { TiesheetType } from "../type/tiesheet.type";
+import type { AddMatchProps, TiesheetType } from "../type/tiesheet.type";
 
 export const getTiesheet = async(eventId : string):Promise<TiesheetType[]> => {
     try{
@@ -13,6 +13,19 @@ export const getTiesheet = async(eventId : string):Promise<TiesheetType[]> => {
         return (await response.json()) as TiesheetType[];
     }  catch(err){
         console.error("Error fetching Tiesheet:", err)
+        throw err;
+    }
+}
+
+export const getMatchByTiesheetId = async(tiesheetId : string) => {
+    try{
+        const response = await fetch(RETRIEVE_MATCH_BY_TIESHEET_ID(tiesheetId))
+        if(!response.ok){
+            throw new Error("Retrieve Match By Tiesheet Id Request Failed")
+        }
+        return await response.json();
+    }  catch(err){
+        console.error("Error fetching Match By Tiesheet Id :", err)
         throw err;
     }
 }
@@ -58,6 +71,28 @@ export const createTiesheet = async( payload : SelectedMatch,  showToast: (msg: 
         }
 
         showToast(data?.message || "Tiesheet created successfully!", "success");
+        return data;
+    } catch (error) {
+        const errMsg = (error as Error).message || "Something went wrong";
+        showToast(errMsg, "error");
+        throw error;
+    }
+}
+
+export const createMatch = async( payload : AddMatchProps, showToast: (msg: string, type?: ToastType) => void ) => {
+    try{
+        const response = await fetch(CREATE_MATCH,{
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+        })
+        const data = await response.json()
+        if(!response.ok){
+            const message = data?.detail || data?.message || "Failed to create Match";
+            showToast(message,"error")
+            return Promise.reject(new Error(message));
+        }
+        showToast(data?.message || "Match created successfully!", "success");
         return data;
     } catch (error) {
         const errMsg = (error as Error).message || "Something went wrong";

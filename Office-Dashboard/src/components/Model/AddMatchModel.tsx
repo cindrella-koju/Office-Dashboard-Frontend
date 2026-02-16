@@ -1,24 +1,19 @@
-import React, { useState, type Dispatch, type SetStateAction } from "react";
+import React from "react";
 import ModalWrapper from "../pages/shared/ModelWrapper";
-import type { PlayerInfoType } from "../../type/tiesheet.type";
-import Button from "../ui/Button";
-import { CREATE_MATCH } from "../../constants/urls";
+import type { AddMatchModalProps } from "../../type/tiesheet.type";
+import Button from "../ui/Button";  
 import SelectField from "../pages/shared/SelectField";
+import { useAddMAtch } from "../../hooks/tiesheet/useAddMatch";
 
-interface AddMatchModalProps {
-  player1: PlayerInfoType;
-  player2: PlayerInfoType;
-  tiesheetID: string;
-  setOpenStartGame: Dispatch<SetStateAction<boolean>>;
-//   refetchMatches: () => void;
-}
+
 
 export default function AddMatchModal({
   player1,
   player2,
   tiesheetID,
-  setOpenStartGame,
-//   refetchMatches,
+  scoreView,
+  status,
+  setScoreView
 }: AddMatchModalProps) {
 
   const statusOptions = [
@@ -32,132 +27,35 @@ export default function AddMatchModal({
     { label: player2.username, value: player2.user_id },
   ] as const
 
-  const [showPoints, setShowPoints] = useState(false);
-  const [showWinner, setShowWinner] = useState(true);
-
-  const [matchDetail, setMatchDetail] = useState({
-    overallwinner: "",
-    status: "scheduled",
-    tiesheet_id: tiesheetID,
-    matchDetail: [
-      {
-        match_name: "",
-        userDetail: [
-          { user_id: player1.user_id, points: "", winner: false },
-          { user_id: player2.user_id, points: "", winner: false },
-        ],
-      },
-    ],
-  });
+  const { 
+    matchDetail,
+    setMatchDetail,
+    showPoints,
+    setShowPoints,
+    showWinner,
+    setShowWinner,
+    addMatch,
+    updateMatchName,
+    removeMatch,
+    updatePoints,
+    updateWinner,
+    createMatch
+  } = useAddMAtch(player1, player2, tiesheetID, scoreView, status, setScoreView)
 
 
-  // Add new match
-  const addMatch = () => {
-  setMatchDetail((prev) => ({
-    ...prev,
-    matchDetail: [
-      ...prev.matchDetail,
-      {
-        match_name: "",
-        userDetail: [
-          { user_id: player1.user_id, points: "", winner: false },
-          { user_id: player2.user_id, points: "", winner: false },
-        ],
-      },
-    ],
-  }));
-};
-
-  const removeMatch = (index: number) => {
-      if (matchDetail.matchDetail.length <= 1) return;
-      setMatchDetail((prev) => ({
-      ...prev,
-      matchDetail: prev.matchDetail.filter((_, i) => i !== index),
-    }));
-  };
-
-  const updateMatchName = (index: number, value: string) => {
-    setMatchDetail((prev) =>
-      ({
-        ...prev,
-        matchDetail: prev.matchDetail.map((match, mIdx) =>    
-          mIdx === index ? { ...match, match_name: value } : match
-        ),
-      } as any)
-    );
-  };
-
-  const updatePoints = (
-    matchIndex: number,
-    userIndex: number,
-    value: string
-  ) => {
-    setMatchDetail((prev) => {
-      const updatedMatches = prev.matchDetail.map((match, mIdx) => {
-        if (mIdx === matchIndex) {
-          const updatedUserDetail = match.userDetail.map((user, uIdx) =>
-            uIdx === userIndex ? { ...user, points: value } : user
-          );
-
-          // Auto-select winner based on points if both players have points
-          const player1Points = parseFloat(updatedUserDetail[0].points) || 0;
-          const player2Points = parseFloat(updatedUserDetail[1].points) || 0;
-
-          if (updatedUserDetail[0].points && updatedUserDetail[1].points) {
-            if (player1Points > player2Points) {
-              updatedUserDetail[0].winner = true;
-              updatedUserDetail[1].winner = false;
-            } else if (player2Points > player1Points) {
-              updatedUserDetail[0].winner = false;
-              updatedUserDetail[1].winner = true;
-            }
-          }
-
-          return {
-            ...match,
-            userDetail: updatedUserDetail,
-          };
-        }
-        return match;
-      });
-
-      return {
-        ...prev,
-        matchDetail: updatedMatches,
-      };
-    });
-  };
-
-  // Update winner for a match
-  const updateWinner = (matchIndex: number, winnerIndex: number) => {
-    setMatchDetail((prev) =>
-      ({
-        ...prev,
-        matchDetail: prev.matchDetail.map((match, mIdx) =>
-          mIdx === matchIndex
-            ? {
-                ...match,
-                userDetail: match.userDetail.map((user, uIdx) => ({
-                  ...user,
-                winner: uIdx === winnerIndex,
-              })),
-            }
-          : match
-      )}
-    ));
-  };
+  
 
   // Handle form submission
   const handleSubmit = async(e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validation: If status is completed, overall winner must be selected
+    // If status is completed, overall winner must be selected
     if (matchDetail.status === "completed" && !matchDetail.overallwinner) {
       alert("Please select an overall winner for completed matches");
       return;
     }
 
-    // Validation: Check if all matches have names
+    //Check if all matches have names
     const hasEmptyMatchName = matchDetail.matchDetail.some(
       (match) => !match.match_name.trim()
     );
@@ -167,38 +65,20 @@ export default function AddMatchModal({
     }
 
     console.log("Match Detail to send:", matchDetail);
-    
-    try{
-        const response = await fetch(CREATE_MATCH,{
-            method : "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(matchDetail)
-        })
-
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.detail || "Failed to save match");
-        }
-        
-        const result = await response.json();
-        alert(result.message || "Match added successfully");
-        setOpenStartGame(false);
-    } catch(error: any){
-        console.error("Error creating match:", error);
-        alert(error.message || "Something went wrong");
+    if(scoreView === "create"){
+      await createMatch(matchDetail)
     }
   };
 
 
   return (
     <ModalWrapper
-      title="Add Match Information"
-      onClose={() => setOpenStartGame(false)}
+      title={`${scoreView === "create" ? "Add" : "Edit"} Match Information`}
+      onClose={() => setScoreView(null)}
     >
       <form className="space-y-6" onSubmit={handleSubmit}>
         <SelectField
           label="Status"
-          required
           value={matchDetail.status}
           options={[...statusOptions]}
           onChange={(val) => {
@@ -249,25 +129,28 @@ export default function AddMatchModal({
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-semibold text-gray-900">Matches</h3>
-            <button
-              type="button"
-              onClick={addMatch}
-              className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-            >
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 4v16m8-8H4"
-                />
-              </svg>
-            </button>
+            {
+              scoreView === "create" && 
+                <button
+                  type="button"
+                  onClick={addMatch}
+                  className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                >
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 4v16m8-8H4"
+                    />
+                  </svg>
+                </button>
+            }
           </div>
 
           <div className="space-y-4">
@@ -293,7 +176,7 @@ export default function AddMatchModal({
                     />
                   </div>
 
-                  {matchDetail.matchDetail.length > 1 && (
+                  {matchDetail.matchDetail.length > 1  && (
                     <button
                       type="button"
                       onClick={() => removeMatch(index)}
@@ -408,7 +291,7 @@ export default function AddMatchModal({
         </div>
 
         <Button fullWidth type="submit">
-          Add Match
+          {scoreView === "create" ? "Add Match" : "Edit Match"}
         </Button>
       </form>
     </ModalWrapper>

@@ -1,28 +1,16 @@
-import { type Dispatch, type SetStateAction } from "react";
-import type { PlayerInfoType } from "../../../type/tiesheet.type";
-import type { EventPermission } from "../../../hooks/userPermission";
-
-interface MatchHeaderProps {
-  groupName?: string | null;
-  matchTime: string;
-  status: "scheduled" | "completed" | "ongoing";
-  onEdit?: () => void;
-  permissions: EventPermission;
-  tiesheetId: string;
-  player1: PlayerInfoType;
-  player2: PlayerInfoType;
-  setShowAddDetail? : Dispatch<SetStateAction<boolean>>
-}
+import type { MatchHeaderProps } from "../../../type/tiesheet.type";
 
 export default function MatchHeader({
   groupName,
   matchTime,
   status,
   onEdit,
+  onEditScore,
+  onAddScore,
   permissions,
-  setShowAddDetail
+  setShowAddDetail,
+  onClick
 }: MatchHeaderProps) {
-
 
   const handleStart = () => setShowAddDetail && setShowAddDetail(true);
 
@@ -56,7 +44,7 @@ export default function MatchHeader({
       
       <span className="text-xs text-gray-400">{matchTime}</span>
 
-      {(status === "scheduled" || status === "ongoing") && permissions.canEdit && (
+      {permissions.canEdit && (
         <button
           className="text-xs font-medium text-blue-600 hover:text-blue-800 hover:underline transition-colors"
           onClick={onEdit}
@@ -65,20 +53,26 @@ export default function MatchHeader({
         </button>
       )}
 
-      {(status === "scheduled" || status === "ongoing") && permissions.canEdit && (
+      {permissions.canEdit && (
         <button
           className="text-xs font-medium text-blue-600 hover:text-blue-800 hover:underline transition-colors"
-          onClick={onEdit}
+          onClick={() => {
+            onClick();
+            onEditScore?.();
+          }}
         >
           Edit Score
         </button>
       )}
 
-      {status === "scheduled" &&
+      {
         permissions.canEdit  && (
           <button
             className="text-xs font-medium text-blue-600 hover:text-blue-800 hover:underline transition-colors"
-            onClick={handleStart}
+            onClick={ () => {
+              onClick();
+              onAddScore?.();
+            }}
           >
             Add
           </button>

@@ -6,11 +6,12 @@ import PlayerAvatar from "./PlayerAvatar";
 
 interface MultiPlayerMatchProps {
   players: PlayerInfoType[];
+  handleMatchDetailView : () => void;
 }
 
-export default function MultiPlayerMatch({ players }: MultiPlayerMatchProps) {
+export default function MultiPlayerMatch({ players, handleMatchDetailView }: MultiPlayerMatchProps) {
   return (
-    <div className="space-y-2 w-full">
+    <div className="space-y-2 w-full" onClick={handleMatchDetailView}>
       {players.map((player, idx) => (
         <div 
           key={player.user_id}

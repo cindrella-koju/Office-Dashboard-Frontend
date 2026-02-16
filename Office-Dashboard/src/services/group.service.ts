@@ -1,12 +1,9 @@
 import type { RoundResponse } from "../components/Model/TiesheetModel";
 import type { ToastType } from "../components/Toast";
 import { CREATE_GROUP, DELETE_GROUP, DELETE_GROUP_MEMBER, GET_QUALIFIER_NOT_IN_GROUP, GET_QUALIFIER_NOT_IN_GROUP_FOR_EDIT, RETRIEVE_GROUP_AND_MEMBERS, RETRIEVE_GROUP_ID_NAME_BY_ROUND, RETRIEVE_GROUP_MEMBER_ID_NAME, UPDATE_GROUP, UPDATE_GROUP_TABLE } from "../constants/urls"
+import type { TiesheetQualifierResponse } from "../hooks/tiesheet/useTiesheet";
 import type { Participant, PayloadType, Stage } from "../type/group.type";
 
-interface QualifierResponse {
-  id: string
-  username: string
-}
 
 export const getGroup = async(eventId : string ):Promise<Stage[]> => {
     try{
@@ -21,13 +18,13 @@ export const getGroup = async(eventId : string ):Promise<Stage[]> => {
     }
 }
 
-export const getGroupMemberIdName = async(groupId : string) : Promise<QualifierResponse[]> => {
+export const getGroupMemberIdName = async(groupId : string) : Promise<TiesheetQualifierResponse[]> => {
     try{
         const response = await fetch(RETRIEVE_GROUP_MEMBER_ID_NAME(groupId));
         if(!response.ok){
             throw new Error("Retrieve Group Member Id Name Failed")
         }
-        return (await response.json()) as QualifierResponse[]
+        return (await response.json()) as TiesheetQualifierResponse[]
     } catch(err){
         console.error("Error fetching Group Member Id Name  Detail:", err)
         throw err; 

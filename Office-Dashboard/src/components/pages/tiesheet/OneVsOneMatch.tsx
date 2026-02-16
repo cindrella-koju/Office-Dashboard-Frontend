@@ -1,6 +1,5 @@
 
 import type { PlayerInfoType } from "../../../type/tiesheet.type";
-import extractToShowColumn from "../../../utils/tiesheet.util";
 import PlayerAvatar from "./PlayerAvatar";
 
 
@@ -8,15 +7,15 @@ import PlayerAvatar from "./PlayerAvatar";
 interface OneVsOneMatchProps {
   player1: PlayerInfoType;
   player2: PlayerInfoType;
+  handleMatchDetailView : () => void;
 }
 
 
-export default function OneVsOneMatch({ player1, player2 }: OneVsOneMatchProps) {
-  const p1Column = extractToShowColumn(player1.columns);
-  const p2Column = extractToShowColumn(player2.columns);
+export default function OneVsOneMatch({ player1, player2,handleMatchDetailView }: OneVsOneMatchProps) {
+
 
   return (
-    <div className="flex items-center justify-center gap-6 w-full">
+    <div className="flex items-center justify-center gap-6 w-full" onClick={handleMatchDetailView}>
       {/* Player 1 */}
       <div className={`flex-1 flex flex-col items-center p-4 rounded-xl ${
         player1.is_winner ? 'bg-green-50 border border-green-200' : 'bg-gray-50'
@@ -40,20 +39,6 @@ export default function OneVsOneMatch({ player1, player2 }: OneVsOneMatchProps) 
 
       {/* Score Center */}
       <div className="flex flex-col items-center justify-center px-2">
-        {/* <div className="flex items-center gap-2">
-          <span className={`text-2xl font-bold ${
-            player1.is_winner ? 'text-green-600' : 'text-gray-400'
-          }`}>
-            {p1Column?.value ?? 0}
-          </span>
-          <span className="text-lg font-bold text-gray-300">-</span>
-          <span className={`text-2xl font-bold ${
-            player2.is_winner ? 'text-green-600' : 'text-gray-400'
-          }`}>
-            { p2Column?.value ??0}
-          </span>
-        </div> */}
-        {/* <span className="text-xs text-gray-400 mt-1">{p2Column?.column_field}</span> */}
         <span className="text-xs text-black-400 mt-1 font-bold">VS</span>
       </div>
 

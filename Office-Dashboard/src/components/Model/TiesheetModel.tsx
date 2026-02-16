@@ -1,14 +1,10 @@
 import {  type Dispatch, type SetStateAction } from "react"
-import {
-  CREATE_TIESHEET,
-  UPDATE_TIESHEET,
-} from "../../constants/urls"
 import ModalWrapper from "../pages/shared/ModelWrapper"
 import SelectField from "../pages/shared/SelectField"
 import FormField from "../pages/shared/FormField"
 import type { ModelType } from "../../type/main.type"
 import Button from "../ui/Button"
-import { useTiesheet, type QualifierResponse } from "../../hooks/tiesheet/useTiesheet"
+import { useTiesheet, type TiesheetQualifierResponse } from "../../hooks/tiesheet/useTiesheet"
 
 interface selectedUser{
   id : string,
@@ -28,7 +24,7 @@ interface TiesheetProps {
   selectedUsers : selectedUser[],
   selectedMatch : SelectedMatch,
   setSelectedMatch : Dispatch<SetStateAction<SelectedMatch>>,
-  users : QualifierResponse[] | undefined;
+  users : TiesheetQualifierResponse [] | undefined;
   handleSubmit : (e:React.FormEvent) => void;
   handleClose : () => void;
 }

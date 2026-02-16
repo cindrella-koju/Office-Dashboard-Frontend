@@ -9,8 +9,9 @@ import { getGroupIdNameByRound, getGroupMemberIdName } from "../../services/grou
 import { type StandingColumnType } from "../../type/standingcolumn.type";
 import {type RoundResponse, type SelectedMatch } from "../../components/Model/TiesheetModel";
 import { useToast } from "../../context/ToastContext";
+import type { ModelType } from "../../type/main.type";
 
-export interface QualifierResponse {
+export interface TiesheetQualifierResponse {
   id: string
   username: string
 }
@@ -32,9 +33,9 @@ export const useTiesheet = () => {
     const [rounds, setRounds] = useState<Round[]>([])
     // Qualifier ko qualifier response hunu parxa 
     // Fix this
-    const [qualifierUser,setQualifierUser] = useState<QualifierResponse[]>([])
-    const [groupMember, setGroupMember] = useState<QualifierResponse[]>([])
-    const [users, setUsers] = useState<QualifierResponse[]>([])
+    const [qualifierUser,setQualifierUser] = useState<TiesheetQualifierResponse[]>([])
+    const [groupMember, setGroupMember] = useState<TiesheetQualifierResponse[]>([])
+    const [users, setUsers] = useState<TiesheetQualifierResponse[]>([])
     const [roundId, setRoundID] = useState<string>("")
     const [groupId, setGroupId] = useState<string>("")
     const [standingColumns, setStandingColumns] = useState<StandingColumnType[]>([])
@@ -46,6 +47,8 @@ export const useTiesheet = () => {
         { id: string; name: string }[]
     >([])
 
+    const [scoreView, setScoreView] = useState<ModelType>(null);
+
     const [selectedMatch, setSelectedMatch] = useState<SelectedMatch>({
         stage_id: "",
         group_id :"",
@@ -54,6 +57,7 @@ export const useTiesheet = () => {
         scheduled_time: "",
         status: "scheduled"
     })
+
     const fetchTiesheet = async() => {
         if(!eventId) return;
         try{
@@ -167,6 +171,7 @@ export const useTiesheet = () => {
         setViewMode("edit");
     };
 
+
     const handleMatchDetailView = (status : string, tiesheet_id : string) => {
         {
             status === "completed" && setShowMatchDetail(true)
@@ -247,6 +252,19 @@ export const useTiesheet = () => {
     useEffect(() => {
         fetchTiesheetById()
     },[selectedMatchId, roundId])
+
+    const handleEditScore = () => {
+        setScoreView("edit")
+    }
+
+    const handleCreateScore = () => {
+        setScoreView("create")
+    }
+
+    useEffect(() => {
+        fetchTiesheet()
+    },[scoreView])
+    
     return{
         permissions,
         setViewMode,
@@ -290,6 +308,11 @@ export const useTiesheet = () => {
         updateTiesheet,
 
         showAddDetail,
-        setShowAddDetail
+        setShowAddDetail,
+
+        setScoreView,
+        scoreView,
+        handleCreateScore,
+        handleEditScore
     }
 }

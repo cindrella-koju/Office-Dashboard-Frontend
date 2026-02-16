@@ -1,5 +1,5 @@
 import EventNavBar from "../../../components/EventNavbar";
-import TiesheetModel from "../../../components/Model/TiesheetModel";
+import TiesheetModel, { type SelectedMatch } from "../../../components/Model/TiesheetModel";
 import TiesheetCard from "../../../components/pages/tiesheet/TiesheetCard";
 import { PageContent, PageHeader, PageLayout } from "../../../components/layout/PageLayout";
 import Button from "../../../components/ui/Button";
@@ -9,6 +9,8 @@ import MatchDetail from "../../../components/pages/tiesheet/MatchDetail";
 import PopUp from "../../../components/ui/PopUp";
 import { useTiesheet } from "../../../hooks/tiesheet/useTiesheet";
 import AddMatchModal from "../../../components/Model/AddMatchModel";
+import { useState } from "react";
+import { type PlayerInfoType } from "../../../type/tiesheet.type";
 
 
 export default function Tiesheet(){
@@ -46,9 +48,18 @@ export default function Tiesheet(){
         createTiesheet,
         updateTiesheet,
 
-        showAddDetail,
-        setShowAddDetail
+        setShowAddDetail,
+
+        setScoreView,
+        scoreView,
+        handleCreateScore,
+        handleEditScore
     } = useTiesheet()
+
+    const [player1, setplayer1] = useState<PlayerInfoType | undefined>(undefined)
+    const [player2, setplayer2] = useState<PlayerInfoType | undefined>(undefined)
+    const [editingTiesheet, setEditingTiesheet] = useState< string  |null>(null)
+    const [status, setStatus] = useState<string | null>(null)
 
     const handleClose = () => {
         setSelectedMatch({
@@ -74,9 +85,9 @@ export default function Tiesheet(){
             return
         }
 
-        const payload = {
+        const payload : SelectedMatch = {
             ...selectedMatch,
-            status: selectedMatch.status.toLowerCase()
+            status: selectedMatch.status.toLowerCase() as SelectedMatch["status"]
         }
 
         if (viewMode === "create"){ 
@@ -124,7 +135,10 @@ export default function Tiesheet(){
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                                 {matches.map((match) => (
                                     <>
-                                        <div key={match.id} className="hover:scale-102 transform transition duration-300 ease-in-out cursor-pointer" onClick={() => handleMatchDetailView(match.status, match.id)}>
+                                        <div 
+                                            key={match.id} 
+                                            className="hover:scale-102 transform transition duration-300 ease-in-out cursor-pointer" 
+                                        >
                                         <TiesheetCard
                                             id={match.id}
                                             scheduledDate={match.scheduled_date}
@@ -132,17 +146,20 @@ export default function Tiesheet(){
                                             status={match.status}
                                             players={match.player_info}
                                             onEdit={handleEditMatch}
+                                            onAddScore={handleCreateScore}
+                                            onEditScore={handleEditScore}
                                             permissions={permissions}
                                             tiesheetId={match.id} 
                                             setShowAddDetail={setShowAddDetail}
+                                            onClick = {() => {
+                                                setplayer1(match.player_info[0])
+                                                setplayer2(match.player_info[1])
+                                                setEditingTiesheet(match.id)
+                                                setStatus(match.status)
+                                            }}
+                                            handleMatchDetailView={() => handleMatchDetailView(match.status, match.id)}
                                         />
                                         </div>
-
-                                        {/* Yeta sabai user gairaxa kina ki loop bhitra xa:- solve this */}
-                                        {
-                                            showAddDetail &&
-                                            <AddMatchModal player1={match.player_info[0]} player2={match.player_info[1]} tiesheetID={match.id} setOpenStartGame={setShowAddDetail}/>
-                                        }
                                                                 
                                     </>
                                 ))}
@@ -197,7 +214,20 @@ export default function Tiesheet(){
                         setOnClose={setShowDelete}
                     />
                 }
-                    
+                
+                {/* Display the model to add and edit match detail */}
+                {
+                    scoreView && player1 && player2 && editingTiesheet && status &&
+                    <AddMatchModal 
+                        setScoreView={setScoreView}
+                        player1={player1}
+                        player2={player2} 
+                        tiesheetID={editingTiesheet} 
+                        setOpenStartGame={setScoreView}
+                        scoreView={scoreView}
+                        status={status}
+                    />
+                }
 
             </PageContent>
         </PageLayout>
