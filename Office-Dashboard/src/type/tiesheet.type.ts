@@ -56,8 +56,8 @@ export interface UserDetail{
 }
 
 export interface AddMatchModalProps {
-  player1: PlayerInfoType;
-  player2: PlayerInfoType;
+  players: PlayerInfoType[];
+  // player2: PlayerInfoType;
   tiesheetID: string;
   setOpenStartGame: Dispatch<SetStateAction<ModelType>>;
   scoreView : ModelType;

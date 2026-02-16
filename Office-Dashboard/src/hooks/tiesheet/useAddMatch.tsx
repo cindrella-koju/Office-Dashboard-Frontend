@@ -5,8 +5,8 @@ import type { ModelType } from "../../type/main.type";
 import { useToast } from "../../context/ToastContext";
 
 export const useAddMAtch = ( 
-    player1 : PlayerInfoType, 
-    player2: PlayerInfoType,
+    players : PlayerInfoType[], 
+    // player2: PlayerInfoType,
     tiesheetId : string,
     scoreView : ModelType,
     status : string,
@@ -24,16 +24,18 @@ export const useAddMAtch = (
         status: status,
         tiesheet_id: tiesheetId,
         matchDetail: [
-          {
-            match_id : "",
+            {
+            match_id: "",
             match_name: "",
-            userDetail: [
-              { user_id: player1.user_id, points: "", winner: false },
-              { user_id: player2.user_id, points: "", winner: false },
-            ],
-          },
-        ]
-    })
+            userDetail: players.map((p) => ({
+                user_id: p.user_id,
+                points: "",
+                winner: false,
+            })),
+            },
+        ],
+    });
+
 
     useEffect(() => {
         if (!editTiesheetDetail) return;
@@ -94,10 +96,11 @@ export const useAddMAtch = (
             ...prev.matchDetail,
             {
                 match_name: "",
-                userDetail: [
-                { user_id: player1.user_id, points: "", winner: false },
-                { user_id: player2.user_id, points: "", winner: false },
-                ],
+                userDetail: players.map((p) => ({
+                user_id: p.user_id,
+                points: "",
+                winner: false,
+            })),
             },
             ],
         }));

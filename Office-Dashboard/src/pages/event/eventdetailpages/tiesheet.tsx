@@ -66,7 +66,7 @@ export default function Tiesheet(){
     const [showDeleteMatch, setShowDeleteMatch] = useState<boolean>(false)
     const [showDeleteTiesheet, setShowDeleteTiesheet] = useState<boolean>(false)
     const [deleteMatchId, setDeleteMatchId] = useState<string | undefined>(undefined)
-
+    const [players, setPlayers] = useState<PlayerInfoType[] | undefined>(undefined)
     const handleClose = () => {
         setSelectedMatch({
             stage_id: "",
@@ -157,6 +157,7 @@ export default function Tiesheet(){
                                             permissions={permissions}
                                             tiesheetId={match.id} 
                                             onClick = {() => {
+                                                setPlayers(match.player_info)
                                                 setplayer1(match.player_info[0])
                                                 setplayer2(match.player_info[1])
                                                 setEditingTiesheet(match.id)
@@ -228,17 +229,18 @@ export default function Tiesheet(){
                 
                 {/* Display the model to add and edit match detail */}
                 {
-                    scoreView && player1 && player2 && editingTiesheet && status &&
+                    scoreView && players && editingTiesheet && status &&
                     <AddMatchModal 
                         setScoreView={setScoreView}
-                        player1={player1}
-                        player2={player2} 
+                        // player1={player1}
+                        // player2={player2} 
                         tiesheetID={editingTiesheet} 
                         setOpenStartGame={setScoreView}
                         scoreView={scoreView}
                         status={status}
                         setDeleteMatchId={setDeleteMatchId}
                         setShowDeleteMatch={setShowDeleteMatch}
+                        players = {players}
                     />
                 }
                 
