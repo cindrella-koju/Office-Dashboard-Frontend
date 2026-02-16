@@ -8,11 +8,10 @@ export default function MatchHeader({
   onEditScore,
   onAddScore,
   permissions,
-  setShowAddDetail,
-  onClick
+  onClick,
+  onDeleteTiesheet,
 }: MatchHeaderProps) {
 
-  const handleStart = () => setShowAddDetail && setShowAddDetail(true);
 
   const getStatusLabel = () => {
     if (status === "scheduled") return "Scheduled";
@@ -81,7 +80,7 @@ export default function MatchHeader({
           permissions.canDelete && (
             <button
             className="text-xs font-medium text-red-600 hover:text-red-800 hover:underline transition-colors"
-            onClick={handleStart}
+            onClick={onDeleteTiesheet}
           >
             Delete
           </button>

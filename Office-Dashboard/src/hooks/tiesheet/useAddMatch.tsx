@@ -18,12 +18,14 @@ export const useAddMAtch = (
     const [showWinner, setShowWinner] = useState(true);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
+
     const [matchDetail, setMatchDetail] = useState<AddMatchProps>({
         overallwinner: "",
         status: status,
         tiesheet_id: tiesheetId,
         matchDetail: [
           {
+            match_id : "",
             match_name: "",
             userDetail: [
               { user_id: player1.user_id, points: "", winner: false },
@@ -37,10 +39,12 @@ export const useAddMAtch = (
         if (!editTiesheetDetail) return;
 
         const formattedData = {
+
             overallwinner: editTiesheetDetail.overallwinner || "",
             status: editTiesheetDetail.status || "scheduled",
             tiesheet_id: tiesheetId,
             matchDetail: editTiesheetDetail.matchDetail.map((match: any) => ({
+            match_id : match.match_id || "",
             match_name: match.match_name || "",
             userDetail: match.userDetail.map((user: any) => ({
                 user_id: user.user_id,
@@ -72,7 +76,12 @@ export const useAddMAtch = (
         await addMatchServices.createMatch(payload, showToast);
         setScoreView(null)
     }
-    
+
+    const updateMatch = async(payload : AddMatchProps) => {
+        await addMatchServices.updateMatch(payload, showToast);
+        setScoreView(null)
+    }
+
     useEffect(() => {
         fetchMatchByTiesheetId()
     },[tiesheetId])
@@ -112,6 +121,7 @@ export const useAddMAtch = (
         } as any)
         );
     };
+
 
     const updatePoints = (
         matchIndex: number,
@@ -188,6 +198,7 @@ export const useAddMAtch = (
         updatePoints,
         updateWinner,
 
-        createMatch
+        createMatch,
+        updateMatch
     }
 }

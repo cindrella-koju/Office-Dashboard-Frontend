@@ -41,12 +41,6 @@ export default function MultiPlayerMatch({ players, handleMatchDetailView }: Mul
             </div>
           </div>
           <div className="flex items-center gap-2">
-            {/* <span className={`text-lg font-bold min-w-[40px] text-center ${
-              player.is_winner ? 'text-green-600' : 'text-gray-400'
-            }`}>
-              {extractToShowColumn(player.columns)?.value ?? 0}
-            </span>
-            <span className="text-xs text-gray-400">{extractToShowColumn(player.columns)?.column_field}</span> */}
           </div>
         </div>
       ))}

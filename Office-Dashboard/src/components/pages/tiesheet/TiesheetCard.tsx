@@ -3,7 +3,6 @@ import MatchDate from "./MatchDate";
 import OneVsOneMatch from "./OneVsOneMatch";
 import MultiPlayerMatch from "./MultiPlayerMatch";
 import type { PlayerInfoType } from "../../../type/tiesheet.type";
-import type { Dispatch, SetStateAction } from "react";
 import type { EventPermission } from "../../../hooks/userPermission";
 
 
@@ -18,9 +17,9 @@ interface TiesheetCardProps {
   onAddScore? :() => void;
   permissions : EventPermission,
   tiesheetId : string,
-  setShowAddDetail? : Dispatch<SetStateAction<boolean>>;
   onClick : () => void;
   handleMatchDetailView : () => void;
+  onDeleteTiesheet : () => void;
 }
 
 export default function TiesheetCard({ 
@@ -34,9 +33,9 @@ export default function TiesheetCard({
   onEditScore,
   permissions ,
   tiesheetId,
-  setShowAddDetail,
   onClick,
-  handleMatchDetailView
+  handleMatchDetailView,
+  onDeleteTiesheet
 }: TiesheetCardProps) {
   const matchDate = new Date(`${scheduledDate}T${scheduledTime}`);
   const matchTime = matchDate.toLocaleTimeString('en-US', { 
@@ -57,8 +56,8 @@ export default function TiesheetCard({
         tiesheetId={tiesheetId}
         player1={players[0]}
         player2={players[1]}
-        setShowAddDetail={setShowAddDetail}
         onClick ={onClick}
+        onDeleteTiesheet={onDeleteTiesheet}
       />
 
       <div className="flex flex-1">

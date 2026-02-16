@@ -44,6 +44,7 @@ export interface AddMatchResponse{
 }
 
 export interface MatchDetail{
+  match_id? : string,
   match_name : string,
   userDetail : UserDetail[]
 }
@@ -62,6 +63,8 @@ export interface AddMatchModalProps {
   scoreView : ModelType;
   status : string;
   setScoreView : Dispatch<SetStateAction<ModelType>>;
+  setDeleteMatchId : Dispatch<SetStateAction<string | undefined>>;
+  setShowDeleteMatch : Dispatch<SetStateAction<boolean>>;
 }
 
 export interface MatchHeaderProps {
@@ -75,6 +78,8 @@ export interface MatchHeaderProps {
   tiesheetId: string;
   player1: PlayerInfoType;
   player2: PlayerInfoType;
-  setShowAddDetail? : Dispatch<SetStateAction<boolean>>;
+  player3? : PlayerInfoType;
+  player4? : PlayerInfoType;
   onClick : () => void;
+  onDeleteTiesheet : () => void;
 }

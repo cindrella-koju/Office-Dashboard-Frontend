@@ -10,6 +10,7 @@ import { type StandingColumnType } from "../../type/standingcolumn.type";
 import {type RoundResponse, type SelectedMatch } from "../../components/Model/TiesheetModel";
 import { useToast } from "../../context/ToastContext";
 import type { ModelType } from "../../type/main.type";
+import {type MatchInfo } from "../../components/pages/tiesheet/MatchDetail";
 
 export interface TiesheetQualifierResponse {
   id: string
@@ -27,7 +28,8 @@ export const useTiesheet = () => {
     const [selectedMatchId, setSelectedMatchId] = useState<string | null>(null);
     const [loading, setLoading ] = useState(true)
     const [error, setError] = useState<string | null>(null)
-    const [showAddDetail, setShowAddDetail] = useState<boolean>(false)
+
+
 
     // For tiesheet model
     const [rounds, setRounds] = useState<Round[]>([])
@@ -46,8 +48,10 @@ export const useTiesheet = () => {
     const [selectedUsers, setSelectedUsers] = useState<
         { id: string; name: string }[]
     >([])
-
+    
     const [scoreView, setScoreView] = useState<ModelType>(null);
+    // For Match
+    const [matchInfo, setMatchInfo] = useState<MatchInfo[]>([])
 
     const [selectedMatch, setSelectedMatch] = useState<SelectedMatch>({
         stage_id: "",
@@ -149,6 +153,25 @@ export const useTiesheet = () => {
         }
     }
 
+    const fetchMatch = async( ) => {
+        if(!tiesheetId) return;
+
+        try{
+            setLoading(true)
+            const data = await tiesheetServices.getMatch(tiesheetId)
+            console.log("Response Data:", data)
+            setMatchInfo(data)
+        } catch(err:any){
+            setError(err.message)
+        } finally{
+            setLoading(false)
+        }
+    }
+
+    useEffect(() => {
+        fetchMatch()
+    },[showMatchDetail])
+
     useEffect(() => {
         if(groupMember.length>0){
             setUsers(groupMember)
@@ -234,6 +257,16 @@ export const useTiesheet = () => {
         fetchTiesheet()
     }
 
+    const deleteTiesheet = async(tiesheetId : string) => {
+        await tiesheetServices.deleteTiesheet(tiesheetId, showToast);
+        fetchTiesheet()
+    }
+
+    const deleteMatch = async( matchId: string) => {
+        await tiesheetServices.deleteMatch( matchId, showToast);
+        fetchTiesheet()
+    }
+
     useEffect(() => {
         fetchTiesheet()
         fetchRound()
@@ -306,13 +339,14 @@ export const useTiesheet = () => {
 
         createTiesheet,
         updateTiesheet,
-
-        showAddDetail,
-        setShowAddDetail,
+        deleteTiesheet,
+        deleteMatch,
 
         setScoreView,
         scoreView,
         handleCreateScore,
-        handleEditScore
+        handleEditScore,
+
+        matchInfo
     }
 }

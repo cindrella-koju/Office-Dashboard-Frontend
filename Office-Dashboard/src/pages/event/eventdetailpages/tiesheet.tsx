@@ -11,6 +11,7 @@ import { useTiesheet } from "../../../hooks/tiesheet/useTiesheet";
 import AddMatchModal from "../../../components/Model/AddMatchModel";
 import { useState } from "react";
 import { type PlayerInfoType } from "../../../type/tiesheet.type";
+import ConfirmationModal from "../../../components/Model/ConfirmationPopUp";
 
 
 export default function Tiesheet(){
@@ -47,19 +48,24 @@ export default function Tiesheet(){
 
         createTiesheet,
         updateTiesheet,
-
-        setShowAddDetail,
+        deleteTiesheet,
+        deleteMatch,
 
         setScoreView,
         scoreView,
         handleCreateScore,
-        handleEditScore
+        handleEditScore,
+
+        matchInfo
     } = useTiesheet()
 
     const [player1, setplayer1] = useState<PlayerInfoType | undefined>(undefined)
     const [player2, setplayer2] = useState<PlayerInfoType | undefined>(undefined)
     const [editingTiesheet, setEditingTiesheet] = useState< string  |null>(null)
     const [status, setStatus] = useState<string | null>(null)
+    const [showDeleteMatch, setShowDeleteMatch] = useState<boolean>(false)
+    const [showDeleteTiesheet, setShowDeleteTiesheet] = useState<boolean>(false)
+    const [deleteMatchId, setDeleteMatchId] = useState<string | undefined>(undefined)
 
     const handleClose = () => {
         setSelectedMatch({
@@ -150,7 +156,6 @@ export default function Tiesheet(){
                                             onEditScore={handleEditScore}
                                             permissions={permissions}
                                             tiesheetId={match.id} 
-                                            setShowAddDetail={setShowAddDetail}
                                             onClick = {() => {
                                                 setplayer1(match.player_info[0])
                                                 setplayer2(match.player_info[1])
@@ -158,6 +163,12 @@ export default function Tiesheet(){
                                                 setStatus(match.status)
                                             }}
                                             handleMatchDetailView={() => handleMatchDetailView(match.status, match.id)}
+                                            onDeleteTiesheet={() => {
+                                                setShowDeleteTiesheet(true)
+                                                setEditingTiesheet(match.id)
+                                                setplayer1(match.player_info[0])
+                                                setplayer2(match.player_info[1])
+                                            }}
                                         />
                                         </div>
                                                                 
@@ -202,7 +213,7 @@ export default function Tiesheet(){
                     showMatchDetail && tiesheetId && 
                     <MatchDetail 
                         setShowMatchDetail={setShowMatchDetail} 
-                        tiesheet_id={tiesheetId}
+                        matchInfo={matchInfo}
                     />
                 }
                 {
@@ -226,14 +237,42 @@ export default function Tiesheet(){
                         setOpenStartGame={setScoreView}
                         scoreView={scoreView}
                         status={status}
+                        setDeleteMatchId={setDeleteMatchId}
+                        setShowDeleteMatch={setShowDeleteMatch}
                     />
                 }
-
+                
+                {
+                    editingTiesheet && 
+                    <ConfirmationModal
+                        isOpen = {showDeleteTiesheet}
+                        title="Delete"
+                        message={`Are you sure tou want to delete Tiesheet ${player1?.username} vs ${player2?.username}`}
+                        onCancel={() => setShowDeleteTiesheet(false)}
+                        onConfirm={() => {
+                            deleteTiesheet(editingTiesheet)
+                            setShowDeleteTiesheet(false)
+                        }}
+                    />
+                }
+                {
+                    deleteMatchId && 
+                    <ConfirmationModal
+                        isOpen = {showDeleteMatch}
+                        title="Delete"
+                        message={`Are you sure tou want to delete Match`}
+                        onCancel={() => {
+                            setShowDeleteMatch(false)
+                            setScoreView("edit")
+                        }}
+                        onConfirm={() => {
+                            setScoreView("edit")
+                            deleteMatch(deleteMatchId)
+                            setShowDeleteMatch(false)
+                        }}
+                    />
+                }
             </PageContent>
         </PageLayout>
-
-
-        
-        
     )
 }

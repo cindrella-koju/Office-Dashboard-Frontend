@@ -1,6 +1,6 @@
 import type { SelectedMatch } from "../components/Model/TiesheetModel";
 import type { ToastType } from "../components/Toast";
-import { CREATE_MATCH, CREATE_TIESHEET, GET_TIESHEET_BY_ID, RETRIEVE_MATCH_BY_TIESHEET_ID, RETRIEVE_STANDING_COLUMN, RETRIEVE_TIESHEET, UPDATE_TIESHEET } from "../constants/urls"
+import { CREATE_MATCH, CREATE_TIESHEET, DELETE_MATCH, DELETE_TIESHEET, EDIT_MATCH, GET_TIESHEET_BY_ID, RETRIEVE_MATCH, RETRIEVE_MATCH_BY_TIESHEET_ID, RETRIEVE_STANDING_COLUMN, RETRIEVE_TIESHEET, UPDATE_TIESHEET } from "../constants/urls"
 import type { StandingColumnType } from "../type/standingcolumn.type";
 import type { AddMatchProps, TiesheetType } from "../type/tiesheet.type";
 
@@ -42,6 +42,20 @@ export const getTiesheetById = async(matchId : string) => {
         throw err;
     }
 }
+
+export const getMatch = async(tiesheetId : string) => {
+    try{
+        const response = await fetch(RETRIEVE_MATCH(tiesheetId));
+        if(!response.ok){
+            throw new Error("Retrieve Match Request Failed")
+        }
+        return response.json();
+    }  catch(err){
+        console.error("Error fetching Match:", err)
+        throw err;
+    }
+}
+
 export const getStandingColumn = async(roundId : string):Promise<StandingColumnType[]> => {
     try{
         const response = await fetch(RETRIEVE_STANDING_COLUMN(roundId));
@@ -118,6 +132,80 @@ export const updateTiesheet = async(matchId : string, payload : SelectedMatch,sh
         }
 
         showToast(data?.message || "Tiesheet updated successfully!", "success");
+        return data;
+    } catch (error) {
+        showToast((error as Error).message, "error");
+        throw error;
+    }
+}
+
+export const deleteTiesheet = async(id : string, showToast: (msg: string, type?: ToastType)=> void) => {
+    try{
+        const res = await fetch(`${DELETE_TIESHEET(id)}`,{
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+
+        const data = await res.json()
+    
+        if (!res.ok) {
+          const message = data?.detail || "Failed to Delete Tiesheet";
+          showToast(message, "error");
+          return Promise.reject(new Error(message));
+        }
+    
+        showToast(data?.message || "Tiesheet Deleted successfully!", "success");
+        return data;
+    } catch (error) {
+        showToast((error as Error).message, "error");
+        throw error;
+    }
+}
+
+export const deleteMatch = async(id : string, showToast: (msg: string, type?: ToastType)=> void) => {
+    try{
+        const res = await fetch(`${DELETE_MATCH(id)}`,{
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+
+        const data = await res.json()
+    
+        if (!res.ok) {
+          const message = data?.detail || "Failed to Delete Match";
+          showToast(message, "error");
+          return Promise.reject(new Error(message));
+        }
+    
+        showToast(data?.message || "Match Deleted successfully!", "success");
+        return data;
+    } catch (error) {
+        showToast((error as Error).message, "error");
+        throw error;
+    }
+}
+
+export const updateMatch = async(payload : AddMatchProps,showToast: (msg: string, type?: ToastType) => void) => {
+    try{
+        const res = await fetch(EDIT_MATCH,{
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+        })
+
+        const data = await res.json()
+
+        if (!res.ok) {
+            const message = data?.detail || "Failed to update Match";
+            showToast(message, "error");
+            return Promise.reject(new Error(message));
+        }
+
+        showToast(data?.message || "Match updated successfully!", "success");
         return data;
     } catch (error) {
         showToast((error as Error).message, "error");

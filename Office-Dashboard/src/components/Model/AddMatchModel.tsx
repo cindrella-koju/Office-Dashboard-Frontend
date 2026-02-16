@@ -13,7 +13,9 @@ export default function AddMatchModal({
   tiesheetID,
   scoreView,
   status,
-  setScoreView
+  setScoreView,
+  setDeleteMatchId,
+  setShowDeleteMatch,
 }: AddMatchModalProps) {
 
   const statusOptions = [
@@ -39,13 +41,11 @@ export default function AddMatchModal({
     removeMatch,
     updatePoints,
     updateWinner,
-    createMatch
+    createMatch,
+    updateMatch
   } = useAddMAtch(player1, player2, tiesheetID, scoreView, status, setScoreView)
-
-
   
 
-  // Handle form submission
   const handleSubmit = async(e: React.FormEvent) => {
     e.preventDefault();
 
@@ -67,6 +67,9 @@ export default function AddMatchModal({
     console.log("Match Detail to send:", matchDetail);
     if(scoreView === "create"){
       await createMatch(matchDetail)
+    }
+    if(scoreView === "edit"){
+      await updateMatch(matchDetail)
     }
   };
 
@@ -179,7 +182,15 @@ export default function AddMatchModal({
                   {matchDetail.matchDetail.length > 1  && (
                     <button
                       type="button"
-                      onClick={() => removeMatch(index)}
+                      onClick={() => {
+                        if (scoreView === "create") {
+                          removeMatch(index);
+                        } else if (scoreView === "edit") {
+                          setShowDeleteMatch(true);
+                          setDeleteMatchId(match.match_id);
+                          setScoreView(null);
+                        }
+                      }}
                       className="mt-7 p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-red-200 md:opacity-0 md:group-hover:opacity-100"
                       title="Remove this match"
                     >

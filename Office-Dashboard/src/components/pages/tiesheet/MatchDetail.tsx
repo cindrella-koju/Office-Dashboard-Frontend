@@ -1,7 +1,5 @@
 import type { Dispatch, SetStateAction } from "react";
 import ModalWrapper from "../shared/ModelWrapper";
-import useFetch from "../../../hooks/useFetch";
-import { RETRIEVE_MATCH } from "../../../constants/urls";
 
 interface userDetail{
     username : string;
@@ -9,21 +7,21 @@ interface userDetail{
     points : string;
     winner : boolean
 }
-interface MatchInfo{
+export interface MatchInfo{
     tiesheet_id : string,
     match_name : string,
     userinfo : userDetail[]
 }
 interface MatchDetailProps{
     setShowMatchDetail : Dispatch<SetStateAction<boolean>>;
-    tiesheet_id : string
+    matchInfo : MatchInfo[]
 }
-export default function MatchDetail({setShowMatchDetail,tiesheet_id}:MatchDetailProps) {
-    const {data : match_info } = useFetch<MatchInfo[]>(RETRIEVE_MATCH(tiesheet_id))
+export default function MatchDetail({setShowMatchDetail, matchInfo}:MatchDetailProps) {
+  console.log("Match Info:", matchInfo)
   return (
     <ModalWrapper title="Match Results" onClose={() => setShowMatchDetail(false)}>
       <div className="space-y-5 py-3">
-        {match_info && match_info.map((match) => {
+        {matchInfo && matchInfo.map((match) => {
           const [playerA, playerB] = match.userinfo;
           const left = playerA;
           const right =  playerB;
@@ -59,10 +57,13 @@ export default function MatchDetail({setShowMatchDetail,tiesheet_id}:MatchDetail
                     {left.username}
                   </p>
 
-                  <div className="mt-2.5">
-                    <div className="text-2xl font-bold text-gray-800">{left.points}</div>
-                    <div className="text-xs text-gray-500">pts</div>
-                  </div>
+                  {
+                    left.points && 
+                    <div className="mt-2.5">
+                      <div className="text-2xl font-bold text-gray-800">{left.points}</div>
+                      <div className="text-xs text-gray-500">pts</div>
+                    </div>
+                  }
 
                   {left.winner && (
                     <div className="mt-2.5 inline-block rounded-full bg-green-600 px-3 py-0.5 text-xs font-semibold text-white">
@@ -95,10 +96,13 @@ export default function MatchDetail({setShowMatchDetail,tiesheet_id}:MatchDetail
                     {right.username}
                   </p>
 
-                  <div className="mt-2.5">
-                    <div className="text-2xl font-bold text-gray-800">{right.points}</div>
-                    <div className="text-xs text-gray-500">pts</div>
-                  </div>
+                  {
+                    right.points && 
+                      <div className="mt-2.5">
+                        <div className="text-2xl font-bold text-gray-800">{right.points}</div>
+                        <div className="text-xs text-gray-500">pts</div>
+                      </div>
+                  }
 
                   {right.winner && (
                     <div className="mt-2.5 inline-block rounded-full bg-green-600 px-3 py-0.5 text-xs font-semibold text-white">
