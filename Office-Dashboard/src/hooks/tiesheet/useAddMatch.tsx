@@ -16,7 +16,7 @@ export const useAddMAtch = (
     const [editTiesheetDetail, setEditTiesheetDetail] = useState<AddMatchResponse>()
     const [showPoints, setShowPoints] = useState(false);
     const [showWinner, setShowWinner] = useState(true);
-    const [loading, setLoading] = useState<boolean>(true);
+    const [loading, setLoading] = useState<boolean>(scoreView === "edit");
     const [error, setError] = useState<string | null>(null);
 
     const [matchDetail, setMatchDetail] = useState<AddMatchProps>({
@@ -57,6 +57,16 @@ export const useAddMAtch = (
         };
 
         setMatchDetail(formattedData);
+        
+        // Set showPoints and showWinner based on fetched data
+        if (editTiesheetDetail.matchDetail.length > 0) {
+            const hasPoints = editTiesheetDetail.matchDetail.some((match: any) =>
+                match.userDetail.some((user: any) => user.points)
+            );
+            setShowPoints(hasPoints);
+            setShowWinner(true); // Winner field is always shown
+        }
+        
         setLoading(false);
     }, [editTiesheetDetail, tiesheetId]);
 
@@ -138,18 +148,18 @@ export const useAddMAtch = (
                 uIdx === userIndex ? { ...user, points: value } : user
             );
 
-            // Auto-select winner based on points if both players have points
-            const player1Points = parseFloat(updatedUserDetail[0].points) || 0;
-            const player2Points = parseFloat(updatedUserDetail[1].points) || 0;
-
-            if (updatedUserDetail[0].points && updatedUserDetail[1].points) {
-                if (player1Points > player2Points) {
-                updatedUserDetail[0].winner = true;
-                updatedUserDetail[1].winner = false;
-                } else if (player2Points > player1Points) {
-                updatedUserDetail[0].winner = false;
-                updatedUserDetail[1].winner = true;
-                }
+            // Auto-select winner based on points if all players have points
+            const allPlayersHavePoints = updatedUserDetail.every(user => user.points);
+            
+            if (allPlayersHavePoints) {
+                // Find the highest points
+                const maxPoints = Math.max(...updatedUserDetail.map(user => parseFloat(user.points) || 0));
+                
+                // Set winner for player(s) with highest points
+                updatedUserDetail.forEach((user, idx) => {
+                    const userPoints = parseFloat(user.points) || 0;
+                    updatedUserDetail[idx].winner = userPoints === maxPoints;
+                });
             }
 
             return {

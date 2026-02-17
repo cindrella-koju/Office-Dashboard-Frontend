@@ -26,6 +26,7 @@ export default function AddMatchModal({
   }));
 
   const {
+    loading,
     matchDetail,
     setMatchDetail,
     showPoints,
@@ -73,6 +74,14 @@ export default function AddMatchModal({
       title={`${scoreView === "create" ? "Add" : "Edit"} Match Information`}
       onClose={() => setScoreView(null)}
     >
+      {loading && scoreView === "edit" ? (
+        <div className="flex items-center justify-center py-12">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading match details...</p>
+          </div>
+        </div>
+      ) : (
       <form className="space-y-6" onSubmit={handleSubmit}>
         {/* Status */}
         <SelectField
@@ -262,6 +271,7 @@ export default function AddMatchModal({
           {scoreView === "create" ? "Add Match" : "Edit Match"}
         </Button>
       </form>
+      )}
     </ModalWrapper>
   );
 }
