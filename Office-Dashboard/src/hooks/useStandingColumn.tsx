@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getRound, getRoundByEvent } from "../services/round.service";
+import { getRound, getRoundByEventWithColumn } from "../services/round.service";
 import { getStandingColumn } from "../services/tiesheet.service";
 import type { Round } from "../type/group.type";
 import type { RoundData } from "../type/round.type";
@@ -25,7 +25,7 @@ export const useStandingColumn = (eventId: string | null) => {
 
     const fetchRoundByEvent = async () => {
       try {
-        const data = await getRoundByEvent(eventId);
+        const data = await getRoundByEventWithColumn(eventId);
         setRoundByEvent(data);
         if (data.length > 0) {
           setSelectedRound(data[0]);

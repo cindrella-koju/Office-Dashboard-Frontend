@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
-import { getRound, getRoundByEvent } from "../services/round.service";
+import { getRoundByEvent, getRoundByEventWithColumn } from "../services/round.service";
 import { getOverallTiesheet } from "../services/tiesheet.service";
 import type { Round } from "../type/group.type";
-import type { RoundData } from "../type/round.type";
 import type { UserType } from "../components/pages/overallpoints/OverallPointTable";
 
 export interface OverallPointResponse {
@@ -12,7 +11,7 @@ export interface OverallPointResponse {
 
 export const useOverallPoints = (eventId: string | null) => {
   const [round_by_event, setRoundByEvent] = useState<Round[]>([]);
-  const [rounds, setRounds] = useState<RoundData[]>([]);
+  const [rounds, setRounds] = useState<Round[]>([]);
   const [overallpoints, setOverallPoints] = useState<OverallPointResponse[]>([]);
   const [selectedRound, setSelectedRound] = useState<Round | null>(null);
   const [loading, setLoading] = useState(false);
@@ -45,7 +44,7 @@ export const useOverallPoints = (eventId: string | null) => {
 
     const fetchRounds = async () => {
       try {
-        const data = await getRound(eventId);
+        const data = await getRoundByEventWithColumn(eventId);
         setRounds(data);
       } catch (err) {
         console.error("Error fetching rounds:", err);

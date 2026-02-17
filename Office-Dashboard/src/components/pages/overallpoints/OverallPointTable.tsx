@@ -52,6 +52,7 @@ export default function OverallPointTable({ users }: OverAllPointsTableProps) {
       setModelType={() => {}}
       setValue={() => {}}
       tablefor={null}
+      setOnDelete={() => console.log("DElete this table")}
     />
   );
 }

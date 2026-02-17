@@ -21,6 +21,7 @@ export const ADD_GROUP_MEMBER = `${BASE_URL}/event/group/player`
 
 // Api to extract group and participants
 export const  GET_ROUNDS_BY_EVENT = (eventId: string) => `${BASE_URL}/event/stage/rounds?event_id=${eventId}`
+export const  GET_ROUNDS_BY_EVENT_WITH_COLUMN = (eventId: string) => `${BASE_URL}/event/stage/rounds/standingcolumn?event_id=${eventId}`
 export const GET_PARTICIPANTS_BY_EVENT = (eventId: string) => `${BASE_URL}/participant/not-in-group?event_id=${eventId}` 
 export const GET_QUALIFIER_NOT_IN_GROUP = (eventId:string, roundId:string) => `${BASE_URL}/participant/not-in-group/event/${eventId}/stage/${roundId}` 
 export const GET_QUALIFIER_NOT_IN_GROUP_FOR_EDIT = (eventId:string, roundId:string, groupId : string) => `${BASE_URL}/participant/not-in-group/event/${eventId}/stage/${roundId}?group_id=${groupId}` 
