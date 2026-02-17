@@ -1,4 +1,5 @@
 import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
+import { fetchFilterData, fetchFilterDataByTwoIdUrlFunction, fetchFilterDataByUrlFunction } from "../services/filter.service";
 
 export interface FilterOption {
   id: string;
@@ -41,20 +42,18 @@ export default function Filters<T>({
   useEffect(() => {
     const fetchData = async () => {
       try {
-        let url: string | undefined;
+        let data: T;
 
         if (selectedFilter.id === "all" && allUrl) {
-          url = allUrl;
+          data = await fetchFilterData<T>(allUrl);
         } else if (urlFunction) {
-          url = urlFunction(selectedFilter.id);
+          data = await fetchFilterDataByUrlFunction<T>(urlFunction, selectedFilter.id);
         } else if (twoIdUrlFunction && eventId) {
-          url = twoIdUrlFunction(eventId, selectedFilter.id);
+          data = await fetchFilterDataByTwoIdUrlFunction<T>(twoIdUrlFunction, eventId, selectedFilter.id);
+        } else {
+          return;
         }
 
-        if (!url) return;
-
-        const response = await fetch(url);
-        const data = await response.json();
         setSelectVal(data);
       } catch (error) {
         console.error("Error fetching filter data:", error);

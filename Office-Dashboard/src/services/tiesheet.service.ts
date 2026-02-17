@@ -1,6 +1,6 @@
 import type { SelectedMatch } from "../components/Model/TiesheetModel";
 import type { ToastType } from "../components/Toast";
-import { CREATE_MATCH, CREATE_TIESHEET, DELETE_MATCH, DELETE_TIESHEET, EDIT_MATCH, GET_TIESHEET_BY_ID, RETRIEVE_MATCH, RETRIEVE_MATCH_BY_TIESHEET_ID, RETRIEVE_STANDING_COLUMN, RETRIEVE_TIESHEET, UPDATE_TIESHEET } from "../constants/urls"
+import { CREATE_MATCH, CREATE_TIESHEET, DELETE_MATCH, DELETE_TIESHEET, EDIT_MATCH, GET_TIESHEET_BY_ID, RETRIEVE_MATCH, RETRIEVE_MATCH_BY_TIESHEET_ID, RETRIEVE_OVERALL_TIESHEET, RETRIEVE_OVERALL_TIESHEET_BY_ROUND, RETRIEVE_STANDING_COLUMN, RETRIEVE_TIESHEET, RETRIEVE_TODAY_TIESHEET, UPDATE_TIESHEET } from "../constants/urls"
 import type { StandingColumnType } from "../type/standingcolumn.type";
 import type { AddMatchProps, TiesheetType } from "../type/tiesheet.type";
 
@@ -13,6 +13,19 @@ export const getTiesheet = async(eventId : string):Promise<TiesheetType[]> => {
         return (await response.json()) as TiesheetType[];
     }  catch(err){
         console.error("Error fetching Tiesheet:", err)
+        throw err;
+    }
+}
+
+export const getTodayTiesheet = async(eventId : string):Promise<TiesheetType[]> => {
+    try{
+        const response = await fetch(RETRIEVE_TODAY_TIESHEET(eventId));
+        if(!response.ok){
+            throw new Error("Retrieve Today Tiesheet Request Failed")
+        }
+        return (await response.json()) as TiesheetType[];
+    }  catch(err){
+        console.error("Error fetching Today Tiesheet:", err)
         throw err;
     }
 }
@@ -65,6 +78,22 @@ export const getStandingColumn = async(roundId : string):Promise<StandingColumnT
         return (await response.json()) as StandingColumnType[];
     }  catch(err){
         console.error("Error fetching Standing Column:", err)
+        throw err;
+    }
+}
+
+export const getOverallTiesheet = async(eventId : string, roundId?: string) => {
+    try{
+        const url = roundId 
+            ? RETRIEVE_OVERALL_TIESHEET_BY_ROUND(eventId, roundId)
+            : RETRIEVE_OVERALL_TIESHEET(eventId);
+        const response = await fetch(url);
+        if(!response.ok){
+            throw new Error("Retrieve Overall Tiesheet Request Failed")
+        }
+        return await response.json();
+    }  catch(err){
+        console.error("Error fetching Overall Tiesheet:", err)
         throw err;
     }
 }
