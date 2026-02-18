@@ -2,10 +2,11 @@ import type { User } from "../components/Model/ParticipantsModel";
 import type { ToastType } from "../components/Toast";
 import { ADD_PARTICIPANTS, DELETE_PARTICIPANTS, RETRIEVE_NOT_PARTICIPANTS, RETRIEVE_PARTICIPANTS } from "../constants/urls";
 import type { EventParticipants } from "../pages/event/eventdetailpages/participants";
+import { authFetch } from "./authHeaders";
 
 export const getParticipants = async(eventId : string):Promise<EventParticipants> => {
     try{
-        const response = await fetch(RETRIEVE_PARTICIPANTS(eventId))
+        const response = await authFetch(RETRIEVE_PARTICIPANTS(eventId))
         if(!response.ok){
             throw new Error("Retrieve Participants Request Failed")
         }
@@ -18,7 +19,7 @@ export const getParticipants = async(eventId : string):Promise<EventParticipants
 
 export const getNotParticipants = async(eventID : string):Promise<User[]> => {
     try{
-        const response = await fetch(RETRIEVE_NOT_PARTICIPANTS(eventID))
+        const response = await authFetch(RETRIEVE_NOT_PARTICIPANTS(eventID))
         if(!response.ok){
             throw new Error("Retrieve User that are not Participants Request Failed")
         }
@@ -34,9 +35,8 @@ export interface ParticipantsPayload{
 }
 export const createParticipants = async( eventID : string, payload : ParticipantsPayload, showToast: (msg: string, type?: ToastType) => void) => {
     try{
-        const response = await fetch(ADD_PARTICIPANTS(eventID),{
+        const response = await authFetch(ADD_PARTICIPANTS(eventID),{
             method : "POST",
-            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
         })
         const data = await response.json()
@@ -56,9 +56,8 @@ export const createParticipants = async( eventID : string, payload : Participant
 
 export const deleteParticipants = async(eventID : string, userID : string, showToast: (msg: string, type?: ToastType)=> void) => {
     try{
-        const res = await fetch(`${DELETE_PARTICIPANTS(eventID, userID)}`,{
+        const res = await authFetch(`${DELETE_PARTICIPANTS(eventID, userID)}`,{
             method : "DELETE",
-            headers : { "Content-Type" : "application/json"}
         });
 
         const data = await res.json()

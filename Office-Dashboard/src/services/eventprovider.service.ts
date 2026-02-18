@@ -1,8 +1,9 @@
 import { RETRIEVE_PERMISSION_WITHIN_EVENT, RETRIEVE_PERMISSION_WITHIN_EVENT_BY_USER_ID } from "../constants/urls"
+import { getAuthHeaders } from "./authHeaders";
 
 export const getPermissionWithinEvent = async(userId : string, eventId : string) => {
     try{
-        const response = await fetch(RETRIEVE_PERMISSION_WITHIN_EVENT(userId, eventId));
+        const response = await fetch(RETRIEVE_PERMISSION_WITHIN_EVENT(userId, eventId), { headers: getAuthHeaders() });
         if(!response.ok){
             throw new Error("Retrieve Permission Within Event Failed")
         }
@@ -15,7 +16,7 @@ export const getPermissionWithinEvent = async(userId : string, eventId : string)
 
 export const getPermissionWithinEventByUser = async(userId: string) => {
     try{
-        const response = await fetch(RETRIEVE_PERMISSION_WITHIN_EVENT_BY_USER_ID(userId));
+        const response = await fetch(RETRIEVE_PERMISSION_WITHIN_EVENT_BY_USER_ID(userId), { headers: getAuthHeaders() });
         if(!response.ok){
             throw new Error("Retrieve Permission By User Failed")
         }

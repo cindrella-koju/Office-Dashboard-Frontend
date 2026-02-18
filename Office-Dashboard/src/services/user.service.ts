@@ -2,17 +2,12 @@ import type { ToastType } from "../components/Toast";
 import { CREATE_USER, DELETE_USER, RETRIEVE_ROLE_ID_NAME, RETRIEVE_ROLE_ID_NAME_NOT_IN_EVENT, RETRIEVE_USERS, UPDATE_USER } from "../constants/urls"
 import type { Round } from "../type/group.type";
 import type { AddUser, UserDetail } from "../type/user.type";
-
-const authorizarion_token = sessionStorage.getItem("access_token")
-const headers = { 
-  "Content-Type": "application/json",
-  "Authorization": `Bearer ${authorizarion_token}`
-}
+import { authFetch } from "./authHeaders";
 
 
 export const getUser = async (): Promise<UserDetail[]> => {
     try {
-        const response = await fetch(RETRIEVE_USERS, { headers });
+        const response = await authFetch(RETRIEVE_USERS);
         if (!response.ok) {
             throw new Error(`Retrieve User Request Failed`);
         }
@@ -24,7 +19,7 @@ export const getUser = async (): Promise<UserDetail[]> => {
 };
 
 export const getRoleNotInEvent = async():Promise<Round[]> => {
-    const response = await fetch(RETRIEVE_ROLE_ID_NAME_NOT_IN_EVENT)
+    const response = await authFetch(RETRIEVE_ROLE_ID_NAME_NOT_IN_EVENT)
     if(!response.ok){
         throw new Error("Retrieve Round Not In Event Request Failed")
     }
@@ -32,7 +27,7 @@ export const getRoleNotInEvent = async():Promise<Round[]> => {
 }
 
 export const getRoleInEvent = async() => {
-    const response = await fetch(RETRIEVE_ROLE_ID_NAME)
+    const response = await authFetch(RETRIEVE_ROLE_ID_NAME)
     if(!response.ok){
         throw new Error("Retrieve Role In Event Request Failed")
     }
@@ -44,9 +39,8 @@ export const createUser = async (
   showToast: (msg: string, type?: ToastType) => void
 ) => {
   try {
-    const response = await fetch(CREATE_USER, {
+    const response = await authFetch(CREATE_USER, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     });
 
@@ -69,9 +63,8 @@ export const createUser = async (
 
 export const updateUser = async (id: string, payload: Partial<AddUser>, showToast: (msg: string, type?: ToastType) => void) => {
   try {
-    const res = await fetch(`${UPDATE_USER(id)}`, {
+    const res = await authFetch(`${UPDATE_USER(id)}`, {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     });
 
@@ -94,9 +87,8 @@ export const updateUser = async (id: string, payload: Partial<AddUser>, showToas
 
 export const deleteUser = async( id : string, showToast: (msg: string, type?: ToastType)=> void) => {
   try {
-    const res = await fetch(`${DELETE_USER(id)}`, {
+    const res = await authFetch(`${DELETE_USER(id)}`, {
       method: "DELETE",
-      headers: headers,
     });
 
     const data = await res.json()

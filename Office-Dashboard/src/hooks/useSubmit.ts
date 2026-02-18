@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { getAuthHeaders } from "../services/authHeaders";
 
 interface UseCreateResourceProps<T> {
   trigger: "create" | "edit" | null;              
@@ -28,7 +29,7 @@ const useCreateResource = <T extends object>({
       try {
         const response = await fetch(endpoint, {
           method: method,
-          headers: { "Content-Type": "application/json" },
+          headers: getAuthHeaders(),
           body: JSON.stringify(payload),
         });
 

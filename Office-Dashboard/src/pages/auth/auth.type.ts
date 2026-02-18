@@ -6,7 +6,9 @@ export interface AuthContextType {
   role: Role | null;
   accessToken: string | null;
   isAuthenticated: boolean;
+  isLoading: boolean;
   isAuthorized: (allowedRoles?: Role[]) => boolean;
   login: (access_token: string, refresh_token: string) => void;
   logout: () => void;
+  refreshToken: () => Promise<boolean>;
 }

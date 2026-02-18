@@ -1,4 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
+import { getAuthHeaders, authFetch } from "../services/authHeaders";
+
+// Re-export getAuthHeaders for backward compatibility
+export { getAuthHeaders } from "../services/authHeaders";
 
 interface FetchState<T> {
   data: T | null;
@@ -7,7 +11,7 @@ interface FetchState<T> {
   refetch: () => void;
 }
 
-function useFetch<T = unknown>(url: string, options?: RequestInit): FetchState<T> {
+function useFetch<T = unknown>(url: string, options?: RequestInit & { includeAuth?: boolean }): FetchState<T> {
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -33,7 +37,25 @@ function useFetch<T = unknown>(url: string, options?: RequestInit): FetchState<T
       setError(null);
 
       try {
-        const response = await fetch(url, { ...options, signal });
+        // Auto-include auth headers unless explicitly disabled
+        const includeAuth = options?.includeAuth !== false;
+        
+        let response: Response;
+        
+        if (includeAuth) {
+          // Use authFetch which handles automatic token refresh
+          response = await authFetch(url, { 
+            ...options, 
+            signal 
+          });
+        } else {
+          // No auth needed, use regular fetch
+          response = await fetch(url, { 
+            ...options, 
+            signal 
+          });
+        }
+
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }

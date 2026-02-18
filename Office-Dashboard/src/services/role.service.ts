@@ -6,6 +6,7 @@ import {
   RETRIEVE_DETAIL_FOR_ROLE_MANAGEMENT,
   RETRIEVE_ROLE_DETAIL,
 } from "../constants/urls";
+import { authFetch } from "./authHeaders";
 
 export interface RolePayload {
   id?: string
@@ -28,7 +29,7 @@ export interface RolePayload {
 export const roleService = {
     async getRole(filterfor: string){
         try{
-            const response = await fetch(RETRIEVE_DETAIL_FOR_ROLE_MANAGEMENT(filterfor));
+            const response = await authFetch(RETRIEVE_DETAIL_FOR_ROLE_MANAGEMENT(filterfor));
             if(!response.ok){
                 throw new Error("Retrieve Role Permission Failed")
             }
@@ -41,7 +42,7 @@ export const roleService = {
 
     async getRoleDetail(roleId: string){
         try{
-            const response = await fetch(RETRIEVE_ROLE_DETAIL(roleId));
+            const response = await authFetch(RETRIEVE_ROLE_DETAIL(roleId));
             if(!response.ok){
                 throw new Error("Retrieve Role Detail Failed")
             }
@@ -54,9 +55,8 @@ export const roleService = {
 
     async createRole(payload: RolePayload,  showToast: (msg: string, type?: ToastType) => void ) {
         try{
-            const response = await fetch(CREATE_ROLE_WITH_PERMISSION, {
+            const response = await authFetch(CREATE_ROLE_WITH_PERMISSION, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload),
             });
 
@@ -78,11 +78,10 @@ export const roleService = {
 
     async updateRole(id: string, payload : Partial<RolePayload>, showToast: (msg: string, type?: ToastType) => void) {
         try{
-            const response = await fetch(
+            const response = await authFetch(
                 EDIT_DETAIL_FOR_ROLE_MANAGEMENT(id),
                 {
                     method: "PUT",
-                    headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(payload),
                 }
             );
@@ -104,9 +103,8 @@ export const roleService = {
 
     async deleteRole(id : string, showToast: (msg: string, type?: ToastType)=> void){
         try{
-            const res = await fetch(`${DELETE_ROLE(id)}`,{
+            const res = await authFetch(`${DELETE_ROLE(id)}`,{
                 method : "DELETE",
-                headers: { "Content-Type": "application/json" },
             });
 
             const data = await res.json()

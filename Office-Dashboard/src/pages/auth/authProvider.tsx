@@ -1,21 +1,11 @@
-import { useState, useEffect, type ReactNode } from "react";
-import type { Role } from "./auth.type";
+import { useState, useEffect, useCallback, type ReactNode } from "react";
+import type { Role, AuthContextType } from "./auth.type";
 import { AuthContext } from "./authContext";
 import { jwtDecode } from "jwt-decode";
+import { authClient } from "../../services/auth.client";
 
 interface AuthProviderProps {
   children: ReactNode;
-}
-
-export interface AuthContextType {
-  userId: string | null;
-  roleId: string | null;
-  role: string | null;
-  accessToken: string | null;
-  isAuthenticated: boolean;
-  isAuthorized: (allowedRoles?: Role[]) => boolean;
-  login: (access_token: string, refresh_token: string) => void;
-  logout: () => void;
 }
 
 export function AuthProvider({ children }: AuthProviderProps) {
@@ -23,20 +13,65 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [roleId, setRoleId] = useState<string | null>(null);
   const [role, setRole] = useState<Role | null>(null);
   const [accessToken, setAccessToken] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
+  // Initialize auth state from storage
   useEffect(() => {
-    const storedUserId = localStorage.getItem("user_id");
-    const storedRoleId = localStorage.getItem("role_id");
-    const storedRole = localStorage.getItem("role");
-    const storedAccessToken = sessionStorage.getItem("access_token");
+    const initializeAuth = async () => {
+      try {
+        const storedUserId = localStorage.getItem("user_id");
+        const storedRoleId = localStorage.getItem("role_id");
+        const storedRole = localStorage.getItem("role");
+        const storedAccessToken = sessionStorage.getItem("access_token");
+        const storedRefreshToken = localStorage.getItem("refresh_token");
 
-    if (storedUserId && storedRole && storedAccessToken) {
-      setUserId(storedUserId);
-      setRoleId(storedRoleId);
-      setRole(storedRole as Role);
-      setAccessToken(storedAccessToken);
-    }
+        if (storedAccessToken && isTokenValid(storedAccessToken)) {
+          // Access token is still valid
+          setUserId(storedUserId);
+          setRoleId(storedRoleId);
+          setRole(storedRole as Role);
+          setAccessToken(storedAccessToken);
+        } else if (storedRefreshToken) {
+          // Try to refresh the access token
+          const refreshed = await refreshTokenInternal();
+          if (!refreshed && storedUserId) {
+            // Refresh failed, clear auth state
+            clearAuthState();
+          }
+        }
+      } catch (error) {
+        console.error("Error initializing auth:", error);
+        clearAuthState();
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    initializeAuth();
+
+    // Listen for auth:logout events from authClient
+    const handleLogoutEvent = () => {
+      logout();
+    };
+
+    window.addEventListener("auth:logout", handleLogoutEvent);
+    return () => {
+      window.removeEventListener("auth:logout", handleLogoutEvent);
+    };
   }, []);
+
+  const clearAuthState = () => {
+    localStorage.removeItem("user_id");
+    localStorage.removeItem("role_id");
+    localStorage.removeItem("role");
+    localStorage.removeItem("refresh_token");
+    sessionStorage.removeItem("access_token");
+
+    setUserId(null);
+    setRoleId(null);
+    setRole(null);
+    setAccessToken(null);
+  };
 
   const login = (access_token: string, refresh_token: string) => {
     try {
@@ -58,28 +93,50 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   };
 
-  const logout = () => {
-    localStorage.removeItem("user_id");
-    localStorage.removeItem("role_id");
-    localStorage.removeItem("role");
-    localStorage.removeItem("refresh_token");
-    sessionStorage.removeItem("access_token");
+  const logout = useCallback(() => {
+    clearAuthState();
+    authClient.clearTokens();
+  }, []);
 
-    setUserId(null);
-    setRoleId(null);
-    setRole(null);
-    setAccessToken(null);
-  };
-
-  const isTokenValid = (token: string) => {
+  const isTokenValid = (token: string): boolean => {
     try {
       const decoded: any = jwtDecode(token);
-      const now = Date.now().valueOf() / 1000;
-      return decoded.exp > now;
+      const now = Date.now() / 1000;
+      // Add 30 second buffer before actual expiration
+      return decoded.exp > now + 30;
     } catch {
       return false;
     }
   };
+
+  const refreshTokenInternal = async (): Promise<boolean> => {
+    try {
+      const newToken = await authClient.refreshAccessToken();
+      
+      if (newToken) {
+        const decoded: any = jwtDecode(newToken);
+        
+        setUserId(decoded.sub);
+        setRoleId(decoded.role_id);
+        setRole(decoded.role);
+        setAccessToken(newToken);
+
+        localStorage.setItem("user_id", decoded.sub);
+        localStorage.setItem("role_id", decoded.role_id);
+        localStorage.setItem("role", decoded.role);
+
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error("Error refreshing token:", error);
+      return false;
+    }
+  };
+
+  const refreshToken = useCallback(async (): Promise<boolean> => {
+    return refreshTokenInternal();
+  }, []);
 
   const isAuthorized = (allowedRoles?: Role[]) => {
     if (!accessToken || !userId || !isTokenValid(accessToken)) return false;
@@ -92,12 +149,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
     roleId,
     role,
     accessToken,
-    isAuthenticated: !!userId,
+    isAuthenticated: !!userId && !!accessToken,
+    isLoading,
     isAuthorized,
     login,
     logout,
+    refreshToken,
   };
-  console.log("AuthContext Value:", value);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

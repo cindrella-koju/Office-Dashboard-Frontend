@@ -2,10 +2,11 @@ import type { ToastType } from "../components/Toast";
 import { ADD_QUALIFIER, DELETE_QUALIFIER, RETRIEVE_QUALIFIER_BY_EVENT, RETRIEVE_QUALIFIER_BY_ROUND, RETRIEVE_USER_PARTICIPANT_NOT_IN_QUALIFIER } from "../constants/urls";
 import type { TiesheetQualifierResponse } from "../hooks/tiesheet/useTiesheet";
 import type { Participant, QualifierPayload, QualifierResponse } from "../type/qualifier.type";
+import { authFetch } from "./authHeaders";
 
 export const getQualifier = async(eventId : string):Promise<QualifierResponse[]> => {
     try{
-        const response = await fetch(RETRIEVE_QUALIFIER_BY_EVENT(eventId))
+        const response = await authFetch(RETRIEVE_QUALIFIER_BY_EVENT(eventId))
         if(!response.ok){
             throw new Error("Retrieve Qualifier Request Failed")
         }
@@ -18,7 +19,7 @@ export const getQualifier = async(eventId : string):Promise<QualifierResponse[]>
 
 export const getQualifierByRound = async(roundID : string) : Promise<TiesheetQualifierResponse[]> => {
     try{
-        const response = await fetch(RETRIEVE_QUALIFIER_BY_ROUND(roundID))
+        const response = await authFetch(RETRIEVE_QUALIFIER_BY_ROUND(roundID))
         if(!response.ok){
             throw new Error("Retrieve Qualifier By Round Request Failed")
         }
@@ -31,7 +32,7 @@ export const getQualifierByRound = async(roundID : string) : Promise<TiesheetQua
 
 export const getUserNotInQualifier = async(eventId : string, roundID : string) :Promise<Participant[]> => {
     try{
-        const response = await fetch(RETRIEVE_USER_PARTICIPANT_NOT_IN_QUALIFIER(eventId, roundID))
+        const response = await authFetch(RETRIEVE_USER_PARTICIPANT_NOT_IN_QUALIFIER(eventId, roundID))
         if(!response.ok){
             throw new Error("Retrieve User Not In Qualifier Request Failed")
         }
@@ -44,9 +45,8 @@ export const getUserNotInQualifier = async(eventId : string, roundID : string) :
 
 export const createQualifier = async(eventId : string, roundId : string, payload : QualifierPayload, showToast: (msg: string, type?: ToastType) => void) => {
     try{
-        const response = await fetch(ADD_QUALIFIER(eventId, roundId),{
+        const response = await authFetch(ADD_QUALIFIER(eventId, roundId),{
             method : "POST",
-            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
         })
         const data = await response.json()
@@ -67,9 +67,8 @@ export const createQualifier = async(eventId : string, roundId : string, payload
 
 export const deleteQualifier = async(qualifier_id : string,showToast: (msg: string, type?: ToastType)=> void) => {
     try {
-        const res = await fetch(`${DELETE_QUALIFIER(qualifier_id)}`, {
+        const res = await authFetch(`${DELETE_QUALIFIER(qualifier_id)}`, {
             method: "DELETE",
-            headers: { "Content-Type": "application/json" },
         });
     
         const data = await res.json()

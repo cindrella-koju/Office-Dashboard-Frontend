@@ -1,6 +1,8 @@
+import { getAuthHeaders } from "./authHeaders";
+
 export const fetchFilterData = async <T>(url: string): Promise<T> => {
     try {
-        const response = await fetch(url);
+        const response = await fetch(url, { headers: getAuthHeaders() });
         if (!response.ok) {
             throw new Error(`Fetch request failed with status ${response.status}`);
         }

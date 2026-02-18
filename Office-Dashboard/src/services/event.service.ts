@@ -1,10 +1,11 @@
 import type { ToastType } from "../components/Toast";
 import { CREATE_EVENT, DELETE_EVENT, RETRIEVE_EVENT, UPDATE_EVENT } from "../constants/urls"
 import type { Event, EventResponse } from "../type/event.type";
+import { authFetch } from "./authHeaders";
 
 export const getEvent = async():Promise<EventResponse[]> => {
     try{
-        const response = await fetch(RETRIEVE_EVENT);
+        const response = await authFetch(RETRIEVE_EVENT);
         if(!response.ok){
             throw new Error("Retrieve Event Request Failed")
         }
@@ -17,9 +18,8 @@ export const getEvent = async():Promise<EventResponse[]> => {
 
 export const createEvent = async( payload : Event, showToast: (msg: string, type?: ToastType) => void ) => {
     try{
-        const response = await fetch(CREATE_EVENT, {
+        const response = await authFetch(CREATE_EVENT, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
         })
 
@@ -41,9 +41,8 @@ export const createEvent = async( payload : Event, showToast: (msg: string, type
 
 export const updateEvent = async(id: string, payload:Partial<Event>, showToast: (msg: string, type?: ToastType) => void) => {
     try{
-        const res = await fetch(`${UPDATE_EVENT(id)}`,{
+        const res = await authFetch(`${UPDATE_EVENT(id)}`,{
             method: "PATCH",
-            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
         })
 
@@ -65,9 +64,8 @@ export const updateEvent = async(id: string, payload:Partial<Event>, showToast: 
 
 export const deleteEvent = async(id : string, showToast: (msg: string, type?: ToastType)=> void) => {
       try {
-        const res = await fetch(`${DELETE_EVENT(id)}`, {
+        const res = await authFetch(`${DELETE_EVENT(id)}`, {
           method: "DELETE",
-          headers: { "Content-Type": "application/json" },
         });
     
         const data = await res.json()

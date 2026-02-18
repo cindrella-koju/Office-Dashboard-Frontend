@@ -3,11 +3,12 @@ import type { ToastType } from "../components/Toast";
 import { CREATE_GROUP, DELETE_GROUP, DELETE_GROUP_MEMBER, GET_QUALIFIER_NOT_IN_GROUP, GET_QUALIFIER_NOT_IN_GROUP_FOR_EDIT, RETRIEVE_GROUP_AND_MEMBERS, RETRIEVE_GROUP_ID_NAME_BY_ROUND, RETRIEVE_GROUP_MEMBER_ID_NAME, UPDATE_GROUP, UPDATE_GROUP_TABLE } from "../constants/urls"
 import type { TiesheetQualifierResponse } from "../hooks/tiesheet/useTiesheet";
 import type { Participant, PayloadType, Stage } from "../type/group.type";
+import { authFetch } from "./authHeaders";
 
 
 export const getGroup = async(eventId : string ):Promise<Stage[]> => {
     try{
-        const response = await fetch(RETRIEVE_GROUP_AND_MEMBERS(eventId));
+        const response = await authFetch(RETRIEVE_GROUP_AND_MEMBERS(eventId));
         if(!response.ok){
             throw new Error("Retrieve Group Detail Request Failed")
         }
@@ -20,7 +21,7 @@ export const getGroup = async(eventId : string ):Promise<Stage[]> => {
 
 export const getGroupMemberIdName = async(groupId : string) : Promise<TiesheetQualifierResponse[]> => {
     try{
-        const response = await fetch(RETRIEVE_GROUP_MEMBER_ID_NAME(groupId));
+        const response = await authFetch(RETRIEVE_GROUP_MEMBER_ID_NAME(groupId));
         if(!response.ok){
             throw new Error("Retrieve Group Member Id Name Failed")
         }
@@ -33,7 +34,7 @@ export const getGroupMemberIdName = async(groupId : string) : Promise<TiesheetQu
 
 export const getGroupIdNameByRound = async(roundId : string) : Promise<RoundResponse[]> => {
     try{
-        const response = await fetch(RETRIEVE_GROUP_ID_NAME_BY_ROUND(roundId));
+        const response = await authFetch(RETRIEVE_GROUP_ID_NAME_BY_ROUND(roundId));
         if(!response.ok){
             throw new Error("Retrieve Group Id Name By Round Request Failed")
         }
@@ -46,9 +47,8 @@ export const getGroupIdNameByRound = async(roundId : string) : Promise<RoundResp
 
 export const updateGroupTable = async( groupId : string, payload : any, showToast: (msg: string, type?: ToastType) => void ) => {
     try{
-        const res = await fetch(`${UPDATE_GROUP_TABLE(groupId)}`,{
+        const res = await authFetch(`${UPDATE_GROUP_TABLE(groupId)}`,{
             method: "PATCH",
-            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
         })
 
@@ -70,7 +70,7 @@ export const updateGroupTable = async( groupId : string, payload : any, showToas
 
 export const getQualifierNotInGroup = async(eventId : string, roundId : string):Promise<Participant[]> => {
     try{
-        const response = await fetch(GET_QUALIFIER_NOT_IN_GROUP(eventId, roundId));
+        const response = await authFetch(GET_QUALIFIER_NOT_IN_GROUP(eventId, roundId));
         if(!response.ok){
             throw new Error("Retrieve Qualifier Not In Group Request Failed")
         }
@@ -83,7 +83,7 @@ export const getQualifierNotInGroup = async(eventId : string, roundId : string):
 
 export const getQualifierNotInGroupForEdit = async(eventId : string, roundId : string, groupId : string):Promise<Participant[]> => {
     try{
-        const response = await fetch(GET_QUALIFIER_NOT_IN_GROUP_FOR_EDIT(eventId, roundId, groupId));
+        const response = await authFetch(GET_QUALIFIER_NOT_IN_GROUP_FOR_EDIT(eventId, roundId, groupId));
         if(!response.ok){
             throw new Error("Retrieve Qualifier Not In Group For Edit Request Failed")
         }
@@ -96,9 +96,8 @@ export const getQualifierNotInGroupForEdit = async(eventId : string, roundId : s
 
 export const createGroup = async(eventId : string, payload : PayloadType, showToast: (msg: string, type?: ToastType) => void) => {
     try{
-        const response = await fetch(CREATE_GROUP(eventId),{
+        const response = await authFetch(CREATE_GROUP(eventId),{
             method : "POST",
-            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
         })
         const data = await response.json()
@@ -119,9 +118,8 @@ export const createGroup = async(eventId : string, payload : PayloadType, showTo
 
 export const updateGroup = async(groupID : string, payload : PayloadType, showToast: (msg: string, type?: ToastType) => void) => {
     try{
-        const res = await fetch(`${UPDATE_GROUP(groupID)}`,{
+        const res = await authFetch(`${UPDATE_GROUP(groupID)}`,{
             method: "PATCH",
-            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
         })
 
@@ -143,9 +141,8 @@ export const updateGroup = async(groupID : string, payload : PayloadType, showTo
 
 export const deleteGroup = async(group_id : string, showToast: (msg: string, type?: ToastType)=> void) => {
       try {
-        const res = await fetch(`${DELETE_GROUP(group_id)}`, {
+        const res = await authFetch(`${DELETE_GROUP(group_id)}`, {
           method: "DELETE",
-          headers: { "Content-Type": "application/json" },
         });
     
         const data = await res.json()
@@ -166,9 +163,8 @@ export const deleteGroup = async(group_id : string, showToast: (msg: string, typ
 
 export const deleteGroupMember = async(user_id : string, group_id : string, showToast: (msg: string, type?: ToastType)=> void) => {
       try {
-        const res = await fetch(`${DELETE_GROUP_MEMBER(user_id, group_id)}`, {
+        const res = await authFetch(`${DELETE_GROUP_MEMBER(user_id, group_id)}`, {
           method: "DELETE",
-          headers: { "Content-Type": "application/json" },
         });
     
         const data = await res.json()

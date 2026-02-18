@@ -3,10 +3,11 @@ import type { ToastType } from "../components/Toast";
 import { CREATE_MATCH, CREATE_TIESHEET, DELETE_MATCH, DELETE_TIESHEET, EDIT_MATCH, GET_TIESHEET_BY_ID, RETRIEVE_MATCH, RETRIEVE_MATCH_BY_TIESHEET_ID, RETRIEVE_OVERALL_TIESHEET, RETRIEVE_OVERALL_TIESHEET_BY_ROUND, RETRIEVE_STANDING_COLUMN, RETRIEVE_TIESHEET, RETRIEVE_TODAY_TIESHEET, UPDATE_TIESHEET } from "../constants/urls"
 import type { StandingColumnType } from "../type/standingcolumn.type";
 import type { AddMatchProps, TiesheetType } from "../type/tiesheet.type";
+import { authFetch } from "./authHeaders";
 
 export const getTiesheet = async(eventId : string):Promise<TiesheetType[]> => {
     try{
-        const response = await fetch(RETRIEVE_TIESHEET(eventId));
+        const response = await authFetch(RETRIEVE_TIESHEET(eventId));
         if(!response.ok){
             throw new Error("Retrieve Tiesheet Request Failed")
         }
@@ -19,7 +20,7 @@ export const getTiesheet = async(eventId : string):Promise<TiesheetType[]> => {
 
 export const getTodayTiesheet = async(eventId : string):Promise<TiesheetType[]> => {
     try{
-        const response = await fetch(RETRIEVE_TODAY_TIESHEET(eventId));
+        const response = await authFetch(RETRIEVE_TODAY_TIESHEET(eventId));
         if(!response.ok){
             throw new Error("Retrieve Today Tiesheet Request Failed")
         }
@@ -32,7 +33,7 @@ export const getTodayTiesheet = async(eventId : string):Promise<TiesheetType[]> 
 
 export const getMatchByTiesheetId = async(tiesheetId : string) => {
     try{
-        const response = await fetch(RETRIEVE_MATCH_BY_TIESHEET_ID(tiesheetId))
+        const response = await authFetch(RETRIEVE_MATCH_BY_TIESHEET_ID(tiesheetId))
         if(!response.ok){
             throw new Error("Retrieve Match By Tiesheet Id Request Failed")
         }
@@ -45,7 +46,7 @@ export const getMatchByTiesheetId = async(tiesheetId : string) => {
 
 export const getTiesheetById = async(matchId : string) => {
     try{
-        const response = await fetch(GET_TIESHEET_BY_ID(matchId));
+        const response = await authFetch(GET_TIESHEET_BY_ID(matchId));
         if(!response.ok){
             throw new Error("Retrieve Tiesheet by Id Request Failed")
         }
@@ -58,7 +59,7 @@ export const getTiesheetById = async(matchId : string) => {
 
 export const getMatch = async(tiesheetId : string) => {
     try{
-        const response = await fetch(RETRIEVE_MATCH(tiesheetId));
+        const response = await authFetch(RETRIEVE_MATCH(tiesheetId));
         if(!response.ok){
             throw new Error("Retrieve Match Request Failed")
         }
@@ -71,7 +72,7 @@ export const getMatch = async(tiesheetId : string) => {
 
 export const getStandingColumn = async(roundId : string):Promise<StandingColumnType[]> => {
     try{
-        const response = await fetch(RETRIEVE_STANDING_COLUMN(roundId));
+        const response = await authFetch(RETRIEVE_STANDING_COLUMN(roundId));
         if(!response.ok){
             throw new Error("Retrieve Standing Column Request Failed")
         }
@@ -87,7 +88,7 @@ export const getOverallTiesheet = async(eventId : string, roundId?: string) => {
         const url = roundId 
             ? RETRIEVE_OVERALL_TIESHEET_BY_ROUND(eventId, roundId)
             : RETRIEVE_OVERALL_TIESHEET(eventId);
-        const response = await fetch(url);
+        const response = await authFetch(url);
         if(!response.ok){
             throw new Error("Retrieve Overall Tiesheet Request Failed")
         }
@@ -100,9 +101,8 @@ export const getOverallTiesheet = async(eventId : string, roundId?: string) => {
 
 export const createTiesheet = async( payload : SelectedMatch,  showToast: (msg: string, type?: ToastType) => void  ) => {
     try{
-        const response = await fetch(CREATE_TIESHEET,{
+        const response = await authFetch(CREATE_TIESHEET,{
             method: "POST",
-            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
         })
 
@@ -124,9 +124,8 @@ export const createTiesheet = async( payload : SelectedMatch,  showToast: (msg: 
 
 export const createMatch = async( payload : AddMatchProps, showToast: (msg: string, type?: ToastType) => void ) => {
     try{
-        const response = await fetch(CREATE_MATCH,{
+        const response = await authFetch(CREATE_MATCH,{
             method: "POST",
-            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
         })
         const data = await response.json()
@@ -146,9 +145,8 @@ export const createMatch = async( payload : AddMatchProps, showToast: (msg: stri
 
 export const updateTiesheet = async(matchId : string, payload : SelectedMatch,showToast: (msg: string, type?: ToastType) => void) => {
     try{
-        const res = await fetch(`${UPDATE_TIESHEET(matchId)}`,{
+        const res = await authFetch(`${UPDATE_TIESHEET(matchId)}`,{
             method: "PATCH",
-            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
         })
 
@@ -170,11 +168,8 @@ export const updateTiesheet = async(matchId : string, payload : SelectedMatch,sh
 
 export const deleteTiesheet = async(id : string, showToast: (msg: string, type?: ToastType)=> void) => {
     try{
-        const res = await fetch(`${DELETE_TIESHEET(id)}`,{
+        const res = await authFetch(`${DELETE_TIESHEET(id)}`,{
             method: "DELETE",
-            headers: {
-                "Content-Type": "application/json"
-            }
         })
 
         const data = await res.json()
@@ -195,11 +190,8 @@ export const deleteTiesheet = async(id : string, showToast: (msg: string, type?:
 
 export const deleteMatch = async(id : string, showToast: (msg: string, type?: ToastType)=> void) => {
     try{
-        const res = await fetch(`${DELETE_MATCH(id)}`,{
+        const res = await authFetch(`${DELETE_MATCH(id)}`,{
             method: "DELETE",
-            headers: {
-                "Content-Type": "application/json"
-            }
         })
 
         const data = await res.json()
@@ -220,9 +212,8 @@ export const deleteMatch = async(id : string, showToast: (msg: string, type?: To
 
 export const updateMatch = async(payload : AddMatchProps,showToast: (msg: string, type?: ToastType) => void) => {
     try{
-        const res = await fetch(EDIT_MATCH,{
+        const res = await authFetch(EDIT_MATCH,{
             method: "PUT",
-            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
         })
 
