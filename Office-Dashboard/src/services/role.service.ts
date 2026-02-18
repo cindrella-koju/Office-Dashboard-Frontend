@@ -3,6 +3,7 @@ import {
   CREATE_ROLE_WITH_PERMISSION,
   DELETE_ROLE,
   EDIT_DETAIL_FOR_ROLE_MANAGEMENT,
+  RETRIEVE_ALL_ROLE_ID_NAME,
   RETRIEVE_DETAIL_FOR_ROLE_MANAGEMENT,
   RETRIEVE_ROLE_DETAIL,
 } from "../constants/urls";
@@ -36,6 +37,19 @@ export const roleService = {
             return response.json()
         }catch(err){
             console.error("Error fetching Role permission:", err)
+            throw err;
+        }
+    },
+
+    async getAllRole(){
+        try{
+            const response = await authFetch(RETRIEVE_ALL_ROLE_ID_NAME);
+            if(!response.ok){
+                throw new Error("Retrieve All Role Failed")
+            }
+            return response.json()
+        }catch(err){
+            console.error("Error fetching All Role:", err)
             throw err;
         }
     },

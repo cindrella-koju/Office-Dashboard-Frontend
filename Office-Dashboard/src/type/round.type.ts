@@ -3,7 +3,6 @@ import type { ModelType } from "./main.type";
 export interface RoundData{
     id : string,
     name : string,
-    round_order : number
 }
 
 export interface RoundModelProps{

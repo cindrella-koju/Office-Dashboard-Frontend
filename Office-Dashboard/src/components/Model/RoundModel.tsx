@@ -17,15 +17,6 @@ export default function RoundModel({mode, onClose, formData, handleChange, handl
                     onChange={handleChange}
                 />
 
-                <InputField
-                    label="Round Order"
-                    type="number"
-                    name="round_order"
-                    placeholder="Enter Round Order"
-                    value={formData.round_order}
-                    onChange={handleChange}
-                />
-
                 <div className="flex justify-end mt-6">
                     <Button type="submit" fullWidth>
                         {mode === "create" ? "Create" : "Update"}

@@ -4,8 +4,7 @@ import type { RoundData } from "../../type/round.type"
 export const useRoundForm = ( initial?: RoundData) => {
     const [roundDetail, setRoundDetail] = useState<RoundData>({
         id : "",
-        name : "",
-        round_order : 0
+        name : ""
     })
     const [originalRounds, setOriginalRounds] = useState<RoundData | null>(null)
 
@@ -16,7 +15,6 @@ export const useRoundForm = ( initial?: RoundData) => {
         setRoundDetail({
             id : initial.id,
             name :  initial.name,
-            round_order : initial.round_order
         })
     },[initial])
 
@@ -46,7 +44,6 @@ export const useRoundForm = ( initial?: RoundData) => {
         setRoundDetail({
             id : "",
             name : "",
-            round_order : 0
         })
     }
     return{

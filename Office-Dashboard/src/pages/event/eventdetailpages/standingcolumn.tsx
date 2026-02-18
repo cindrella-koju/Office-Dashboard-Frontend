@@ -12,6 +12,7 @@ import Filters from "../../../components/Filters";
 import Table from "../../../components/table/Tables";
 import { useStandingColumn } from "../../../hooks/useStandingColumn";
 
+
 export default function StandingColumn() {
   const eventId = localStorage.getItem("eventId");
   const permissions = usePermissions({});

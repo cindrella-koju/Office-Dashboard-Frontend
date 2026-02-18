@@ -7,7 +7,7 @@ import { RoleContext } from "../context/RoleContext";
 import { useLocation } from "react-router-dom";
 import { EventRoleContext } from "../context/EventRoleContext";
 import { GLOBAL_ROLE } from "../constants/showpage";
-
+import { RiAdminFill } from "react-icons/ri";
 
 const logoConfig = {
   alt: "Teslatech Logo",
@@ -43,6 +43,9 @@ export default function EventNavBar() {
   }
   if(pageaccess?.column_config_page){
     eventNavItems.push({ icon: <FaChartBar />, label: "Configure Column", to: "/event/standing-column" })
+  }
+  if(pageaccess?.event_role_page){
+    eventNavItems.push({ icon: <RiAdminFill />, label: "Event Role", to: "/event/role" })
   }
   if(pageaccess?.group_stage_standing_page){
     eventNavItems.push({ icon: <MdOutlineSportsScore />, label: "Group Stage Standing", to: "/event/overall-points" })

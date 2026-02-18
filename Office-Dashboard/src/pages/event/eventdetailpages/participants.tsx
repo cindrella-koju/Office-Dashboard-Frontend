@@ -12,7 +12,7 @@ import ConfirmationModal from "../../../components/Model/ConfirmationPopUp";
 // Re-export getInitials for backward compatibility
 export { getInitials } from "../../../components/shared";
 
-interface ParticipantsInfo {
+export interface ParticipantsInfo {
     id: string;
     username: string;
     email: string;

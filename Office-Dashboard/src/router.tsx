@@ -6,7 +6,6 @@ import NavBar from "./components/Navbar";
 import ProfilePage from "./pages/ProfilePage";
 import EventPage from "./pages/event/event";
 import ScoreBoard from "./pages/event/scoreboard/scoreboard";
-import DetailEvent from "./pages/event/eacheventdetail/detailEvent";
 import UserPage from "./pages/users/user";
 import GroupPage from "./pages/event/eventdetailpages/group";
 import Rounds from "./pages/event/eventdetailpages/rounds";
@@ -20,6 +19,7 @@ import ProtectedRoute from "./routes/ProtectedRoute";
 import RolePage from "./pages/RolePage";
 import SignupPage from "./pages/SignUpPage";
 import NotFound from "./pages/NotFound";
+import EventRole from "./pages/event/eventdetailpages/eventrole";
 
 export const router = createBrowserRouter([
   { path: "/", element: <NotFound /> }, // Redirect root based on auth status
@@ -48,14 +48,6 @@ export const router = createBrowserRouter([
     element: (
       <ProtectedRoute accessKey="event_page">
         <ScoreBoard />
-      </ProtectedRoute>
-    ),
-  },
-  { 
-    path: "/event/detail",
-    element: (
-      <ProtectedRoute accessKey="event_page">
-        <DetailEvent />
       </ProtectedRoute>
     ),
   },
@@ -112,6 +104,14 @@ export const router = createBrowserRouter([
     element: (
       <ProtectedRoute accessKey="group_stage_standing_page">
         <OverallPoints />
+      </ProtectedRoute>
+    ),
+  },
+  { 
+    path: "/event/role",
+    element: (
+      <ProtectedRoute accessKey="event_role_page">
+        <EventRole />
       </ProtectedRoute>
     ),
   },

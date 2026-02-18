@@ -18,7 +18,7 @@ export default function AddMatchModal({
     { label: "Scheduled", value: "scheduled" },
     { label: "Completed", value: "completed" },
     { label: "Ongoing", value: "ongoing" },
-  ] as const;
+  ];
 
   const winnerOptions = players.map((p) => ({
     label: p.username,

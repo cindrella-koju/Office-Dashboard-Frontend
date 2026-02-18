@@ -63,7 +63,6 @@ export const useQualifier = () => {
     }
 
     const createQualifier = async( roundID : string, payload : QualifierPayload ) => {
-        console.log("Round Id:", roundID)
         if(!eventID) return;
         await qualifierServices.createQualifier(eventID, roundID, payload, showToast)
         fetchQualifier()

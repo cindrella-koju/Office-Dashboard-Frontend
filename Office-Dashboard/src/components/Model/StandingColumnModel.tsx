@@ -21,7 +21,6 @@ interface StandingColumnModuleProps {
 export interface RoundType {
   id: string
   name: string
-  round_order: string
 }
 
 interface ColumnDetail {

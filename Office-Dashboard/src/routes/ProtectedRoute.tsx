@@ -3,8 +3,6 @@ import { Navigate, useLocation } from "react-router-dom";
 import { RoleContext } from "../context/RoleContext";
 import { GLOBAL_ROLE } from "../constants/showpage";
 import { useAuth } from "../hooks/useAuth";
-import { RETRIEVE_PERMISSION_WITHIN_EVENT } from "../constants/urls";
-import useFetch from "../hooks/useFetch";
 import { EventRoleContext } from "../context/EventRoleContext";
 
 interface ProtectedRouteProps {
