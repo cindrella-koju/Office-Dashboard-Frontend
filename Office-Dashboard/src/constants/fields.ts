@@ -75,6 +75,7 @@ export const RoleFields = [
       "Column Config",
       "Group Stage Standing",
       "Todays Game",
+      "Event Role"
     ],
   },
 ];

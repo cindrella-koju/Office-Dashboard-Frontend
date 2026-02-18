@@ -66,7 +66,7 @@ export const RETRIEVE_ALL_ROLE_ID_NAME = `${BASE_URL}/role/all`
 export const RETRIEVE_USERS_BY_ROLE = (role : string ) => `${BASE_URL}/user?role_id=${role}`
 export const CREATE_USER = `${BASE_URL}/user/signup`
 export const UPDATE_USER = (user_id : string ) =>`${BASE_URL}/user/${user_id}`
-export const DELETE_USER = (user_id : string ) =>`${BASE_URL}/user/user/${user_id}`
+export const DELETE_USER = (user_id : string ) =>`${BASE_URL}/user/${user_id}`
 
 
 export const CREATE_MATCH = `${BASE_URL}/event/match`
@@ -91,3 +91,7 @@ export const CREATE_EVENT_ROLE = (eventId : string) => `${BASE_URL}/event/role/$
 export const RETRIEVE_EVENT_ROLE = (eventId: string) => `${BASE_URL}/event/role/${eventId}`
 export const EDIT_EVENT_ROLE = (eventRoleId: string) => `${BASE_URL}/event/role/${eventRoleId}`
 export const DELETE_EVENT_ROLE = (eventRoleId: string) => `${BASE_URL}/event/role/${eventRoleId}`
+
+// Home page url
+export const RETRIEVE_HOME = `${BASE_URL}/user/home`
+export const RETRIEVE_RECENT_FIVE_EVENT = `${BASE_URL}/event/recent`

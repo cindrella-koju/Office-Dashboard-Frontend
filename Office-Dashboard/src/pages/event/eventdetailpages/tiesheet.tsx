@@ -56,7 +56,8 @@ export default function Tiesheet(){
         handleCreateScore,
         handleEditScore,
 
-        matchInfo
+        matchInfo,
+        groupInfo
     } = useTiesheet()
 
     const [player1, setplayer1] = useState<PlayerInfoType | undefined>(undefined)
@@ -206,6 +207,7 @@ export default function Tiesheet(){
                         users={users}
                         handleSubmit={handleSubmit}
                         handleClose={handleClose}
+                        groupInfo={groupInfo}
                     />
                 )
                 }

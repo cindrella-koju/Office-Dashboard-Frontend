@@ -108,6 +108,8 @@ export const useEventRole = () => {
         popUpDelete,
         setPopUpDelete,
         deleteEventRole,
-        editEventRole
+        editEventRole,
+        loading,
+        error
     };
 }

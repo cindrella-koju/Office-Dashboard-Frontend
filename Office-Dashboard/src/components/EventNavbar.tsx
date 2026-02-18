@@ -19,7 +19,7 @@ export default function EventNavBar() {
 
   // Decide which context to use based on the URL
   const isEventRoute = location.pathname.startsWith("/event/");
-  const role = isEventRoute && !["admin", "superadmin"].includes(GLOBAL_ROLE)
+  const role = isEventRoute && !["superadmin"].includes(GLOBAL_ROLE)
       ? useContext(EventRoleContext)
       : useContext(RoleContext);
   const pageaccess = role?.roleaccesspage

@@ -27,6 +27,7 @@ interface TiesheetProps {
   users : TiesheetQualifierResponse [] | undefined;
   handleSubmit : (e:React.FormEvent) => void;
   handleClose : () => void;
+  groupInfo : RoundResponse[]
 }
 
 interface ColumnValue {
@@ -69,11 +70,11 @@ export default function TiesheetModel({
   setSelectedMatch,
   users,
   handleSubmit,
-  handleClose
+  handleClose,
+  groupInfo
 }: TiesheetProps) {
   const {
     rounds,
-    groupInfo,
   } = useTiesheet()
 
   const statusOptions = [

@@ -20,6 +20,7 @@ import RolePage from "./pages/RolePage";
 import SignupPage from "./pages/SignUpPage";
 import NotFound from "./pages/NotFound";
 import EventRole from "./pages/event/eventdetailpages/eventrole";
+import { LogOut } from "./pages/LogOut";
 
 export const router = createBrowserRouter([
   { path: "/", element: <NotFound /> }, // Redirect root based on auth status
@@ -33,6 +34,12 @@ export const router = createBrowserRouter([
       <ProtectedRoute accessKey="home_page">
         <Home />
       </ProtectedRoute>
+    ),
+  },
+  { 
+    path: "/logout",
+    element: (
+        <LogOut />
     ),
   },
   { 

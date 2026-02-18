@@ -49,7 +49,8 @@ interface RoleAccessPage {
     participants_page: string,
     column_config_page: string,
     group_stage_standing_page: string,
-    todays_game_page: string
+    todays_game_page: string,
+    event_role_page : boolean,
 }
 interface PagePermission{
     id : string,
@@ -90,6 +91,7 @@ interface RoleAccessDetailType{
     column_config_page: boolean,
     group_stage_standing_page: boolean,
     todays_game_page: boolean,
+    event_role_page : boolean,
 }
 
 export interface RenderCheckBoxProps {

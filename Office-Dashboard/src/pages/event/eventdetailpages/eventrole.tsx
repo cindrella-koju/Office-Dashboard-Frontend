@@ -6,6 +6,9 @@ import Button from "../../../components/ui/Button";
 import { useEventRole } from "../../../hooks/useEventRole";
 import Table from "../../../components/table/Tables";
 import ConfirmationModal from "../../../components/Model/ConfirmationPopUp";
+import Card from "../../../components/ui/Card";
+import EmptyMessage from "../../../components/ui/EmptyMessage";
+import { RiAdminFill } from "react-icons/ri";
 
 export default function EventRole() {
     const {
@@ -22,7 +25,9 @@ export default function EventRole() {
         popUpDelete,
         setPopUpDelete,
         deleteEventRole,
-        editEventRole
+        editEventRole,
+        loading,
+        error
     } = useEventRole()
 
     const handleSubmit = async(e:React.FormEvent) => {
@@ -49,15 +54,42 @@ export default function EventRole() {
                         )
                     }
                 />
-                <Table
-                    tablefor="WithinEvent"
-                    tablehead={tablehead}
-                    tabledata={eventRole}
-                    permissions={permissions}
-                    setModelType={setMode}
-                    setValue={setFormData}
-                    setOnDelete={setPopUpDelete}
-                />
+                <Card className="p-4 sm:p-6">
+                    {
+                        eventRole && (
+                            <div className="max-h-[500px] lg:max-h-[800px] overflow-y-auto">
+                                {loading ? (
+                                    <div className="flex items-center justify-center py-12">
+                                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600" />
+                                    </div>
+                                ) : error ? (
+                                    <div className="text-center py-12 text-red-500">
+                                    Error loading standing columns: {error}
+                                    </div>
+                                ) : eventRole.length > 0 ? (
+                                    <Table
+                                        tablefor="WithinEvent"
+                                        tablehead={tablehead}
+                                        tabledata={eventRole}
+                                        permissions={permissions}
+                                        setModelType={setMode}
+                                        setValue={setFormData}
+                                        setOnDelete={setPopUpDelete}
+                                    />
+
+                                ) : (
+                                    <EmptyMessage
+                                        message="No User with Role yet"
+                                        submessage="Add Participants to assign the role"
+                                        icon={<RiAdminFill size={80} />}
+                                    />
+                                )
+                                }
+                            </div>
+                        )
+                    }
+
+                </Card>
                 {
                     mode != null && participant && role &&(
                         <EventRoleModel
