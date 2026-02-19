@@ -16,7 +16,7 @@ const varientStyles : Record<ButtonVarient, string> = {
     secondary: "bg-gray-100 text-gray-700 hover:bg-gray-200 focus:ring-gray-500",
     danger: "bg-red-500 text-white hover:bg-red-700 focus:ring-red-500",
     success: "bg-green-500 text-white hover:bg-green-700 focus:ring-green-500",
-    outline: "border-2 border-indigo-600 text-indigo-600 hover:bg-indigo-50 focus:ring-indigo-500",
+    outline: "border-2 border-indigo-600 text-indigo-600 hover:bg-indigo-300 focus:ring-indigo-500",
     ghost: "text-gray-600 hover:bg-gray-100 focus:ring-gray-500",
 }
 

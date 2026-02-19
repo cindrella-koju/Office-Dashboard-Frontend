@@ -20,6 +20,7 @@ import { useEvent } from "../../hooks/event/useEvent";
 import { useEventForm } from "../../hooks/event/useEventForm";
 import EventModel from "../../components/Model/EventModel";
 import ConfirmationModal from "../../components/Model/ConfirmationPopUp";
+import { Pagination } from "../../components/Pagination";
 
 export default function EventPage() {
 
@@ -158,6 +159,10 @@ export default function EventPage() {
               setPopUpDelete(false)
             }}
           />
+        }
+
+        {
+          events.length > 0 && <Pagination/>
         }
       </PageContent>
     </PageLayout>
