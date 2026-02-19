@@ -9,8 +9,12 @@ import ConfirmationModal from "../../../components/Model/ConfirmationPopUp";
 import Card from "../../../components/ui/Card";
 import EmptyMessage from "../../../components/ui/EmptyMessage";
 import { RiAdminFill } from "react-icons/ri";
+import Filters from "../../../components/Filters";
+import type { EventRoleResponse } from "../../../type/eventrole.type";
+import { RETRIEVE_EVENT_ROLE, RETRIEVE_EVENT_ROLE_BY_ROLEID } from "../../../constants/urls";
 
 export default function EventRole() {
+    const eventID = localStorage.getItem("eventId");
     const {
         permissions,
         mode,
@@ -27,7 +31,11 @@ export default function EventRole() {
         deleteEventRole,
         editEventRole,
         loading,
-        error
+        error,
+        onlyEventRole,
+        selectedRole,
+        setSelectedRole,
+        setEventrole
     } = useEventRole()
 
     const handleSubmit = async(e:React.FormEvent) => {
@@ -54,6 +62,23 @@ export default function EventRole() {
                         )
                     }
                 />
+                {
+                    selectedRole && onlyEventRole && (
+                        <Card className="mb-6">
+                            <div className="p-4 sm:p-6">
+                                <Filters<EventRoleResponse[]>
+                                    defaultVal = {selectedRole}
+                                    twoIdUrlFunction={RETRIEVE_EVENT_ROLE_BY_ROLEID}
+                                    filters={onlyEventRole}
+                                    label = "Select Role"
+                                    onSelectFilter = {setSelectedRole}
+                                    setSelectVal={setEventrole}
+                                    allUrl={RETRIEVE_EVENT_ROLE(eventID ? eventID : "")}
+                                />
+                            </div>
+                        </Card>
+                    )
+                }
                 <Card className="p-4 sm:p-6">
                     {
                         eventRole && (

@@ -1,6 +1,5 @@
 import type { ToastType } from "../components/Toast";
-import { CREATE_USER, DELETE_USER, RETRIEVE_ROLE_ID_NAME, RETRIEVE_ROLE_ID_NAME_NOT_IN_EVENT, RETRIEVE_USERS, UPDATE_USER } from "../constants/urls"
-import type { Round } from "../type/group.type";
+import { CREATE_USER, DELETE_USER, RETRIEVE_USERS, UPDATE_USER } from "../constants/urls"
 import type { AddUser, UserDetail } from "../type/user.type";
 import { authFetch } from "./authHeaders";
 
@@ -18,21 +17,6 @@ export const getUser = async (): Promise<UserDetail[]> => {
     }
 };
 
-export const getRoleNotInEvent = async():Promise<Round[]> => {
-    const response = await authFetch(RETRIEVE_ROLE_ID_NAME_NOT_IN_EVENT)
-    if(!response.ok){
-        throw new Error("Retrieve Round Not In Event Request Failed")
-    }
-    return response.json()
-}
-
-export const getRoleInEvent = async() => {
-    const response = await authFetch(RETRIEVE_ROLE_ID_NAME)
-    if(!response.ok){
-        throw new Error("Retrieve Role In Event Request Failed")
-    }
-    return response.json()
-}
 
 export const createUser = async (
   payload: AddUser,

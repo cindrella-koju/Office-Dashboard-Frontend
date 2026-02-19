@@ -28,22 +28,18 @@ export default function Filters<T>({
   setSelectVal,
   onSelectFilter,
 }: FilterProps<T>) {
+  const eventId = localStorage.getItem("eventId");
   const ALL_FILTER: FilterOption = { id: "all", name: "All" };
 
   const initialFilter = allUrl ? ALL_FILTER : defaultVal;
 
   const [selectedFilter, setSelectedFilter] = useState<FilterOption>(initialFilter);
-  const [eventId, setEventId] = useState<string | null>(null);
-
-  useEffect(() => {
-    setEventId(localStorage.getItem("eventID"));
-  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         let data: T;
-
+        
         if (selectedFilter.id === "all" && allUrl) {
           data = await fetchFilterData<T>(allUrl);
         } else if (urlFunction) {

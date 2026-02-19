@@ -2,12 +2,8 @@ import { useEffect, useState } from "react";
 import { getRoundByEvent, getRoundByEventWithColumn } from "../services/round.service";
 import { getOverallTiesheet } from "../services/tiesheet.service";
 import type { Round } from "../type/group.type";
-import type { UserType } from "../components/pages/overallpoints/OverallPointTable";
-
-export interface OverallPointResponse {
-  round_name: string;
-  users: UserType[];
-}
+import extractHeaders from "../utils/extractHeader";
+import type { OverallPointResponse } from "../type/overallpoint.type";
 
 export const useOverallPoints = (eventId: string | null) => {
   const [round_by_event, setRoundByEvent] = useState<Round[]>([]);
@@ -16,6 +12,7 @@ export const useOverallPoints = (eventId: string | null) => {
   const [selectedRound, setSelectedRound] = useState<Round | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [tablehead, setTableHead] = useState<string[]>([])
 
   const roundId = selectedRound ? selectedRound.id : rounds?.[0]?.id;
 
@@ -64,6 +61,8 @@ export const useOverallPoints = (eventId: string | null) => {
       try {
         const data = await getOverallTiesheet(eventId, roundId);
         setOverallPoints(data);
+        setTableHead(extractHeaders(data))
+        console.log("Headers:", extractHeaders(data))
       } catch (err) {
         setError((err as Error).message);
         console.error("Error fetching overall tiesheet:", err);
@@ -84,5 +83,6 @@ export const useOverallPoints = (eventId: string | null) => {
     error,
     setSelectedRound,
     setOverallPoints,
+    tablehead
   };
 };

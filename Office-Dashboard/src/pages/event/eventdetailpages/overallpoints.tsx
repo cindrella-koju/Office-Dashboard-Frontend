@@ -4,7 +4,8 @@ import Card from "../../../components/ui/Card";
 import { RETRIEVE_OVERALL_TIESHEET_BY_ROUND } from "../../../constants/urls";
 import OverallPointTable from "../../../components/pages/overallpoints/OverallPointTable";
 import Filters from "../../../components/Filters";
-import { useOverallPoints, type OverallPointResponse } from "../../../hooks/useOverallPoints";
+import { useOverallPoints} from "../../../hooks/useOverallPoints";
+import type { OverallPointResponse } from "../../../type/overallpoint.type";
 
 export default function OverallPoints() {
   const eventId = localStorage.getItem("eventId");
@@ -15,6 +16,7 @@ export default function OverallPoints() {
     selectedRound,
     setSelectedRound,
     setOverallPoints,
+    tablehead
   } = useOverallPoints(eventId);
 
   return (
@@ -39,16 +41,13 @@ export default function OverallPoints() {
 
         <Card className="flex-1 h-[70%]">
           <div className="p-4 sm:p-6 h-full overflow-y-auto space-y-8">
-            {overallpoints && overallpoints.map((round, roundIndex) => (
-              <div key={roundIndex}>
-                <h2 className="text-lg font-semibold text-gray-800 mb-4">
-                  {round.round_name}
-                </h2>
+            {overallpoints && 
+              <div>
                 <div className="overflow-x-auto rounded-xl border border-gray-200 bg-white">
-                  <OverallPointTable users={round.users} />
+                  <OverallPointTable users={overallpoints} tablehead={tablehead}/>
                 </div>
               </div>
-            ))}
+            }
           </div>
         </Card>
       </PageContent>

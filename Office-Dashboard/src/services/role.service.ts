@@ -3,9 +3,11 @@ import {
   CREATE_ROLE_WITH_PERMISSION,
   DELETE_ROLE,
   EDIT_DETAIL_FOR_ROLE_MANAGEMENT,
-  RETRIEVE_ALL_ROLE_ID_NAME,
   RETRIEVE_DETAIL_FOR_ROLE_MANAGEMENT,
   RETRIEVE_ROLE_DETAIL,
+  RETRIEVE_ROLE_ID_NAME,
+  RETRIEVE_ROLE_ID_NAME_IN_EVENT,
+  RETRIEVE_ROLE_ID_NAME_NOT_IN_EVENT,
 } from "../constants/urls";
 import { authFetch } from "./authHeaders";
 
@@ -43,13 +45,39 @@ export const roleService = {
 
     async getAllRole(){
         try{
-            const response = await authFetch(RETRIEVE_ALL_ROLE_ID_NAME);
+            const response = await authFetch(RETRIEVE_ROLE_ID_NAME);
             if(!response.ok){
                 throw new Error("Retrieve All Role Failed")
             }
             return response.json()
         }catch(err){
             console.error("Error fetching All Role:", err)
+            throw err;
+        }
+    },
+
+    async getRoleNotInEvent(){
+        try{
+             const response = await authFetch(RETRIEVE_ROLE_ID_NAME_NOT_IN_EVENT)
+            if(!response.ok){
+                throw new Error("Retrieve Round Not In Event Request Failed")
+            }
+            return response.json()
+        }catch(err){
+            console.error("Error fetching All Role Not in Event:", err)
+            throw err;
+        }
+    },
+
+    async getRoleInEvent(eventId : string){
+        try{
+             const response = await authFetch(RETRIEVE_ROLE_ID_NAME_IN_EVENT(eventId))
+            if(!response.ok){
+                throw new Error("Retrieve Round In Event Request Failed")
+            }
+            return response.json()
+        }catch(err){
+            console.error("Error fetching All Role In Event:", err)
             throw err;
         }
     },

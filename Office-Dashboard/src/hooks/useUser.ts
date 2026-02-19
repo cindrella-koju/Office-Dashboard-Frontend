@@ -4,6 +4,7 @@ import type { Round } from "../type/group.type";
 import * as userService from "../services/user.service";
 import extractHeaders from "../utils/extractHeader";
 import { useToast } from "../context/ToastContext";
+import { roleService } from "../services/role.service";
 
 export const useUser = () => {
     const { showToast } = useToast();
@@ -36,7 +37,7 @@ export const useUser = () => {
     const fetchRoleIdNameNotInEvent = async() => {
         try{
             setLoading(true);
-            const data = await userService.getRoleNotInEvent();
+            const data = await roleService.getRoleNotInEvent();
             setRounds(data)
             if(data.length > 0 ) setSelectedRole(data[0])
         }catch(err:any){
@@ -46,10 +47,10 @@ export const useUser = () => {
         }
     }
 
-    const fetchRoleIdNameInEvent = async() => {
+    const fetchAllRoleIdName = async() => {
         try{
             setLoading(true);
-            const data = await userService.getRoleInEvent();
+            const data = await roleService.getAllRole()
             setRoles(data)
             // if(data.length > 0 ) setSelectedRole(data[0])
         }catch(err:any){
@@ -79,7 +80,7 @@ export const useUser = () => {
     useEffect(() => {
         fetchRoleIdNameNotInEvent();
         fetchUsers();
-        fetchRoleIdNameInEvent();
+        fetchAllRoleIdName();
     }, []);
 
     return {
@@ -98,6 +99,5 @@ export const useUser = () => {
         showPassword,
         togglePasswordVisibility,
         deleteUser
-        // fetchRoleIdNameInEvent
     };
 }

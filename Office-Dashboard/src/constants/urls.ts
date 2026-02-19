@@ -62,7 +62,7 @@ export const EDIT_STANDING_COLUMN = (column_id : string) => `${BASE_URL}/event/c
 export const RETRIEVE_USERS = `${BASE_URL}/user`
 export const RETRIEVE_ROLE_ID_NAME_NOT_IN_EVENT = `${BASE_URL}/role/filter?not_in_event=true`
 export const RETRIEVE_ROLE_ID_NAME= `${BASE_URL}/role/filter?not_in_event=false`
-export const RETRIEVE_ALL_ROLE_ID_NAME = `${BASE_URL}/role/all`
+export const RETRIEVE_ROLE_ID_NAME_IN_EVENT = (eventId : string) => `${BASE_URL}/role/event/${eventId}`
 export const RETRIEVE_USERS_BY_ROLE = (role : string ) => `${BASE_URL}/user?role_id=${role}`
 export const CREATE_USER = `${BASE_URL}/user/signup`
 export const UPDATE_USER = (user_id : string ) =>`${BASE_URL}/user/${user_id}`
@@ -89,6 +89,7 @@ export const CREATE_ROLE_WITH_PERMISSION = `${BASE_URL}/role`
 
 export const CREATE_EVENT_ROLE = (eventId : string) => `${BASE_URL}/event/role/${eventId}`
 export const RETRIEVE_EVENT_ROLE = (eventId: string) => `${BASE_URL}/event/role/${eventId}`
+export const RETRIEVE_EVENT_ROLE_BY_ROLEID = (eventId: string, roleId : string) => `${BASE_URL}/event/role/${eventId}?role_id=${roleId}`
 export const EDIT_EVENT_ROLE = (eventRoleId: string) => `${BASE_URL}/event/role/${eventRoleId}`
 export const DELETE_EVENT_ROLE = (eventRoleId: string) => `${BASE_URL}/event/role/${eventRoleId}`
 

@@ -22,6 +22,9 @@ export const useEventRole = () => {
     const [eventRole, setEventrole] = useState<EventRoleResponse[]>([])
     const [tablehead, setTableHead] = useState<string[]>([])
     const [popUpDelete, setPopUpDelete ] = useState<boolean>(false)
+    // store role for filter
+    const [onlyEventRole,setOnlyEventRole] = useState<Round[]>([])
+    const [selectedRole,setSelectedRole] = useState<Round | null>(null)
     const [formData, setFormData ] = useState<EventRoleResponse>({
         id : "",
         user_id : "",
@@ -55,7 +58,21 @@ export const useEventRole = () => {
             setLoading(false)
         }
     }
-
+    const fetchOnlyRoleInEvent = async() => {
+        if(!eventID) return;
+        try{
+            setLoading(true)
+            const data = await roleService.getRoleInEvent(eventID);
+            setOnlyEventRole(data);
+            if( data.length > 0 ){
+                 setSelectedRole(data[0])
+            }
+        }catch(err:any){
+            setError(err.message)
+        } finally{
+            setLoading(false)
+        }
+    }
     const fetchEventRole = async() => {
         if(!eventID) return;
         try{
@@ -93,6 +110,7 @@ export const useEventRole = () => {
         fetchEventRole();
         fetchParticipants();
         fetchRoundByEvent();
+        fetchOnlyRoleInEvent();
     },[])
     return {
         permissions,
@@ -110,6 +128,10 @@ export const useEventRole = () => {
         deleteEventRole,
         editEventRole,
         loading,
-        error
+        error,
+        onlyEventRole,
+        selectedRole,
+        setSelectedRole,
+        setEventrole
     };
 }
