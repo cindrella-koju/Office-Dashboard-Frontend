@@ -8,7 +8,7 @@ import type { OverallPointResponse } from "../type/overallpoint.type";
 export const useOverallPoints = (eventId: string | null) => {
   const [round_by_event, setRoundByEvent] = useState<Round[]>([]);
   const [rounds, setRounds] = useState<Round[]>([]);
-  const [overallpoints, setOverallPoints] = useState<OverallPointResponse[]>([]);
+  const [overallpoints, setOverallPoints] = useState<OverallPointResponse[] | undefined>(undefined);
   const [selectedRound, setSelectedRound] = useState<Round | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
