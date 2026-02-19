@@ -14,10 +14,13 @@ export const fetchFilterData = async <T>(url: string): Promise<T> => {
 };
 
 export const fetchFilterDataByUrlFunction = async <T>(
-    urlFunction: (id: string) => string,
-    id: string
+    urlFunction: (id: string, page : number, limit : number) => string,
+    id: string,
+    page : number,
+    limit : number
 ): Promise<T> => {
-    const url = urlFunction(id);
+    
+    const url = urlFunction(id,page,limit);
     return fetchFilterData<T>(url);
 };
 

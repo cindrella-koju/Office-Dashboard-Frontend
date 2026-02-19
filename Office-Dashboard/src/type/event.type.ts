@@ -19,6 +19,13 @@ export type EventDetail = {
 }
 
 export interface EventResponse{
+    page : number,
+    limit : number,
+    total_pages : number,
+    items : Items[]
+}
+
+export interface Items{
     title : string,
     description : string,
     startdate : string,
@@ -29,7 +36,6 @@ export interface EventResponse{
     created_at : string
     updated_at : string
 }
-
 
 export interface Event{
     title : string,

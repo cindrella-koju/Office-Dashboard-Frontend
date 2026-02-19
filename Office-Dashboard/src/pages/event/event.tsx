@@ -33,7 +33,14 @@ export default function EventPage() {
     loading,
     error,
     tablehead,
-    deleteEvent
+    deleteEvent,
+
+    currentPage,
+    limit, 
+    totalPage,
+    setCurrentPage,
+    setLimit,
+    setStatus
   } = useEvent()
 
   const [eventMode, setEventMode] = useState<"create" | "edit" | null>(null);
@@ -72,6 +79,8 @@ export default function EventPage() {
     setEventMode(null)
     closeFunction()
   }
+
+
   return (
     <PageLayout sidebar={<NavBar />}>
       <PageContent>
@@ -93,12 +102,20 @@ export default function EventPage() {
 
         <Card className="mb-6 sm:mb-8 p-4 sm:p-6">
           <div className="p-4 sm:p-6">
-            <Filters<EventResponse[]>
+            <Filters<EventResponse>
               defaultVal={filterOptions[0]}
               filters={filterOptions}
               urlFunction={RETRIEVE_EVENT_BY_STATUS}
               label="Select Status"
               setSelectVal={setEvents}
+              currentPage = {
+                currentPage
+              }
+              totalPage = {totalPage}
+              limit = {limit}
+              setStatus={setStatus}
+              setCurrentPage={setCurrentPage}
+              setLimit={setLimit}
             />
           </div>
         </Card>
@@ -114,11 +131,11 @@ export default function EventPage() {
               <div className="text-center py-12 text-red-500">
                 Error loading events
               </div>
-            ) : events.length > 0 ? (
+            ) : events && events.items.length > 0 ? (
               <Table
                 tablefor="Event"
                 tablehead={tablehead}
-                tabledata={events}
+                tabledata={events.items}
                 permissions={permissions}
                 showView
                 setModelType={setEventMode}
@@ -162,7 +179,14 @@ export default function EventPage() {
         }
 
         {
-          events.length > 0 && <Pagination/>
+          events && events.items.length > 0 && 
+            <Pagination
+              currentPage={currentPage}
+              limit={limit}
+              totalPage={totalPage}
+              setCurrentPage={setCurrentPage}
+              setLimit={setLimit}
+            />
         }
       </PageContent>
     </PageLayout>

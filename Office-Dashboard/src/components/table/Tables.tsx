@@ -57,7 +57,7 @@ export default function Table({
   setOnDelete
 }: TableProps) {
   const navigate = useNavigate();
-  
+  console.log("Table data:", tabledata)
   const permissionMap = {
     Event: {
       edit: permissions && 'canEditEvents' in permissions ? permissions.canEditEvents : false,

@@ -1,15 +1,28 @@
 import type { ToastType } from "../components/Toast";
-import { CREATE_EVENT, DELETE_EVENT, RETRIEVE_EVENT, UPDATE_EVENT } from "../constants/urls"
+import { CREATE_EVENT, DELETE_EVENT, RETRIEVE_EVENT, RETRIEVE_EVENT_BY_STATUS, UPDATE_EVENT } from "../constants/urls"
 import type { Event, EventResponse } from "../type/event.type";
 import { authFetch } from "./authHeaders";
 
-export const getEvent = async():Promise<EventResponse[]> => {
+export const getEvent = async(page : number, limit : number):Promise<EventResponse> => {
     try{
-        const response = await authFetch(RETRIEVE_EVENT);
+        const response = await authFetch(RETRIEVE_EVENT(page, limit));
         if(!response.ok){
             throw new Error("Retrieve Event Request Failed")
         }
-        return (await response.json())as EventResponse[];
+        return (await response.json())as EventResponse;
+    } catch(err){
+        console.error("Error fetching Events:", err)
+        throw err;
+    }
+}
+
+export const getEventByStatus = async(status : string,page : number, limit : number):Promise<EventResponse> => {
+    try{
+        const response = await authFetch(RETRIEVE_EVENT_BY_STATUS(status,page, limit));
+        if(!response.ok){
+            throw new Error("Retrieve Event Request Failed")
+        }
+        return (await response.json())as EventResponse;
     } catch(err){
         console.error("Error fetching Events:", err)
         throw err;
