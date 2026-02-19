@@ -59,11 +59,11 @@ export const ADD_STANDING_COLUMN = `${BASE_URL}/event/column`
 export const EDIT_STANDING_COLUMN = (column_id : string) => `${BASE_URL}/event/column/${column_id}`
 
 
-export const RETRIEVE_USERS = `${BASE_URL}/user`
+export const RETRIEVE_USERS = (page : number, limit : number) =>`${BASE_URL}/user?page=${page}&limit=${limit}`
 export const RETRIEVE_ROLE_ID_NAME_NOT_IN_EVENT = `${BASE_URL}/role/filter?not_in_event=true`
 export const RETRIEVE_ROLE_ID_NAME= `${BASE_URL}/role/filter?not_in_event=false`
 export const RETRIEVE_ROLE_ID_NAME_IN_EVENT = (eventId : string) => `${BASE_URL}/role/event/${eventId}`
-export const RETRIEVE_USERS_BY_ROLE = (role : string ) => `${BASE_URL}/user?role_id=${role}`
+export const RETRIEVE_USERS_BY_ROLE = (role : string, page : number, limit : number  ) => `${BASE_URL}/user?role_id=${role}&page=${page}&limit=${limit}`
 export const CREATE_USER = `${BASE_URL}/user/signup`
 export const UPDATE_USER = (user_id : string ) =>`${BASE_URL}/user/${user_id}`
 export const DELETE_USER = (user_id : string ) =>`${BASE_URL}/user/${user_id}`

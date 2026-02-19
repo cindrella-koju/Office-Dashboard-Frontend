@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
-import type { AddUser, UserDetail } from "../type/user.type";
+import type { AddUser, UserDetail, UserDetailResponse } from "../type/user.type";
 import type { Round } from "../type/group.type";
 import * as userService from "../services/user.service";
 import extractHeaders from "../utils/extractHeader";
 import { useToast } from "../context/ToastContext";
 import { roleService } from "../services/role.service";
+import type { StatusProps } from "./event/useEvent";
 
 export const useUser = () => {
     const { showToast } = useToast();
-    const [users, setUsers] = useState<UserDetail[]>([]);
+    const [users, setUsers] = useState<UserDetailResponse>();
     const [rounds, setRounds] = useState<Round[]>([]);
     const [selectedRole, setSelectedRole] = useState<Round | null>(null);
     const [loading, setLoading] = useState(true);
@@ -17,6 +18,11 @@ export const useUser = () => {
     const [roles,setRoles] = useState<Round[]>()
     const [showPassword, setShowPassword] = useState(false);
 
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const [limit, setLimit] = useState<number>(10);
+    const [totalPage, setTotalPage] = useState<number>(1);
+    const [role, setRole] = useState<StatusProps | null>(null);
+
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
     };
@@ -24,9 +30,27 @@ export const useUser = () => {
     const fetchUsers = async() => {
         try{
             setLoading(true);
-            const data = await userService.getUser();
+            const data = await userService.getUser(currentPage, limit);
+
             setUsers(data);
-            setTableHead(extractHeaders(data))
+            setTableHead(extractHeaders(data.items))
+            setTotalPage(data.total_pages)
+        } catch(err:any){
+            setError(err.message)
+        } finally{
+            setLoading(false)
+        }
+    }
+
+    const fetchUsersByRole = async() => {
+        if(!role) return;
+        try{
+            setLoading(true);
+            const data = await userService.getUserByRole(role.id, currentPage, limit);
+
+            setUsers(data);
+            setTableHead(extractHeaders(data.items))
+            setTotalPage(data.total_pages)
         } catch(err:any){
             setError(err.message)
         } finally{
@@ -83,6 +107,14 @@ export const useUser = () => {
         fetchAllRoleIdName();
     }, []);
 
+    useEffect(() => {
+        if(role && role.id != "all"){
+            fetchUsersByRole()
+        }else{
+            fetchUsers()
+        }
+    },[currentPage,limit, role])
+
     return {
         users,
         rounds,
@@ -98,6 +130,13 @@ export const useUser = () => {
         setUsers,
         showPassword,
         togglePasswordVisibility,
-        deleteUser
+        deleteUser,
+
+        currentPage,
+        limit,
+        totalPage,
+        setCurrentPage,
+        setLimit,
+        setRole
     };
 }

@@ -9,11 +9,7 @@ import {
 import { HiUsers } from "react-icons/hi";
 import Button from "../../components/ui/Button";
 import Card from "../../components/ui/Card";
-import {
-  RETRIEVE_USERS,
-  RETRIEVE_USERS_BY_ROLE,
-} from "../../constants/urls";
-import type { UserDetail } from "../../type/user.type";
+import type { UserDetail, UserDetailResponse } from "../../type/user.type";
 import Table from "../../components/table/Tables";
 import EmptyMessage from "../../components/ui/EmptyMessage";
 import Filters from "../../components/Filters";
@@ -21,6 +17,7 @@ import { useUser } from "../../hooks/useUser";
 import { useUserForm } from "../../hooks/useUserForm";
 import UserModel from "../../components/Model/UserModel";
 import ConfirmationModal from "../../components/Model/ConfirmationPopUp";
+import { Pagination } from "../../components/Pagination";
 
 
 export default function UserPage() {
@@ -37,7 +34,14 @@ export default function UserPage() {
     tablehead,
     roles,
     setUsers,
-    deleteUser
+    deleteUser,
+
+    currentPage,
+    limit,
+    totalPage,
+    setCurrentPage,
+    setLimit,
+    setRole
   } = useUser()
 
   const [userMode, setUserMode] = useState<"create" | "edit" | null>(null);
@@ -52,7 +56,6 @@ export default function UserPage() {
     setUserMode(null);
     setEditUser(undefined);
   };
-
 
   
   const onClose = () => {
@@ -82,14 +85,19 @@ export default function UserPage() {
           selectedRole && rounds &&
           <Card className="mb-6 sm:mb-8 p-4 sm:p-6">
           <div className="p-4 sm:p-6">
-            <Filters<UserDetail[]>
+            <Filters<UserDetailResponse>
               defaultVal={selectedRole}
               filters={rounds}
-              urlFunction={RETRIEVE_USERS_BY_ROLE}
               label="Select Status"
               setSelectVal={setUsers}
               onSelectFilter={setSelectedRole}
-              allUrl={RETRIEVE_USERS}
+              currentPage={currentPage}
+              totalPage={totalPage}
+              limit={limit}
+              setStatus={setRole}
+              setCurrentPage={setCurrentPage}
+              setLimit={setLimit}
+              allUrl="yes"
             />
           </div>
         </Card>
@@ -104,10 +112,10 @@ export default function UserPage() {
               <div className="text-center py-12 text-red-500">
                 Error loading users: {error}
               </div>
-            ) : users.length > 0 ? (
+            ) : users && users?.items.length > 0 ? (
               <Table
                 tablehead={tablehead}
-                tabledata={users}
+                tabledata={users.items}
                 permissions={permissions}
                 setModelType={setUserMode}
                 setValue={setEditUser}
@@ -147,6 +155,16 @@ export default function UserPage() {
           onCancel={() => setPopUpDelete(false)}
         />}
 
+        {
+          users && users.items.length > 0 && 
+            <Pagination
+              currentPage={currentPage}
+              limit={limit}
+              totalPage={totalPage}
+              setCurrentPage={setCurrentPage}
+              setLimit={setLimit}
+            />
+        }
       </PageContent>
     </PageLayout>
   );

@@ -1,18 +1,31 @@
 import type { ToastType } from "../components/Toast";
-import { CREATE_USER, DELETE_USER, RETRIEVE_USERS, UPDATE_USER } from "../constants/urls"
-import type { AddUser, UserDetail } from "../type/user.type";
+import { CREATE_USER, DELETE_USER, RETRIEVE_USERS, RETRIEVE_USERS_BY_ROLE, UPDATE_USER } from "../constants/urls"
+import type { AddUser, UserDetailResponse } from "../type/user.type";
 import { authFetch } from "./authHeaders";
 
 
-export const getUser = async (): Promise<UserDetail[]> => {
+export const getUser = async ( page : number, limit : number): Promise<UserDetailResponse> => {
     try {
-        const response = await authFetch(RETRIEVE_USERS);
+        const response = await authFetch(RETRIEVE_USERS(page, limit));
         if (!response.ok) {
             throw new Error(`Retrieve User Request Failed`);
         }
-        return (await response.json()) as UserDetail[];
+        return (await response.json()) as UserDetailResponse;
     } catch (err) {
         console.error("Error fetching users:", err);
+        throw err;
+    }
+};
+
+export const getUserByRole = async (roleId : string, page:number, limit:number): Promise<UserDetailResponse> => {
+    try {
+        const response = await authFetch(RETRIEVE_USERS_BY_ROLE(roleId, page, limit));
+        if (!response.ok) {
+            throw new Error(`Retrieve User By Role Request Failed`);
+        }
+        return (await response.json()) as UserDetailResponse;
+    } catch (err) {
+        console.error("Error fetching users by role:", err);
         throw err;
     }
 };

@@ -2,6 +2,14 @@ import type { Dispatch, SetStateAction } from "react";
 import type { ModelType } from "./main.type";
 import type { Round } from "./group.type";
 
+export interface UserDetailResponse{
+  page : number,
+  limit : number,
+  total_pages : number,
+  items : UserDetail[]
+}
+
+
 export interface UserDetail {
   id: string; 
   username: string;
