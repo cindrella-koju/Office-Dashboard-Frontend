@@ -10,8 +10,10 @@ import PopUp from "../../../components/ui/PopUp";
 import { useTiesheet } from "../../../hooks/tiesheet/useTiesheet";
 import AddMatchModal from "../../../components/Model/AddMatchModel";
 import { useState } from "react";
-import { type PlayerInfoType } from "../../../type/tiesheet.type";
+import { type PlayerInfoType, type TiesheetType } from "../../../type/tiesheet.type";
 import ConfirmationModal from "../../../components/Model/ConfirmationPopUp";
+import Card from "../../../components/ui/Card";
+import Filters from "../../../components/Filters";
 
 
 export default function Tiesheet(){
@@ -57,7 +59,12 @@ export default function Tiesheet(){
         handleEditScore,
 
         matchInfo,
-        groupInfo
+        groupInfo,
+
+        selectedFilterRound,
+        rounds,
+        setTiesheet,
+        setSelectedFilterRound
     } = useTiesheet()
 
     const [player1, setplayer1] = useState<PlayerInfoType | undefined>(undefined)
@@ -120,6 +127,26 @@ export default function Tiesheet(){
                         )
                     }
                 />
+                {
+                    selectedFilterRound && rounds &&
+                    <Card className="mb-6 sm:mb-8 p-4 sm:p-6">
+                        <div className="p-4 sm:p-6">
+                            <Filters<TiesheetType[]>
+                                dafaultVal = {selectedFilterRound}
+                                filters={rounds}
+                                label="Select Round"
+                                setSelectVal={setTiesheet}
+                                onSelectFilter={setSelectedFilterRound}
+                                currentPage={1}
+                                totalPage={5}
+                                limit={10}
+                                setStatus={setSelectedFilterRound}
+                                allUrl="yes"
+
+                            />
+                        </div>
+                    </Card>
+                }
                             {/* Matches by Stage */}
                 <div className="space-y-6">
                     {groupedByStage && (Object.entries(groupedByStage).map(([stageName, matches]) => (
@@ -181,6 +208,8 @@ export default function Tiesheet(){
                         </div>
                     )))}
                 </div>
+                
+                
 
                 {tiesheet && tiesheet.length === 0 && (
                     <EmptyMessage 

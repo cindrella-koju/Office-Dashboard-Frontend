@@ -29,7 +29,8 @@ export const useTiesheet = () => {
     const [loading, setLoading ] = useState(true)
     const [error, setError] = useState<string | null>(null)
 
-
+    // For Filter
+    const [selectedFilterRound,setSelectedFilterRound] = useState<Round | null>(null)
 
     // For tiesheet model
     const [rounds, setRounds] = useState<Round[]>([])
@@ -75,12 +76,27 @@ export const useTiesheet = () => {
         }
     }
 
+    const fetchTiesheetByStage = async() => {
+        if(!eventId) return;
+        if(!selectedFilterRound) return;
+        try{
+            setLoading(true)
+            const data = await tiesheetServices.getTiesheetByStage(eventId, selectedFilterRound.id)
+            setTiesheet(data)
+        } catch(err:any){
+            setError(err.message)
+        } finally{
+            setLoading(false)
+        }
+    }
+ 
     const fetchRound = async() => {
         if(!eventId) return;
         try{
             setLoading(true)
             const data = await getRoundByEvent(eventId);
             setRounds(data)
+            setSelectedFilterRound(data[0])
         } catch(err:any){
             setError(err.message)
         } finally{
@@ -295,8 +311,13 @@ export const useTiesheet = () => {
     }
 
     useEffect(() => {
-        fetchTiesheet()
-    },[scoreView])
+        if(selectedFilterRound && selectedFilterRound.id != "all"){
+            console.log("Selected Round:", selectedFilterRound)
+            fetchTiesheetByStage()
+        }else{
+            fetchTiesheet()
+        }
+    },[scoreView, selectedFilterRound])
     
     return{
         permissions,
@@ -347,6 +368,10 @@ export const useTiesheet = () => {
         handleCreateScore,
         handleEditScore,
 
-        matchInfo
+        matchInfo,
+
+        selectedFilterRound,
+        setTiesheet,
+        setSelectedFilterRound
     }
 }

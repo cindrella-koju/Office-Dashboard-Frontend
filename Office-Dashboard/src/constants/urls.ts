@@ -32,6 +32,8 @@ export const RETRIEVE_USER_PARTICIPANT_NOT_IN_QUALIFIER = (eventId:string, round
 
 export const RETRIEVE_TODAY_TIESHEET = (eventId : string) => `${BASE_URL}/event/tiesheet?event_id=${eventId}&today=true`
 export const RETRIEVE_TIESHEET = (eventId : string) => `${BASE_URL}/event/tiesheet?event_id=${eventId}`
+export const RETRIEVE_TIESHEET_BY_STAGE = (eventId : string, stageId : string) => `${BASE_URL}/event/tiesheet?event_id=${eventId}&stage_id=${stageId}`
+
 export const CREATE_TIESHEET = `${BASE_URL}/event/tiesheet`
 export const DELETE_TIESHEET = (tiesheetId : string) => `${BASE_URL}/event/tiesheet/${tiesheetId}`
 export const GET_TIESHEET_BY_ID = (tiesheetId: string) => `${BASE_URL}/event/tiesheet/${tiesheetId}`

@@ -1,6 +1,6 @@
 import type { SelectedMatch } from "../components/Model/TiesheetModel";
 import type { ToastType } from "../components/Toast";
-import { CREATE_MATCH, CREATE_TIESHEET, DELETE_MATCH, DELETE_TIESHEET, EDIT_MATCH, GET_TIESHEET_BY_ID, RETRIEVE_MATCH, RETRIEVE_MATCH_BY_TIESHEET_ID, RETRIEVE_OVERALL_TIESHEET, RETRIEVE_OVERALL_TIESHEET_BY_ROUND, RETRIEVE_STANDING_COLUMN, RETRIEVE_TIESHEET, RETRIEVE_TODAY_TIESHEET, UPDATE_TIESHEET } from "../constants/urls"
+import { CREATE_MATCH, CREATE_TIESHEET, DELETE_MATCH, DELETE_TIESHEET, EDIT_MATCH, GET_TIESHEET_BY_ID, RETRIEVE_MATCH, RETRIEVE_MATCH_BY_TIESHEET_ID, RETRIEVE_OVERALL_TIESHEET, RETRIEVE_OVERALL_TIESHEET_BY_ROUND, RETRIEVE_STANDING_COLUMN, RETRIEVE_TIESHEET, RETRIEVE_TIESHEET_BY_STAGE, RETRIEVE_TODAY_TIESHEET, UPDATE_TIESHEET } from "../constants/urls"
 import type { StandingColumnType } from "../type/standingcolumn.type";
 import type { AddMatchProps, TiesheetType } from "../type/tiesheet.type";
 import { authFetch } from "./authHeaders";
@@ -8,6 +8,19 @@ import { authFetch } from "./authHeaders";
 export const getTiesheet = async(eventId : string):Promise<TiesheetType[]> => {
     try{
         const response = await authFetch(RETRIEVE_TIESHEET(eventId));
+        if(!response.ok){
+            throw new Error("Retrieve Tiesheet Request Failed")
+        }
+        return (await response.json()) as TiesheetType[];
+    }  catch(err){
+        console.error("Error fetching Tiesheet:", err)
+        throw err;
+    }
+}
+
+export const getTiesheetByStage = async(eventId : string, stageId : string):Promise<TiesheetType[]> => {
+    try{
+        const response = await authFetch(RETRIEVE_TIESHEET_BY_STAGE(eventId, stageId));
         if(!response.ok){
             throw new Error("Retrieve Tiesheet Request Failed")
         }

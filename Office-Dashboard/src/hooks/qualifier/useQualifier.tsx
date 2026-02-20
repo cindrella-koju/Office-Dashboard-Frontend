@@ -1,12 +1,13 @@
 import { useCallback, useEffect, useState } from "react"
 import type { Round } from "../../type/group.type"
 import { getRound } from "../../services/round.service";
-import { type QualifierResponse, type Participant, type EachQualifier, type QualifierPayload } from "../../type/qualifier.type";
+import { type QualifierResponse, type EachQualifier, type QualifierPayload } from "../../type/qualifier.type";
 import * as qualifierServices from "../../services/qualifier.service";
 import { usePermissions, type EventPermission } from "../userPermission";
 import type { ViewMode } from "../../components/shared";
 import type { ModelType } from "../../type/main.type";
 import { useToast } from "../../context/ToastContext";
+import type { User } from "../../components/Model/ParticipantsModel";
 
 
 export const useQualifier = () => {
@@ -16,7 +17,7 @@ export const useQualifier = () => {
     const [rounds,setRounds] = useState<Round[]>([])
     const [loading, setLoading ] = useState(true)
     const [error, setError] = useState<string | null>(null)
-    const [participants, setParticipants] = useState<Participant[]>([])
+    const [participants, setParticipants] = useState<User[]>([])
     const [qualifiers, setQualifiers] = useState<QualifierResponse[]>([])
     const [viewMode, setViewMode] = useState<ViewMode>('grid');
     const [searchQuery, setSearchQuery] = useState<string>('');
@@ -64,6 +65,7 @@ export const useQualifier = () => {
 
     const createQualifier = async( roundID : string, payload : QualifierPayload ) => {
         if(!eventID) return;
+        console.log("Qualifier Payload:", payload)
         await qualifierServices.createQualifier(eventID, roundID, payload, showToast)
         fetchQualifier()
     }

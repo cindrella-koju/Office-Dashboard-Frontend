@@ -3,7 +3,7 @@ import ModalWrapper from "../pages/shared/ModelWrapper"
 import MultiSelect from "../pages/shared/MultiSelect"
 import type { ModelType } from "../../type/main.type"
 import { useQualifier } from "../../hooks/qualifier/useQualifier"
-import type { Participant } from "../../type/qualifier.type"
+import type { User } from "./ParticipantsModel"
 
 
 interface QualifierModelType {
@@ -13,7 +13,7 @@ interface QualifierModelType {
   setSelected : Dispatch<SetStateAction<string[]>>;
   roundId : string;
   setRoundId : Dispatch<SetStateAction<string>>;
-  participants : Participant[]
+  participants : User[]
 }
 
 
@@ -57,11 +57,13 @@ export default function QualifierModule({ selected,setModelType, setSelected, ha
         <MultiSelect
           label="Players"
           options={participants?.map(p => ({
-            id: p.user_id,
+            id: p.id,
             label: p.username
           }))}
           value={selected}
-          onChange={setSelected}
+          onChange={(ids) => {
+            console.log("Participants:", participants,ids)
+            setSelected(ids)}}
           required
         />
 
