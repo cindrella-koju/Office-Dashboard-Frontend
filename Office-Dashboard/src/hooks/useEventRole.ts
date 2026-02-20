@@ -64,9 +64,9 @@ export const useEventRole = () => {
             setLoading(true)
             const data = await roleService.getRoleInEvent(eventID);
             setOnlyEventRole(data);
-            if( data.length > 0 ){
-                 setSelectedRole(data[0])
-            }
+            // if( data.length > 0 ){
+            //      setSelectedRole(data[0])
+            // }
         }catch(err:any){
             setError(err.message)
         } finally{

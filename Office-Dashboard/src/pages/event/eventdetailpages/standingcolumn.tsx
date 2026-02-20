@@ -32,7 +32,7 @@ export default function StandingColumn() {
     createColumn,
     editColumn,
     columnDetail,
-    setColumnDetail
+    setColumnDetail,
   } = useStandingColumn(eventId);
 
   const handleSubmit = async (e:React.FormEvent) => {

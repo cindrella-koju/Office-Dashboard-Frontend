@@ -53,8 +53,8 @@ export const ADD_QUALIFIER = (eventId:string,roundId:string) =>`${BASE_URL}/even
 export const RETRIEVE_QUALIFIER_BY_EVENT = (eventId : string) => `${BASE_URL}/event/qualifier/event?event_id=${eventId}`
 export const DELETE_QUALIFIER = (qualifierID : string) => `${BASE_URL}/event/qualifier/${qualifierID}`
 // export const RETRIEVE_OVERALL_TIESHEET = (eventId : string, roundId:string) => `${BASE_URL}/event/overalltiesheet?event_id=${eventId}&stage_id=${roundId}`
-export const RETRIEVE_OVERALL_TIESHEET = (eventId : string) => `${BASE_URL}/event/overalltiesheet?event_id=${eventId}`
-export const RETRIEVE_OVERALL_TIESHEET_BY_ROUND = (eventId:string, roundId : string) => `${BASE_URL}/event/overalltiesheet?event_id=${eventId}&stage_id=${roundId}`
+export const RETRIEVE_OVERALL_TIESHEET = (eventId : string,page : number, limit : number) => `${BASE_URL}/event/overalltiesheet?event_id=${eventId}&page=${page}&limit=${limit}`
+export const RETRIEVE_OVERALL_TIESHEET_BY_ROUND = (eventId:string, roundId : string,page : number, limit : number) => `${BASE_URL}/event/overalltiesheet?event_id=${eventId}&stage_id=${roundId}&page=${page}&limit=${limit}`
 
 export const RETRIEVE_STANDING_COLUMN = (roundId : string ) => `${BASE_URL}/event/column?stage_id=${roundId}`
 export const ADD_STANDING_COLUMN = `${BASE_URL}/event/column`

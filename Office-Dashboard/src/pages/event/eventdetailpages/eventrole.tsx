@@ -11,10 +11,8 @@ import EmptyMessage from "../../../components/ui/EmptyMessage";
 import { RiAdminFill } from "react-icons/ri";
 import Filters from "../../../components/Filters";
 import type { EventRoleResponse } from "../../../type/eventrole.type";
-import { RETRIEVE_EVENT_ROLE, RETRIEVE_EVENT_ROLE_BY_ROLEID } from "../../../constants/urls";
 
 export default function EventRole() {
-    const eventID = localStorage.getItem("eventId");
     const {
         permissions,
         mode,
@@ -63,7 +61,7 @@ export default function EventRole() {
                     }
                 />
                 {
-                    selectedRole && onlyEventRole && (
+                    onlyEventRole && (
                         <Card className="mb-6">
                             <div className="p-4 sm:p-6">
                                 <Filters<EventRoleResponse[]>

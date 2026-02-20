@@ -96,11 +96,11 @@ export const getStandingColumn = async(roundId : string):Promise<StandingColumnT
     }
 }
 
-export const getOverallTiesheet = async(eventId : string, roundId?: string) => {
+export const getOverallTiesheet = async(eventId : string,page : number, limit : number, roundId?: string) => {
     try{
         const url = roundId 
-            ? RETRIEVE_OVERALL_TIESHEET_BY_ROUND(eventId, roundId)
-            : RETRIEVE_OVERALL_TIESHEET(eventId);
+            ? RETRIEVE_OVERALL_TIESHEET_BY_ROUND(eventId, roundId, page,limit)
+            : RETRIEVE_OVERALL_TIESHEET(eventId, page, limit);
         const response = await authFetch(url);
         if(!response.ok){
             throw new Error("Retrieve Overall Tiesheet Request Failed")

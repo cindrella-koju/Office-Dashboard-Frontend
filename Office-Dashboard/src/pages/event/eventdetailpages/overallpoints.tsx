@@ -1,11 +1,11 @@
 import EventNavBar from "../../../components/EventNavbar";
 import { PageContent, PageHeader, PageLayout } from "../../../components/layout/PageLayout";
 import Card from "../../../components/ui/Card";
-import { RETRIEVE_OVERALL_TIESHEET_BY_ROUND } from "../../../constants/urls";
 import OverallPointTable from "../../../components/pages/overallpoints/OverallPointTable";
 import Filters from "../../../components/Filters";
 import { useOverallPoints} from "../../../hooks/useOverallPoints";
 import type { OverallPointResponse } from "../../../type/overallpoint.type";
+import { Pagination } from "../../../components/Pagination";
 
 export default function OverallPoints() {
   const eventId = localStorage.getItem("eventId");
@@ -16,7 +16,13 @@ export default function OverallPoints() {
     selectedRound,
     setSelectedRound,
     setOverallPoints,
-    tablehead
+    tablehead,
+
+    currentPage,
+    limit,
+    totalPage,
+    setCurrentPage,
+    setLimit
   } = useOverallPoints(eventId);
 
   return (
@@ -29,11 +35,14 @@ export default function OverallPoints() {
             <div className="p-4 sm:p-6">
               <Filters<OverallPointResponse[]>
                 defaultVal={selectedRound}
-                twoIdUrlFunction={RETRIEVE_OVERALL_TIESHEET_BY_ROUND}
                 filters={rounds}
                 label="Select Round"
                 setSelectVal={setOverallPoints}
                 onSelectFilter={setSelectedRound}
+                setStatus={setSelectedRound}
+                currentPage={1}
+                totalPage={5}
+                limit={10}
               />
             </div>
           </Card>
@@ -44,12 +53,22 @@ export default function OverallPoints() {
             {overallpoints && 
               <div>
                 <div className="overflow-x-auto rounded-xl border border-gray-200 bg-white">
-                  <OverallPointTable users={overallpoints} tablehead={tablehead}/>
+                  <OverallPointTable users={overallpoints.items} tablehead={tablehead}/>
                 </div>
               </div>
             }
           </div>
         </Card>
+
+                {
+        <Pagination
+            currentPage={currentPage}
+            limit={limit}
+            totalPage={totalPage}
+            setCurrentPage={setCurrentPage}
+            setLimit={setLimit}
+          />
+        }
       </PageContent>
     </PageLayout>
   );

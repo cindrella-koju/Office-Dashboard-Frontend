@@ -20,6 +20,7 @@ export const useStandingColumn = (eventId: string | null) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+
   const roundId = selectedRound ? selectedRound.id : rounds?.[0]?.id;
   const [columnDetail, setColumnDetail] = useState<ColumnDetail>({
     id: "",

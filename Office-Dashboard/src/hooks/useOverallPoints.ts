@@ -8,12 +8,15 @@ import type { OverallPointResponse } from "../type/overallpoint.type";
 export const useOverallPoints = (eventId: string | null) => {
   const [round_by_event, setRoundByEvent] = useState<Round[]>([]);
   const [rounds, setRounds] = useState<Round[]>([]);
-  const [overallpoints, setOverallPoints] = useState<OverallPointResponse[] | undefined>(undefined);
+  const [overallpoints, setOverallPoints] = useState<OverallPointResponse | undefined>(undefined);
   const [selectedRound, setSelectedRound] = useState<Round | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [tablehead, setTableHead] = useState<string[]>([])
 
+  const [currentPage, setCurrentPage] = useState<number>(1)
+  const [limit, setLimit] = useState<number>(10)
+  const [totalPage, setTotalPage] = useState<number>(1)
   const roundId = selectedRound ? selectedRound.id : rounds?.[0]?.id;
 
   // Fetch round_by_event
@@ -51,28 +54,28 @@ export const useOverallPoints = (eventId: string | null) => {
     fetchRounds();
   }, [eventId]);
 
+  const fetchOverallTiesheet = async () => {
+    if (!eventId || !roundId) return;
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await getOverallTiesheet(eventId, currentPage, limit, roundId);
+      setOverallPoints(data);
+      setTableHead(extractHeaders(data.items))
+      setCurrentPage(data.page)
+      setLimit(data.limit)
+      setTotalPage(data.total_pages)
+    } catch (err) {
+      setError((err as Error).message);
+      console.error("Error fetching overall tiesheet:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
   // Fetch overall tiesheet data
   useEffect(() => {
-    if (!eventId || !roundId) return;
-
-    const fetchOverallTiesheet = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const data = await getOverallTiesheet(eventId, roundId);
-        setOverallPoints(data);
-        setTableHead(extractHeaders(data))
-        console.log("Headers:", extractHeaders(data))
-      } catch (err) {
-        setError((err as Error).message);
-        console.error("Error fetching overall tiesheet:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchOverallTiesheet();
-  }, [eventId, roundId]);
+  }, [eventId, roundId, selectedRound,limit,currentPage]);
 
   return {
     round_by_event,
@@ -83,6 +86,11 @@ export const useOverallPoints = (eventId: string | null) => {
     error,
     setSelectedRound,
     setOverallPoints,
-    tablehead
+    tablehead,
+    currentPage,
+    limit,
+    totalPage,
+    setCurrentPage,
+    setLimit
   };
 };
