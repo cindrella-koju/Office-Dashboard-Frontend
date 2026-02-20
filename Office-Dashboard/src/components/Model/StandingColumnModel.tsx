@@ -1,21 +1,17 @@
-import React, { useEffect, useState, type Dispatch, type SetStateAction } from "react"
-import {
-  ADD_STANDING_COLUMN,
-  EDIT_STANDING_COLUMN,
-  RETRIEVE_ROUNDS
-} from "../../constants/urls"
-import useFetch from "../../hooks/useFetch"
+import React, { type Dispatch, type SetStateAction } from "react"
 import ModalWrapper from "../pages/shared/ModelWrapper"
 import SelectField from "../pages/shared/SelectField"
 import FormField from "../pages/shared/FormField"
 import Button from "../ui/Button"
-import type { StandingColumnType } from "../../type/standingcolumn.type"
+import type { RoundData } from "../../type/round.type"
 
 interface StandingColumnModuleProps {
   viewMode: "create" | "edit" | null
-  eventId: string | null
   setViewMode: Dispatch<SetStateAction<"create" | "edit" | null>>
-  colVal?: StandingColumnType
+  rounds : RoundData[];
+  handleSubmit : ( e:React.FormEvent ) => void;
+  columnDetail : ColumnDetail;
+  setColumnDetail : Dispatch<SetStateAction<ColumnDetail>>
 }
 
 export interface RoundType {
@@ -23,95 +19,23 @@ export interface RoundType {
   name: string
 }
 
-interface ColumnDetail {
+export interface ColumnDetail {
   id: string
   stage_id: string
   column_field: string
   default_value: string
-  to_show: "True" | "False" // store as string
 }
 
 export default function StandingColumnModal({
   viewMode,
-  eventId,
   setViewMode,
-  colVal
+  rounds,
+  handleSubmit,
+  columnDetail,
+  setColumnDetail
 }: StandingColumnModuleProps) {
-  const { data: rounds } = useFetch<RoundType[]>(
-    eventId ? RETRIEVE_ROUNDS(eventId) : ""
-  )
 
-  const showOptions = [
-    { value: "True", label: "True" },
-    { value: "False", label: "False" }
-  ]
-
-  const [columnDetail, setColumnDetail] = useState<ColumnDetail>({
-    id: "",
-    stage_id: "",
-    column_field: "",
-    default_value: "",
-    to_show: "False" // default as string
-  })
-
-  useEffect(() => {
-    if (viewMode === "create") {
-      setColumnDetail({
-        id: "",
-        stage_id: "",
-        column_field: "",
-        default_value: "",
-        to_show: "False"
-      })
-    }
-
-    if (viewMode === "edit" && colVal) {
-      setColumnDetail({
-        id: colVal.id,
-        stage_id: colVal.stage_id,
-        column_field: colVal.column_field,
-        default_value: colVal.default_value,
-        to_show: colVal.to_show ? "True" : "False" // convert boolean to string
-      })
-    }
-  }, [viewMode, colVal])
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-
-    try {
-      const url =
-        viewMode === "create"
-          ? ADD_STANDING_COLUMN
-          : EDIT_STANDING_COLUMN(columnDetail.id)
-
-      const payload =
-        viewMode === "create"
-          ? {
-              stage_id: columnDetail.stage_id,
-              column_field: columnDetail.column_field,
-              default_value: columnDetail.default_value,
-              to_show: columnDetail.to_show // string "True" or "False"
-            }
-          : columnDetail
-
-      const response = await fetch(url, {
-        method: viewMode === "create" ? "POST" : "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      })
-
-      if (!response.ok) {
-        throw new Error("Failed to save column")
-      }
-
-      alert(`Column ${viewMode === "create" ? "created" : "updated"} successfully!`)
-      setViewMode(null)
-    } catch (error) {
-      console.error(error)
-      alert("Something went wrong")
-    }
-  }
+  
 
   return (
     <ModalWrapper
@@ -119,16 +43,6 @@ export default function StandingColumnModal({
       onClose={() => setViewMode(null)}
     >
       <form onSubmit={handleSubmit}>
-        <SelectField
-          label="Show Column"
-          value={columnDetail.to_show} // "True" or "False"
-          onChange={(val) =>
-            setColumnDetail(prev => ({ ...prev, to_show: val as "True" | "False" }))
-          }
-          options={showOptions}
-          required
-        />
-
         <SelectField
           label="Round"
           value={columnDetail.stage_id}

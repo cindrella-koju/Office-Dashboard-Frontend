@@ -2,7 +2,6 @@ import EventNavBar from "../../../components/EventNavbar";
 import Card from "../../../components/ui/Card";
 import { usePermissions } from "../../../hooks/userPermission";
 import StandingColumnModel from "../../../components/Model/StandingColumnModel";
-import { RETRIEVE_STANDING_COLUMN } from "../../../constants/urls";
 import { PageContent, PageHeader, PageLayout } from "../../../components/layout/PageLayout";
 import Button from "../../../components/ui/Button";
 import EmptyMessage from "../../../components/ui/EmptyMessage";
@@ -24,15 +23,25 @@ export default function StandingColumn() {
     selectedRound,
     tableHead,
     viewMode,
-    colVal,
     loading,
     error,
     setSelectedRound,
     setStandingColumn,
     setViewMode,
     setColVal,
+    createColumn,
+    editColumn,
+    columnDetail,
+    setColumnDetail
   } = useStandingColumn(eventId);
 
+  const handleSubmit = async (e:React.FormEvent) => {
+    e.preventDefault()
+
+    if (viewMode === "create") createColumn(columnDetail)
+    if (viewMode === "edit") editColumn(columnDetail.id, columnDetail)
+    setViewMode(null)
+  }
   return (
     <PageLayout sidebar={<EventNavBar />}>
       <PageContent>
@@ -48,11 +57,14 @@ export default function StandingColumn() {
             <div className="p-4 sm:p-6">
               <Filters<StandingColumnType[]>
                 defaultVal={selectedRound}
-                urlFunction={RETRIEVE_STANDING_COLUMN}
                 filters={round_by_event}
                 label="Select Round"
                 setSelectVal={setStandingColumn}
                 onSelectFilter={setSelectedRound}
+                setStatus={setSelectedRound}
+                currentPage={1}
+                totalPage={5}
+                limit={10}
               />
             </div>
           </Card>
@@ -93,9 +105,11 @@ export default function StandingColumn() {
         {viewMode && (
           <StandingColumnModel
             viewMode={viewMode}
-            eventId={eventId}
             setViewMode={setViewMode}
-            colVal={colVal}
+            rounds={rounds}
+            handleSubmit={handleSubmit}
+            columnDetail={columnDetail}
+            setColumnDetail={setColumnDetail}
           />
         )}
       </PageContent>

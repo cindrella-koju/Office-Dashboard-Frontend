@@ -96,7 +96,7 @@ export const useTiesheet = () => {
             setLoading(true)
             const data = await getRoundByEvent(eventId);
             setRounds(data)
-            setSelectedFilterRound(data[0])
+            setSelectedFilterRound( { id: "all", name: "All" })
         } catch(err:any){
             setError(err.message)
         } finally{
