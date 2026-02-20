@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { AddUser, UserDetail, UserDetailResponse } from "../type/user.type";
+import type { AddUser, UserDetailResponse } from "../type/user.type";
 import type { Round } from "../type/group.type";
 import * as userService from "../services/user.service";
 import extractHeaders from "../utils/extractHeader";

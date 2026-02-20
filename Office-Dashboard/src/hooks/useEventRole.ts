@@ -73,6 +73,7 @@ export const useEventRole = () => {
             setLoading(false)
         }
     }
+
     const fetchEventRole = async() => {
         if(!eventID) return;
         try{
@@ -87,23 +88,41 @@ export const useEventRole = () => {
         }
     }
 
+    const fetchEventRoleByROLEID = async() => {
+        if(!selectedRole) return;
+        if(!eventID) return;
+        try{
+            setLoading(true);
+            const data = await EventRoleServices.getEventRoleByRoleId(eventID, selectedRole?.id);
+            setEventrole(data)
+            setTableHead(extractHeaders(data))
+        }catch(err:any){
+            setError(err.message)
+        } finally{
+            setLoading(false)
+        }
+    }
+
     const createEventRole = async(payload : EventRole) => {
         if(!eventID) return;
         await EventRoleServices.createEventRole(payload,eventID, showToast);
         setMode(null)
         fetchEventRole()
+        fetchOnlyRoleInEvent()
     }
 
     const editEventRole = async(event_role_id : string, payload : EventRole) => {
         await EventRoleServices.editEventRole(payload, event_role_id, showToast);
         setMode(null)
         fetchEventRole()
+        fetchOnlyRoleInEvent()
     }
 
     const deleteEventRole = async(event_role_id : string) => {
         console.log("Event role id:", event_role_id)
         await EventRoleServices.deleteEventRole(event_role_id, showToast);
         fetchEventRole()
+        fetchOnlyRoleInEvent()
     }
 
     useEffect(() => {
@@ -112,6 +131,15 @@ export const useEventRole = () => {
         fetchRoundByEvent();
         fetchOnlyRoleInEvent();
     },[])
+
+    useEffect(() => {
+        if(selectedRole && selectedRole.id != "all"){
+            fetchEventRoleByROLEID()
+        } else{
+            fetchEventRole()
+        }
+    },[selectedRole])
+
     return {
         permissions,
         mode,

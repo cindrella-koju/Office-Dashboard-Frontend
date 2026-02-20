@@ -1,11 +1,24 @@
 import type { ToastType } from "../components/Toast";
-import { CREATE_EVENT_ROLE, DELETE_EVENT_ROLE, EDIT_EVENT_ROLE, RETRIEVE_EVENT_ROLE } from "../constants/urls"
+import { CREATE_EVENT_ROLE, DELETE_EVENT_ROLE, EDIT_EVENT_ROLE, RETRIEVE_EVENT_ROLE, RETRIEVE_EVENT_ROLE_BY_ROLEID } from "../constants/urls"
 import type { EventRole, EventRoleResponse } from "../type/eventrole.type";
 import { authFetch } from "./authHeaders"
 
 export const getEventRole = async(eventId : string):Promise<EventRoleResponse[]> => {
     try{
         const response = await authFetch(RETRIEVE_EVENT_ROLE(eventId));
+        if(!response.ok){
+            throw new Error("Retrieve Event Role Request Failed")
+        }
+        return (await response.json()) as EventRoleResponse[];
+    } catch(err){
+        console.error("Error fetching Event Role:", err)
+        throw err;
+    }
+}
+
+export const getEventRoleByRoleId = async(eventId : string, roleId : string):Promise<EventRoleResponse[]> => {
+    try{
+        const response = await authFetch(RETRIEVE_EVENT_ROLE_BY_ROLEID(eventId, roleId));
         if(!response.ok){
             throw new Error("Retrieve Event Role Request Failed")
         }

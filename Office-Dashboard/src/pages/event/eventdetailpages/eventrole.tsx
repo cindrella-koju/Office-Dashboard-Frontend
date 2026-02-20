@@ -68,12 +68,15 @@ export default function EventRole() {
                             <div className="p-4 sm:p-6">
                                 <Filters<EventRoleResponse[]>
                                     defaultVal = {selectedRole}
-                                    twoIdUrlFunction={RETRIEVE_EVENT_ROLE_BY_ROLEID}
                                     filters={onlyEventRole}
                                     label = "Select Role"
-                                    onSelectFilter = {setSelectedRole}
                                     setSelectVal={setEventrole}
-                                    allUrl={RETRIEVE_EVENT_ROLE(eventID ? eventID : "")}
+                                    onSelectFilter = {setSelectedRole}
+                                    setStatus={setSelectedRole}
+                                    currentPage={1}
+                                    totalPage={5}
+                                    limit={10}
+                                    allUrl="yes"
                                 />
                             </div>
                         </Card>
