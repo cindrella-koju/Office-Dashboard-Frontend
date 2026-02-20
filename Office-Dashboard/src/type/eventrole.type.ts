@@ -10,13 +10,19 @@ export interface EventRole{
 }
 
 export interface EventRoleResponse{
+    page : number,
+    limit : number,
+    total_pages : number,
+    data : EventRoleDetail[]
+}
+
+export interface EventRoleDetail{
     id : string,
     user_id : string,
     username : string,
     role_id : string,
     rolename : string
 }
-
 export interface EventRoleModelProps{
     mode : ModelType,
     onclose : () => void,

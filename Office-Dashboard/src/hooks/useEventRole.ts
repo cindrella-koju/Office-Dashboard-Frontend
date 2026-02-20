@@ -6,7 +6,7 @@ import { useToast } from "../context/ToastContext";
 import { getParticipants } from "../services/participants.service";
 import type { Round } from "../type/group.type";
 import { roleService } from "../services/role.service";
-import { type EventRoleResponse, type EventRole } from "../type/eventrole.type";
+import { type EventRoleResponse, type EventRole, type EventRoleDetail } from "../type/eventrole.type";
 import * as EventRoleServices from "../services/eventrole.service";
 import extractHeaders from "../utils/extractHeader";
 
@@ -19,13 +19,13 @@ export const useEventRole = () => {
     const [role,setRole] = useState<Round[]>()
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
-    const [eventRole, setEventrole] = useState<EventRoleResponse[]>([])
+    const [eventRole, setEventrole] = useState<EventRoleDetail[]>([])
     const [tablehead, setTableHead] = useState<string[]>([])
     const [popUpDelete, setPopUpDelete ] = useState<boolean>(false)
     // store role for filter
     const [onlyEventRole,setOnlyEventRole] = useState<Round[]>([])
     const [selectedRole,setSelectedRole] = useState<Round | null>(null)
-    const [formData, setFormData ] = useState<EventRoleResponse>({
+    const [formData, setFormData ] = useState<EventRoleDetail>({
         id : "",
         user_id : "",
         role_id : "",
@@ -79,8 +79,8 @@ export const useEventRole = () => {
         try{
             setLoading(true);
             const data = await EventRoleServices.getEventRole(eventID);
-            setEventrole(data)
-            setTableHead(extractHeaders(data))
+            setEventrole(data.data)
+            setTableHead(extractHeaders(data.data))
         }catch(err:any){
             setError(err.message)
         } finally{
@@ -94,8 +94,8 @@ export const useEventRole = () => {
         try{
             setLoading(true);
             const data = await EventRoleServices.getEventRoleByRoleId(eventID, selectedRole?.id);
-            setEventrole(data)
-            setTableHead(extractHeaders(data))
+            setEventrole(data.data)
+            setTableHead(extractHeaders(data.data))
         }catch(err:any){
             setError(err.message)
         } finally{
