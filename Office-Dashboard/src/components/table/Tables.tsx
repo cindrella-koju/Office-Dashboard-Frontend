@@ -90,7 +90,7 @@ export default function Table({
     if (title) {
       localStorage.setItem("eventTitle", title);
     }
-    navigate("/event/tiesheet");
+    navigate("/event/participants");
   };
 
   return (

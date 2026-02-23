@@ -1,4 +1,3 @@
-import type { Dispatch, SetStateAction } from "react";
 import type { ProfileEditdetail } from "../../pages/ProfilePage";
 import ModalWrapper from "../pages/shared/ModelWrapper";
 import InputField from "../signup/InputField";
@@ -7,14 +6,14 @@ import type React from "react";
 
 interface EditProfileModel{
     formData : ProfileEditdetail;
-    setMode : Dispatch<SetStateAction<boolean>>
     handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     handleSubmit : (e:React.FormEvent) => void;
+    onClose : () => void;
 }
 
-export default function EditProfileModel({ setMode, formData, handleChange, handleSubmit}:EditProfileModel){
+export default function EditProfileModel({formData, handleChange, handleSubmit, onClose}:EditProfileModel){
     return(
-        <ModalWrapper title="Edit Profile" onClose={() => setMode(false)}>
+        <ModalWrapper title="Edit Profile" onClose={onClose}>
             <form className="space-y-4" onSubmit={handleSubmit}>
                 <InputField
                     label="Username"

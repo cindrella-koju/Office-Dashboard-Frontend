@@ -122,26 +122,6 @@ const HomeDetail = ({
         </div>
 
         <div className="px-8 lg:max-h-[500px] max-h-[400px] overflow-y-auto">
-          {/* Table Header */}
-          <div
-            className={`hidden sm:grid ${
-              normalizedRole === "member"
-                ? "grid-cols-[2fr_1fr_1fr_1fr]"
-                : "grid-cols-[2fr_1fr_1fr]"
-            } py-4 border-b border-gray-100 sticky top-0 bg-white`}
-          >
-            <p className="font-semibold text-gray-500 text-xs uppercase tracking-wider">
-              Event Title
-            </p>
-            <p className="font-semibold text-gray-500 text-xs uppercase tracking-wider">
-              Duration
-            </p>
-            <p className="font-semibold text-gray-500 text-xs uppercase tracking-wider">
-              Status
-            </p>
-          </div>
-
-          {/* Events List */}
           {event.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16 text-gray-400">
               <MdEventNote className="w-16 h-16 mb-4 opacity-50" />
@@ -149,6 +129,24 @@ const HomeDetail = ({
               <p className="text-sm">Events will appear here once created</p>
             </div>
           ) : (
+            <>
+              <div
+              className={`hidden sm:grid ${
+                normalizedRole === "member"
+                  ? "grid-cols-[2fr_1fr_1fr_1fr]"
+                  : "grid-cols-[2fr_1fr_1fr]"
+              } py-4 border-b border-gray-100 sticky top-0 bg-white`}
+            >
+              <p className="font-semibold text-gray-500 text-xs uppercase tracking-wider">
+                Event Title
+              </p>
+              <p className="font-semibold text-gray-500 text-xs uppercase tracking-wider">
+                Duration
+              </p>
+              <p className="font-semibold text-gray-500 text-xs uppercase tracking-wider">
+                Status
+              </p>
+            </div>
             <div className="divide-y divide-gray-50">
               {event.map((e, index) => {
                 const formattedDuration = `${new Date(
@@ -168,6 +166,7 @@ const HomeDetail = ({
                 );
               })}
             </div>
+            </>
           )}
         </div>
       </div>

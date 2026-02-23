@@ -4,6 +4,7 @@ import EmptyMessage from "../components/ui/EmptyMessage";
 import { RiAdminFill } from "react-icons/ri";
 import EditProfileModel from "../components/Model/EditProfileModel";
 import { useProfile } from "../hooks/useProfile";
+import ChangePasswordModel from "../components/Model/ChangePasswordModel";
 
 export interface ProfileDetail {
   id: string;
@@ -25,6 +26,11 @@ export interface ProfileEditdetail{
   email: string;
 }
 
+export interface ChangePasswordDetail{
+  oldpassword : string, 
+  newpassword : string
+}
+
 const Loading = () => (
   <div className="flex items-center justify-center py-12">
     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600" />
@@ -44,7 +50,18 @@ export default function ProfilePage() {
     viewMode,
     formData,
     handleChange,
-    handleSubmit
+    handleSubmit,
+    viewShowPassword,
+    passwordData,
+    showPreviousPassword,
+    togglePeviousPasswordVisibility,
+    showNewPassword,
+    toggleNewPasswordVisibility,
+    handlePasswordChange,
+    handlePasswordSubmit,
+    closePasswordChange,
+    setViewShowPassword,
+    closeEditProfile
   } = useProfile()
 
   return (
@@ -66,7 +83,10 @@ export default function ProfilePage() {
               >
                 Edit Profile
               </button>
-              <button className="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400 transition">
+              <button 
+                className="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400 transition"
+                onClick={() => setViewShowPassword(true)}
+              >
                 Change Password
               </button>
             </div>
@@ -150,9 +170,22 @@ export default function ProfilePage() {
         viewMode && 
         <EditProfileModel
           formData={formData}
-          setMode={setViewMode}
           handleChange={handleChange}
           handleSubmit={handleSubmit}
+          onClose={closeEditProfile}
+        />
+      }
+      {
+        viewShowPassword && 
+        <ChangePasswordModel
+          formData={passwordData}
+          showPreviousPassword = {showPreviousPassword}
+          togglePreviousPasswordVisibility={togglePeviousPasswordVisibility}
+          showNewPassword={showNewPassword}
+          toggleNewPasswordVisibility={toggleNewPasswordVisibility}
+          handleChange={handlePasswordChange}
+          handleSubmit={handlePasswordSubmit}
+          onClose={closePasswordChange}
         />
       }
     </div>
