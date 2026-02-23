@@ -125,7 +125,6 @@ export const useEventRole = () => {
     }
 
     const deleteEventRole = async(event_role_id : string) => {
-        console.log("Event role id:", event_role_id)
         await EventRoleServices.deleteEventRole(event_role_id, showToast);
         fetchEventRole()
         fetchOnlyRoleInEvent()

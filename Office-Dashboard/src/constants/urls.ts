@@ -98,3 +98,6 @@ export const DELETE_EVENT_ROLE = (eventRoleId: string) => `${BASE_URL}/event/rol
 // Home page url
 export const RETRIEVE_HOME = `${BASE_URL}/user/home`
 export const RETRIEVE_RECENT_FIVE_EVENT = `${BASE_URL}/event/recent`
+
+// Profile page url
+export const PROFILE_PAGE = `${BASE_URL}/user/profile`

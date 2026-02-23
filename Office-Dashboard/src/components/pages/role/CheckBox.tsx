@@ -11,7 +11,6 @@ export function RenderCheckBox({
   permissionDetail,
 }: RenderCheckBoxProps) {
   if (todisplay && id && todisplay !== id && modeltype === "edit") return null;
-  console.log("Checkbox rendered",label)
   return (
     <div className="border border-gray-200 rounded-lg overflow-hidden mt-4 shadow-sm">
       <div className="bg-gray-50 px-4 py-3">

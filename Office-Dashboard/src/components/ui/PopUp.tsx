@@ -31,7 +31,6 @@ export default function DeleteConfirmation({
         ? "green"
         : "";
     
-console.log(title, popUpType, color)
   return (
     <ModalWrapper 
       title={title} 

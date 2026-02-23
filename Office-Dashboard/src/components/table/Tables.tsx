@@ -16,7 +16,7 @@ interface TableProps {
   setModelType: Dispatch<SetStateAction<ModelType>>;
   setValue: Dispatch<SetStateAction<any>>;
   tablefor : "Event" | "Role" | "User" | null | "WithinEvent";
-  setOnDelete : Dispatch<SetStateAction<boolean>>
+  setOnDelete ?: Dispatch<SetStateAction<boolean>>
 }
 
 const roleStyles: Record<UserRole, string> = {
@@ -57,7 +57,6 @@ export default function Table({
   setOnDelete
 }: TableProps) {
   const navigate = useNavigate();
-  console.log("Table data:", tabledata)
   const permissionMap = {
     Event: {
       edit: permissions && 'canEditEvents' in permissions ? permissions.canEditEvents : false,
@@ -159,7 +158,7 @@ export default function Table({
                         </Button>
                       )}
 
-                      {deletepermission() && (
+                      {deletepermission() && setOnDelete && (
                         <Button varient="danger" size="sm" onClick={() => {
                           setOnDelete(true);
                           setValue(row);
@@ -231,7 +230,7 @@ export default function Table({
                   </Button>
                 )}
 
-                { deletepermission() && (
+                { deletepermission() && setOnDelete && (
                   <Button
                     varient="danger"
                     size="sm"

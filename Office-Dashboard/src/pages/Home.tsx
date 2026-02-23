@@ -1,6 +1,6 @@
 import type { IconType } from "react-icons";
 import NavBar from "../components/Navbar";
-import { HiUsers, HiCalendar, HiEye, HiClock } from "react-icons/hi";
+import { HiUsers, HiCalendar, HiClock } from "react-icons/hi";
 import { MdEmojiEvents, MdEventNote } from "react-icons/md";
 import { useHome } from "../hooks/useHome";
 import type {
@@ -118,9 +118,6 @@ const HomeDetail = ({
                 Recent Activities
               </h3>
             </div>
-            <span className="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
-              {event.length} events
-            </span>
           </div>
         </div>
 
@@ -142,11 +139,6 @@ const HomeDetail = ({
             <p className="font-semibold text-gray-500 text-xs uppercase tracking-wider">
               Status
             </p>
-            {normalizedRole === "member" && (
-              <p className="font-semibold text-center text-gray-500 text-xs uppercase tracking-wider">
-                Action
-              </p>
-            )}
           </div>
 
           {/* Events List */}
@@ -277,16 +269,6 @@ const Event = ({
           {status.charAt(0).toUpperCase() + status.slice(1)}
         </span>
       </div>
-
-      {/* Action Button */}
-      {normalizedRole === "member" && (
-        <div className="flex items-center justify-center sm:justify-center">
-          <button className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 hover:text-indigo-700 transition-all duration-200 group-hover:shadow-sm">
-            <HiEye className="w-4 h-4" />
-            View
-          </button>
-        </div>
-      )}
     </div>
   );
 };

@@ -37,7 +37,6 @@ export default function QualifierModule({ selected,setModelType, setSelected, ha
           <select
             value={roundId}
             onChange={e => {
-              console.log("Round Id from field:", e.target.value)
               setRoundId(e.target.value)
               setSelected([])
             }}
@@ -62,7 +61,6 @@ export default function QualifierModule({ selected,setModelType, setSelected, ha
           }))}
           value={selected}
           onChange={(ids) => {
-            console.log("Participants:", participants,ids)
             setSelected(ids)}}
           required
         />

@@ -36,7 +36,6 @@ export default function Qualifier() {
     } = useQualifier()
     
     const handleSubmit =  async (e: React.FormEvent) => {
-        console.log("RoundID :", roundId)
         e.preventDefault()
         await createQualifier(roundId, { user_id: selected })
         setModelType(null)

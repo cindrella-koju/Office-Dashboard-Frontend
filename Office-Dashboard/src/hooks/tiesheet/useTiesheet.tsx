@@ -175,7 +175,6 @@ export const useTiesheet = () => {
         try{
             setLoading(true)
             const data = await tiesheetServices.getMatch(tiesheetId)
-            console.log("Response Data:", data)
             setMatchInfo(data)
         } catch(err:any){
             setError(err.message)
@@ -224,12 +223,10 @@ export const useTiesheet = () => {
         if (viewMode === "edit" && matchDetails) {
         setRoundID(matchDetails.stage_id)
         const round = rounds?.find(r => r.id === matchDetails.stage_id)
-        console.log("Match deftail:", matchDetails.group_id)
         const group = groupInfo?.find(r => r.id === matchDetails.group_id)
         if (round) setRoundName(round.name)
         if (group) setGroupName(group.name)
 
-            console.log("Group name:", group?.name)
         setSelectedMatch({
             stage_id: matchDetails.stage_id,
             group_id : matchDetails.group_id,
@@ -312,7 +309,6 @@ export const useTiesheet = () => {
 
     useEffect(() => {
         if(selectedFilterRound && selectedFilterRound.id != "all"){
-            console.log("Selected Round:", selectedFilterRound)
             fetchTiesheetByStage()
         }else{
             fetchTiesheet()

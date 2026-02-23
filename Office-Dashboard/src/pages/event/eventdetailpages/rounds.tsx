@@ -51,8 +51,7 @@ export default function Rounds(){
         setViewMode(null)
         setOriginalRounds(null)
     }
-   
-    console.log("Rounds", rounds)
+
     return(
         <PageLayout sidebar={<EventNavBar/>}>
             <PageContent>

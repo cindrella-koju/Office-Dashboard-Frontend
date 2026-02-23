@@ -17,7 +17,6 @@ interface MatchDetailProps{
     matchInfo : MatchInfo[]
 }
 export default function MatchDetail({setShowMatchDetail, matchInfo}:MatchDetailProps) {
-  console.log("Match Info:", matchInfo)
   return (
     <ModalWrapper title="Match Results" onClose={() => setShowMatchDetail(false)}>
       <div className="space-y-5 py-3">

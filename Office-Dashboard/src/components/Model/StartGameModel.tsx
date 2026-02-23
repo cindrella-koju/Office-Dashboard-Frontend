@@ -41,13 +41,6 @@ export default function StartGameModal({
       return;
     }
 
-    const gameConfig = {
-      timer: useTimer && timerMinutes ? Number(timerMinutes) * 60 : null,
-      totalMatches: cleanedNames.length,
-      matchNames: cleanedNames,
-    };
-
-    console.log("Game Configuration:", gameConfig);
 
     try {
       const promises = cleanedNames.map((name) =>
@@ -59,7 +52,6 @@ export default function StartGameModal({
       );
 
       const responses = await Promise.all(promises);
-      console.log("POST responses:", responses);
 
       alert("Matches created successfully!");
 

@@ -4,8 +4,6 @@ import EmptyMessage from "../../ui/EmptyMessage"
 
 
 export default function OverallPointTable({ users, tablehead }: OverAllPointsTableProps) {
-
-  console.log("Users data:", users)
   if (!users || users.length === 0) {
     return (
       <EmptyMessage message="No Overall Points yet"/>
@@ -19,7 +17,6 @@ export default function OverallPointTable({ users, tablehead }: OverAllPointsTab
       setModelType={() => {}}
       setValue={() => {}}
       tablefor={null}
-      setOnDelete={() => console.log("DElete this table")}
     />
   );
 }

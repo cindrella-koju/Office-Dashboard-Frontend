@@ -24,7 +24,6 @@ const ProtectedRoute = ({ children, accessKey }: ProtectedRouteProps) => {
     ? useContext(EventRoleContext)
     : useContext(RoleContext);
 
-  console.log("Role Context:", roleContext)
   const pageAccess = roleContext?.roleaccesspage;
 
   if (!pageAccess?.[accessKey]) {

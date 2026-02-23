@@ -69,9 +69,6 @@ export const useParticipants = () => {
         fetchParticipants()
     }
 
-    const handleRemoveParticipant = () => {
-        console.log("Dummy")
-    }
     useEffect(() => {
         fetchParticipants()
         fetchUserNotParticipants()
@@ -86,7 +83,6 @@ export const useParticipants = () => {
         handleOpenAddModal,
         handleSearchChange,
         handleViewModeChange,
-        handleRemoveParticipant,
         createParticipants,
         deleteParticipants,
         selected,

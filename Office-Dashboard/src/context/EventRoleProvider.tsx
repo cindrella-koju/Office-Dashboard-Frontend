@@ -10,8 +10,6 @@ export const EventRoleProvider = ({children} : { children: React.ReactNode }) =>
         const userId = localStorage.getItem("user_id");
         const eventId = localStorage.getItem("eventId");
 
-        console.log("EventRole Provider Working:");
-
         if (!userId) {
             setLoading(false);
             return;
@@ -26,7 +24,6 @@ export const EventRoleProvider = ({children} : { children: React.ReactNode }) =>
                     data = await getPermissionWithinEventByUser(userId);
                 }
                 setEventRoleDetail(data);
-                console.log("EventDetail:", data);
             } catch (error) {
                 console.error("Failed to fetch event role detail:", error);
                 setEventRoleDetail(null);

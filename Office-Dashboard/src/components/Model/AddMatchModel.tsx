@@ -59,7 +59,6 @@ export default function AddMatchModal({
       return;
     }
 
-    console.log("Match Detail:", matchDetail)
     if (scoreView === "create") {
       await createMatch(matchDetail);
     }
@@ -248,7 +247,6 @@ export default function AddMatchModal({
                         }
                         onChange={() => {
                           updateWinner(matchIndex, playerIndex)
-                          console.log("Match detail:", matchDetail)
                         }}
                         className="h-4 w-4 text-blue-600 border-gray-300"
                       />
