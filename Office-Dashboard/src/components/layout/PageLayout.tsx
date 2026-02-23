@@ -1,4 +1,6 @@
 import type { ReactNode } from "react";
+import { useLocation } from "react-router-dom";
+import { MdEvent } from "react-icons/md";
 
 interface PageLayoutProps{
     children : ReactNode,
@@ -6,10 +8,28 @@ interface PageLayoutProps{
 }
 
 export function PageLayout({children,sidebar}:PageLayoutProps){
+    const location = useLocation();
+    const eventTitle = localStorage.getItem("eventTitle");
+    const isEventPage = location.pathname.startsWith("/event/") && location.pathname !== "/event";
+
     return (
         <div className="flex min-h-screen bg-gray-100">
             {sidebar}
-            <main className="flex-1 min-h-screen overflow-y-auto">{children}</main>
+            <main className="flex-1 min-h-screen overflow-y-auto">
+                {isEventPage && eventTitle && (
+                    <div className="bg-white border-b border-gray-200 shadow-sm">
+                        <div className="px-6 py-4 flex items-center gap-3">
+                            <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg">
+                                <MdEvent className="w-6 h-6 text-white" />
+                            </div>
+                            <h2 className="text-xl sm:text-2xl font-bold text-gray-800 truncate">
+                                {eventTitle}
+                            </h2>
+                        </div>
+                    </div>
+                )}
+                {children}
+            </main>
         </div>
     );
 }

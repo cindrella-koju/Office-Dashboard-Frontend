@@ -86,8 +86,11 @@ export default function Table({
 
   const hasActionColumn = showActions || showView;
 
-  const handleClick = (id: string) => {
+  const handleClick = (id: string, title?: string) => {
     localStorage.setItem("eventId", id);
+    if (title) {
+      localStorage.setItem("eventTitle", title);
+    }
     navigate("/event/tiesheet");
   };
 
@@ -137,7 +140,7 @@ export default function Table({
                         <Button
                           varient="success"
                           size="sm"
-                          onClick={() => handleClick(row.id)}
+                          onClick={() => handleClick(row.id, row.title)}
                         >
                           View
                         </Button>
@@ -208,7 +211,7 @@ export default function Table({
                     varient="success"
                     size="sm"
                     className="flex-1"
-                    onClick={() => handleClick(row.id)}
+                    onClick={() => handleClick(row.id, row.title)}
                   >
                     View
                   </Button>
