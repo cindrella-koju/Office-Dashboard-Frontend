@@ -76,6 +76,7 @@ export default function Filters<T>({
   const handleClick = (filter: FilterOption) => {
     setSelectedFilter(filter);
     setStatus(filter)
+    setCurrentPage(1); // Reset to first page when filter changes
     onSelectFilter?.(filter);
   };
 

@@ -25,6 +25,10 @@ export const useEventRole = () => {
     // store role for filter
     const [onlyEventRole,setOnlyEventRole] = useState<Round[]>([])
     const [selectedRole,setSelectedRole] = useState<Round | null>(null)
+    // Pagination state
+    const [currentPage, setCurrentPage] = useState<number>(1)
+    const [limit, setLimit] = useState<number>(10)
+    const [totalPage, setTotalPage] = useState<number>(1)
     const [formData, setFormData ] = useState<EventRoleDetail>({
         id : "",
         user_id : "",
@@ -78,9 +82,10 @@ export const useEventRole = () => {
         if(!eventID) return;
         try{
             setLoading(true);
-            const data = await EventRoleServices.getEventRole(eventID);
+            const data = await EventRoleServices.getEventRole(eventID, currentPage, limit);
             setEventrole(data.data)
             setTableHead(extractHeaders(data.data))
+            setTotalPage(data.total_pages)
         }catch(err:any){
             setError(err.message)
         } finally{
@@ -93,9 +98,10 @@ export const useEventRole = () => {
         if(!eventID) return;
         try{
             setLoading(true);
-            const data = await EventRoleServices.getEventRoleByRoleId(eventID, selectedRole?.id);
+            const data = await EventRoleServices.getEventRoleByRoleId(eventID, selectedRole?.id, currentPage, limit);
             setEventrole(data.data)
             setTableHead(extractHeaders(data.data))
+            setTotalPage(data.total_pages)
         }catch(err:any){
             setError(err.message)
         } finally{
@@ -126,7 +132,6 @@ export const useEventRole = () => {
     }
 
     useEffect(() => {
-        fetchEventRole();
         fetchParticipants();
         fetchRoundByEvent();
         fetchOnlyRoleInEvent();
@@ -138,7 +143,7 @@ export const useEventRole = () => {
         } else{
             fetchEventRole()
         }
-    },[selectedRole])
+    },[selectedRole, currentPage, limit])
 
     return {
         permissions,
@@ -160,6 +165,12 @@ export const useEventRole = () => {
         onlyEventRole,
         selectedRole,
         setSelectedRole,
-        setEventrole
+        setEventrole,
+        // Pagination
+        currentPage,
+        setCurrentPage,
+        limit,
+        setLimit,
+        totalPage
     };
 }

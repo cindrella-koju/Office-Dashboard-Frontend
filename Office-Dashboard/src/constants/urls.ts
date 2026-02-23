@@ -90,8 +90,8 @@ export const DELETE_ROLE = (roleId : string ) => `${BASE_URL}/role/${roleId}`
 export const CREATE_ROLE_WITH_PERMISSION = `${BASE_URL}/role`
 
 export const CREATE_EVENT_ROLE = (eventId : string) => `${BASE_URL}/event/role/${eventId}`
-export const RETRIEVE_EVENT_ROLE = (eventId: string) => `${BASE_URL}/event/role/${eventId}`
-export const RETRIEVE_EVENT_ROLE_BY_ROLEID = (eventId: string, roleId : string) => `${BASE_URL}/event/role/${eventId}?role_id=${roleId}`
+export const RETRIEVE_EVENT_ROLE = (eventId: string, page: number, limit: number) => `${BASE_URL}/event/role/${eventId}?page=${page}&limit=${limit}`
+export const RETRIEVE_EVENT_ROLE_BY_ROLEID = (eventId: string, roleId : string, page: number, limit: number) => `${BASE_URL}/event/role/${eventId}?role_id=${roleId}&page=${page}&limit=${limit}`
 export const EDIT_EVENT_ROLE = (eventRoleId: string) => `${BASE_URL}/event/role/${eventRoleId}`
 export const DELETE_EVENT_ROLE = (eventRoleId: string) => `${BASE_URL}/event/role/${eventRoleId}`
 

@@ -11,6 +11,7 @@ import EmptyMessage from "../../../components/ui/EmptyMessage";
 import { RiAdminFill } from "react-icons/ri";
 import Filters from "../../../components/Filters";
 import type { EventRoleResponse } from "../../../type/eventrole.type";
+import { Pagination } from "../../../components/Pagination";
 
 export default function EventRole() {
     const {
@@ -33,7 +34,13 @@ export default function EventRole() {
         onlyEventRole,
         selectedRole,
         setSelectedRole,
-        setEventrole
+        setEventrole,
+        // Pagination
+        currentPage,
+        setCurrentPage,
+        limit,
+        setLimit,
+        totalPage
     } = useEventRole()
 
     const handleSubmit = async(e:React.FormEvent) => {
@@ -71,9 +78,11 @@ export default function EventRole() {
                                     setSelectVal={setEventrole}
                                     onSelectFilter = {setSelectedRole}
                                     setStatus={setSelectedRole}
-                                    currentPage={1}
-                                    totalPage={5}
-                                    limit={10}
+                                    currentPage={currentPage}
+                                    totalPage={totalPage}
+                                    limit={limit}
+                                    setCurrentPage={setCurrentPage}
+                                    setLimit={setLimit}
                                     allUrl="yes"
                                 />
                             </div>
@@ -114,7 +123,15 @@ export default function EventRole() {
                             </div>
                         )
                     }
-
+                    {eventRole && eventRole.length > 0 && (
+                        <Pagination
+                            currentPage={currentPage}
+                            limit={limit}
+                            totalPage={totalPage}
+                            setCurrentPage={setCurrentPage}
+                            setLimit={setLimit}
+                        />
+                    )}
                 </Card>
                 {
                     mode != null && participant && role &&(

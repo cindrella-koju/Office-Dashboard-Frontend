@@ -3,26 +3,26 @@ import { CREATE_EVENT_ROLE, DELETE_EVENT_ROLE, EDIT_EVENT_ROLE, RETRIEVE_EVENT_R
 import type { EventRole, EventRoleResponse } from "../type/eventrole.type";
 import { authFetch } from "./authHeaders"
 
-export const getEventRole = async(eventId : string):Promise<EventRoleResponse[]> => {
+export const getEventRole = async(eventId : string, page: number, limit: number):Promise<EventRoleResponse> => {
     try{
-        const response = await authFetch(RETRIEVE_EVENT_ROLE(eventId));
+        const response = await authFetch(RETRIEVE_EVENT_ROLE(eventId, page, limit));
         if(!response.ok){
             throw new Error("Retrieve Event Role Request Failed")
         }
-        return (await response.json()) as EventRoleResponse[];
+        return (await response.json()) as EventRoleResponse;
     } catch(err){
         console.error("Error fetching Event Role:", err)
         throw err;
     }
 }
 
-export const getEventRoleByRoleId = async(eventId : string, roleId : string):Promise<EventRoleResponse[]> => {
+export const getEventRoleByRoleId = async(eventId : string, roleId : string, page: number, limit: number):Promise<EventRoleResponse> => {
     try{
-        const response = await authFetch(RETRIEVE_EVENT_ROLE_BY_ROLEID(eventId, roleId));
+        const response = await authFetch(RETRIEVE_EVENT_ROLE_BY_ROLEID(eventId, roleId, page, limit));
         if(!response.ok){
             throw new Error("Retrieve Event Role Request Failed")
         }
-        return (await response.json()) as EventRoleResponse[];
+        return (await response.json()) as EventRoleResponse;
     } catch(err){
         console.error("Error fetching Event Role:", err)
         throw err;
