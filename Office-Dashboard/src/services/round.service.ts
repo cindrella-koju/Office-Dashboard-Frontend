@@ -1,5 +1,5 @@
 import type { ToastType } from "../components/Toast";
-import { CREATE_ROUND, DELETE_ROUND, EDIT_ROUND, GET_ROUNDS_BY_EVENT, GET_ROUNDS_BY_EVENT_WITH_COLUMN, RETRIEVE_ROUNDS } from "../constants/urls";
+import { CREATE_ROUND, DELETE_ROUND, EDIT_ROUND, GET_ROUNDS_BY_EVENT, GET_ROUNDS_BY_EVENT_WITH_COLUMN, GET_ROUNDS_HAVING_GROUP, RETRIEVE_ROUNDS } from "../constants/urls";
 import type { Round } from "../type/group.type";
 import type { RoundData } from "../type/round.type";
 import { authFetch } from "./authHeaders";
@@ -10,6 +10,20 @@ export const getRound = async(eventId:string):Promise<RoundData[]> => {
         const response = await authFetch(RETRIEVE_ROUNDS(eventId));
         if(!response.ok){
             throw new Error("Retrieve Round Request Failed")
+        }
+        return (await response.json()) as RoundData[];
+
+    } catch(err){
+        console.error("Error fetching Rounds:", err)
+        throw err;
+    }
+}
+
+export const getRoundHavingGroup = async(eventId:string):Promise<RoundData[]> => {
+    try{
+        const response = await authFetch(GET_ROUNDS_HAVING_GROUP(eventId));
+        if(!response.ok){
+            throw new Error("Retrieve Round Having Group Request Failed")
         }
         return (await response.json()) as RoundData[];
 

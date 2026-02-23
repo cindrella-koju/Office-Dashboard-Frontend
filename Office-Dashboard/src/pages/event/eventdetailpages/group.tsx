@@ -10,8 +10,14 @@ import { useGroup } from "../../../hooks/group/useGroup";
 import type React from "react";
 import { useEffect } from "react";
 import ConfirmationModal from "../../../components/Model/ConfirmationPopUp";
+import Filters from "../../../components/Filters";
+import type { Group } from "../../../type/group.type";
 
-
+export interface Stage{
+    stage_id : string,
+    stage_name : string,
+    groups : Group[]
+}
 
 export default function Groups(){
     const eventId = localStorage.getItem("eventId")
@@ -48,7 +54,12 @@ export default function Groups(){
         setDeleteType,
         deleteType,
         setEditingUserId,
-        setEditedUserData
+        setEditedUserData,
+
+        setGroupData,
+        selectedFilterRound,
+        setSelectedFilterRound,
+        filterRounds
     } = useGroup()
 
     const handleSubmit = async ( e : React.FormEvent) => {
@@ -90,6 +101,26 @@ export default function Groups(){
                         )
                     }
                 />
+                {
+                    selectedFilterRound && filterRounds &&
+                    <Card className="mb-6 sm:mb-8 p-4 sm:p-6">
+                        <div className="p-4 sm:p-6">
+                            <Filters<Stage[]>
+                                dafaultVal = {selectedFilterRound}
+                                filters={rounds}
+                                label="Select Round"
+                                setSelectVal={setGroupData}
+                                onSelectFilter={setSelectedFilterRound}
+                                currentPage={1}
+                                totalPage={5}
+                                limit={10}
+                                setStatus={setSelectedFilterRound}
+                                allUrl="yes"
+
+                            />
+                        </div>
+                    </Card>
+                }
                 {
                 groupdata && groupdata.length > 0 &&
                     <Card className="p-4 sm:p-6">

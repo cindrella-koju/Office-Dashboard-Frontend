@@ -128,7 +128,7 @@ export default function Tiesheet(){
                     }
                 />
                 {
-                    selectedFilterRound && rounds && selectedFilterRound &&
+                    selectedFilterRound && rounds &&
                     <Card className="mb-6 sm:mb-8 p-4 sm:p-6">
                         <div className="p-4 sm:p-6">
                             <Filters<TiesheetType[]>

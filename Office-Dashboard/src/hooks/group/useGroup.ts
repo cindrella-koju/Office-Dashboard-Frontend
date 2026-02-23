@@ -4,7 +4,8 @@ import * as groupService from "../../services/group.service";
 import { usePermissions, type EventPermission } from "../userPermission";
 import { useToast } from "../../context/ToastContext";
 import type { ModelType } from "../../type/main.type";
-import { getRound } from "../../services/round.service";
+import { getRound, getRoundHavingGroup } from "../../services/round.service";
+import { type RoundData } from "../../type/round.type";
 
 export const useGroup = () => {
     const { showToast } = useToast()
@@ -22,7 +23,8 @@ export const useGroup = () => {
     const [participants, setParticipants] = useState<Participant[]>()
     const [popUpDelete, setPopUpDelete] = useState<boolean>(false)
     const [deleteType, setDeleteType] = useState<"group" | "member" | null>(null)
-
+    const [filterRounds, setFilterRounds] = useState<RoundData[]>()
+    const [selectedFilterRound,setSelectedFilterRound] = useState<Round | null>(null)
     const [eachGroupData,setEachGroupData] = useState<EachGroupDetail>({
         group_id : "",
         name : "",
@@ -48,6 +50,7 @@ export const useGroup = () => {
 
         setRoundId(eachGroupData.stage_id);
     }, [eachGroupData]);
+
     const fetchGroup = async() => {
         if (!eventId) return;
 
@@ -62,6 +65,20 @@ export const useGroup = () => {
         }
     }
 
+    const fetchFilterRound = async() => {
+        if (!eventId) return;
+
+        try{
+            setLoading(true);
+            const data = await getRoundHavingGroup(eventId);
+            setFilterRounds(data)
+            setSelectedFilterRound(data[0])
+        } catch(err:any){
+            setError(err.message)
+        } finally{
+            setLoading(false)
+        }
+    }
 
     const fetchRounds = async() => {
         if(!eventId) return;
@@ -115,7 +132,8 @@ export const useGroup = () => {
 
     useEffect(() => {
         fetchGroup();
-        fetchRounds()
+        fetchRounds();
+        fetchFilterRound()
     },[])
 
     const handleUserCellChange = (columnField: string, value: string) => {
@@ -242,5 +260,10 @@ export const useGroup = () => {
         setDeleteType,
         setEditedUserData,
         error,
+
+        setGroupData,
+        selectedFilterRound,
+        setSelectedFilterRound,
+        filterRounds
     }
 }
