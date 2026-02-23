@@ -1,7 +1,6 @@
 import { useContext } from 'react';
 import { RoleContext } from '../context/RoleContext';
 import { EventRoleContext } from '../context/EventRoleContext';
-import { GLOBAL_ROLE } from '../constants/showpage';
 
 export interface Permission {
   canCreate: boolean;
@@ -32,8 +31,9 @@ interface PermissionProps{
 export function usePermissions<T = Permission | EventPermission>({
   withinevent = false,
 }: PermissionProps): T {
+  const userrole = localStorage.getItem("role")
   const role =
-    withinevent && !["admin", "superadmin"].includes(GLOBAL_ROLE)
+    withinevent && !["admin", "superadmin"].includes(userrole ? userrole : "member")
       ? useContext(EventRoleContext)
       : useContext(RoleContext);
 

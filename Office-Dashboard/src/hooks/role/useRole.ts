@@ -1,7 +1,6 @@
-import { useCallback, useEffect, useState } from "react"
+import {  useEffect, useState } from "react"
 import type { selectPermsission } from "../../type/role.type"
 import { extractPermissionHeaders } from "../../utils/extractHeader"
-import { RETRIEVE_DETAIL_FOR_ROLE_MANAGEMENT } from "../../constants/urls"
 import type { ModelType } from "../../type/main.type"
 import { roleService, type RolePayload } from "../../services/role.service"
 import { useToast } from "../../context/ToastContext"
@@ -61,10 +60,6 @@ export const useUserRole = () => {
     useEffect(() => {
 
     },)
-    
-    // const urlFunction = useCallback(() => {
-    //     return RETRIEVE_DETAIL_FOR_ROLE_MANAGEMENT(filterfor)
-    // }, [filterfor])
 
     const fetchRole = async(filter? : string) => {
         try{
@@ -103,7 +98,6 @@ export const useUserRole = () => {
     return{
         selectedRole,
         filterOptions,
-        // urlFunction,
         setDetails,
         setFilterFor,
         header,

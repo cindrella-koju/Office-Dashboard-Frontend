@@ -1,7 +1,6 @@
 import { type ReactNode, useContext } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import { RoleContext } from "../context/RoleContext";
-import { GLOBAL_ROLE } from "../constants/showpage";
 import { useAuth } from "../hooks/useAuth";
 import { EventRoleContext } from "../context/EventRoleContext";
 
@@ -12,6 +11,7 @@ interface ProtectedRouteProps {
 
 const ProtectedRoute = ({ children, accessKey }: ProtectedRouteProps) => {
   const location = useLocation();
+  const userrole = localStorage.getItem("role")
   const { isAuthenticated } = useAuth();
 
   if (!isAuthenticated) {
@@ -20,7 +20,7 @@ const ProtectedRoute = ({ children, accessKey }: ProtectedRouteProps) => {
 
 
   const isEventRoute = location.pathname.startsWith("/event/");
-  const roleContext = isEventRoute && !["admin", "superadmin"].includes(GLOBAL_ROLE)
+  const roleContext = isEventRoute && !["admin", "superadmin"].includes(userrole ? userrole : "member")
     ? useContext(EventRoleContext)
     : useContext(RoleContext);
 

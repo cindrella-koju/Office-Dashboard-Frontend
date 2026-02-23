@@ -6,7 +6,6 @@ import { useContext } from "react";
 import { RoleContext } from "../context/RoleContext";
 import { useLocation } from "react-router-dom";
 import { EventRoleContext } from "../context/EventRoleContext";
-import { GLOBAL_ROLE } from "../constants/showpage";
 import { RiAdminFill } from "react-icons/ri";
 import TeslatechLogo from "../assets/logo tt sqaure.png";
 
@@ -18,10 +17,11 @@ const logoConfig = {
 
 export default function EventNavBar() {
   const location = useLocation();
-
+  const userrole = localStorage.getItem("role")
+  
   // Decide which context to use based on the URL
   const isEventRoute = location.pathname.startsWith("/event/");
-  const role = isEventRoute && !["superadmin"].includes(GLOBAL_ROLE)
+  const role = isEventRoute && !["superadmin"].includes(userrole ? userrole : "member")
       ? useContext(EventRoleContext)
       : useContext(RoleContext);
   const pageaccess = role?.roleaccesspage
