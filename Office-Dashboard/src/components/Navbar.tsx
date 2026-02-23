@@ -4,9 +4,10 @@ import { CgProfile } from "react-icons/cg";
 import Sidebar from "./layout/Sidebar";
 import { useContext } from "react";
 import { RoleContext } from "../context/RoleContext";
+import TeslatechLogo from "../assets/logo tt sqaure.png";
 
 const logoConfig = {
-  // src: teslaTechLogo,
+  src: TeslatechLogo,
   alt: "Teslatech Logo",
   title: "Teslatech",
 };

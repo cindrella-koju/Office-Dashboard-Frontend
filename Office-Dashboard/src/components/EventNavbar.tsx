@@ -8,8 +8,10 @@ import { useLocation } from "react-router-dom";
 import { EventRoleContext } from "../context/EventRoleContext";
 import { GLOBAL_ROLE } from "../constants/showpage";
 import { RiAdminFill } from "react-icons/ri";
+import TeslatechLogo from "../assets/logo tt sqaure.png";
 
 const logoConfig = {
+  src: TeslatechLogo,
   alt: "Teslatech Logo",
   title: "Teslatech",
 };
