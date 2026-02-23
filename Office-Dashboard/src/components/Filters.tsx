@@ -1,5 +1,4 @@
-import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
-import { fetchFilterData, fetchFilterDataByTwoIdUrlFunction, fetchFilterDataByUrlFunction } from "../services/filter.service";
+import { useState, type Dispatch, type SetStateAction } from "react";
 import type { StatusProps } from "../hooks/event/useEvent";
 
 export interface FilterOption {
@@ -8,75 +7,35 @@ export interface FilterOption {
 }
 
 
-interface FilterProps<T> {
-  urlFunction?: (id: string,page :number, limit : number) => string;
+interface FilterProps{
   allUrl?: string;
-  twoIdUrlFunction?: (eventId: string, roundId: string) => string;
   filters: FilterOption[];
   label: string;
   defaultVal: FilterOption;
-  setSelectVal: Dispatch<SetStateAction<T | undefined>>;
   onSelectFilter?: (filter: FilterOption) => void;
-  currentPage : number,
-  limit : number,
-  totalPage : number,
   setStatus : Dispatch<SetStateAction<StatusProps | null>>,
-  setCurrentPage : Dispatch<SetStateAction<number>>;
-  setLimit : Dispatch<SetStateAction<number>>
+  setCurrentPage? : Dispatch<SetStateAction<number>>;
 }
 
-export default function Filters<T>({
+export default function Filters({
   defaultVal,
-  urlFunction,
   allUrl,
-  twoIdUrlFunction,
   filters,
   label,
-  setSelectVal,
   onSelectFilter,
-  currentPage,
-  limit,
   setStatus,
-  totalPage,
   setCurrentPage,
-  setLimit
-}: FilterProps<T>) {
-
-  const eventId = localStorage.getItem("eventId");
+}: FilterProps) {
   const ALL_FILTER: FilterOption = { id: "all", name: "All" };
 
   const initialFilter = allUrl ? ALL_FILTER : defaultVal;
 
   const [selectedFilter, setSelectedFilter] = useState<FilterOption>(initialFilter);
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       let data: T;
-        
-  //       if (selectedFilter.id === "all" && allUrl) {
-  //         data = await fetchFilterData<T>(allUrl);
-  //       } else if (urlFunction) {
-  //         data = await fetchFilterDataByUrlFunction<T>(urlFunction, selectedFilter.id,currentPage, limit);
-  //       } else if (twoIdUrlFunction && eventId) {
-  //         data = await fetchFilterDataByTwoIdUrlFunction<T>(twoIdUrlFunction, eventId, selectedFilter.id);
-  //       } else {
-  //         return;
-  //       }
-
-  //       setSelectVal(data);
-  //     } catch (error) {
-  //       console.error("Error fetching filter data:", error);
-  //     }
-  //   };
-
-  //   fetchData();
-  // }, [selectedFilter, urlFunction, allUrl, twoIdUrlFunction, eventId, setSelectVal]);
-
   const handleClick = (filter: FilterOption) => {
     setSelectedFilter(filter);
     setStatus(filter)
-    setCurrentPage(1); // Reset to first page when filter changes
+    setCurrentPage && setCurrentPage(1); // Reset to first page when filter changes
     onSelectFilter?.(filter);
   };
 

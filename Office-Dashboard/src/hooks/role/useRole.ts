@@ -58,11 +58,13 @@ export const useUserRole = () => {
         }
     },[details, filterfor])
 
+    useEffect(() => {
 
+    },)
     
-    const urlFunction = useCallback(() => {
-        return RETRIEVE_DETAIL_FOR_ROLE_MANAGEMENT(filterfor)
-    }, [filterfor])
+    // const urlFunction = useCallback(() => {
+    //     return RETRIEVE_DETAIL_FOR_ROLE_MANAGEMENT(filterfor)
+    // }, [filterfor])
 
     const fetchRole = async(filter? : string) => {
         try{
@@ -95,10 +97,13 @@ export const useUserRole = () => {
         fetchRole();
     },[])
 
+    useEffect(() => {
+        fetchRole()
+    },[filterfor])
     return{
         selectedRole,
         filterOptions,
-        urlFunction,
+        // urlFunction,
         setDetails,
         setFilterFor,
         header,

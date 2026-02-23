@@ -27,7 +27,7 @@ export default function RolePage() {
         dataKeys,
         selectedRole,
         setSelectedRole,
-        urlFunction,
+        // urlFunction,
         deleteRole,
         createRole,
         updateRole
@@ -79,12 +79,15 @@ export default function RolePage() {
                 <Card className="mb-6 sm:mb-8 p-4 sm:p-6">
                     <div className="p-4 sm:p-6">
                             <Filters<any>
-                                filters={filterOptions}
-                                label="Select to see Permissions"
                                 defaultVal={filterOptions[0]}
-                                urlFunction={urlFunction}
+                                filters={filterOptions}
+                                label="Select to view Permission"
                                 setSelectVal={setDetails}
                                 onSelectFilter={(f) => setFilterFor(f.id)}
+                                setStatus={(f) => setFilterFor(f.id)}
+                                currentPage={1}
+                                totalPage={1}
+                                limit={1}
                             />
 
                     </div>

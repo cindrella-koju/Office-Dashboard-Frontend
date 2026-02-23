@@ -3,9 +3,6 @@ import NavBar from "../../components/Navbar";
 import { type Event, type EventResponse } from "../../type/event.type";
 import { usePermissions, type Permission } from "../../hooks/userPermission";
 import {
-  RETRIEVE_EVENT_BY_STATUS,
-} from "../../constants/urls";
-import {
   PageContent,
   PageHeader,
   PageLayout,
@@ -105,7 +102,6 @@ export default function EventPage() {
             <Filters<EventResponse>
               defaultVal={filterOptions[0]}
               filters={filterOptions}
-              urlFunction={RETRIEVE_EVENT_BY_STATUS}
               label="Select Status"
               setSelectVal={setEvents}
               currentPage = {
