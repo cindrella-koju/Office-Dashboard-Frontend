@@ -65,6 +65,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
     localStorage.removeItem("role_id");
     localStorage.removeItem("role");
     localStorage.removeItem("refresh_token");
+    localStorage.removeItem("eventId");
+    localStorage.removeItem("eventTitle");
     sessionStorage.removeItem("access_token");
 
     setUserId(null);

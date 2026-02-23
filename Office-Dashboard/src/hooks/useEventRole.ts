@@ -6,7 +6,7 @@ import { useToast } from "../context/ToastContext";
 import { getParticipants } from "../services/participants.service";
 import type { Round } from "../type/group.type";
 import { roleService } from "../services/role.service";
-import { type EventRoleResponse, type EventRole, type EventRoleDetail } from "../type/eventrole.type";
+import { type EventRole, type EventRoleDetail } from "../type/eventrole.type";
 import * as EventRoleServices from "../services/eventrole.service";
 import extractHeaders from "../utils/extractHeader";
 
