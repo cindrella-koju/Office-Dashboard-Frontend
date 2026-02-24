@@ -29,7 +29,9 @@ interface TiesheetProps {
   handleSubmit : (e:React.FormEvent) => void;
   handleClose : () => void;
   groupInfo : RoundResponse[];
-  tiesheetUser : PlayerInfoType[]
+  tiesheetUser : PlayerInfoType[];
+  setTiesheetPlayer : Dispatch<SetStateAction<string | null>>
+  setDeleteTBD : Dispatch<SetStateAction<boolean>>
 }
 
 interface ColumnValue {
@@ -81,7 +83,9 @@ export default function TiesheetModel({
   handleSubmit,
   handleClose,
   groupInfo,
-  tiesheetUser
+  tiesheetUser,
+  setTiesheetPlayer,
+  setDeleteTBD
 }: TiesheetProps) {
   const {
     rounds,
@@ -213,40 +217,69 @@ export default function TiesheetModel({
         )}
 
         {
-            viewMode === "edit" &&
-            tiesheetUser
-              .filter((tu) => tu.user_id === null)
-              .map((tu, index) => (
+          viewMode === "edit" &&
+          tiesheetUser
+            .filter((tu) => tu.user_id === null)
+            .map((tu, index) => {
+              // Get all already-selected user_ids from tbd_user_ids except current index
+              const tbdSelectedUserIds = selectedMatch.tbd_user_ids
+                ?.filter((_, i) => i !== index)
+                .map((item) => item.user_id)
+                .filter(Boolean) || [];
+
+              // Get all user_ids from selectedUsers
+              const selectedUserIds = selectedUsers?.map((user) => user.id) || [];
+
+              // Combine them to exclude from options
+              const excludedUserIds = [...new Set([...tbdSelectedUserIds, ...selectedUserIds])];
+
+              return (
+                <div className="flex items-start justify-between gap-4 mb-4">
                 <SelectField
                   key={tu.id}
                   label={`TBD User ${index + 1}`}
                   value={selectedMatch.tbd_user_ids?.[index]?.user_id ?? ""}
-                  options={users?.map((user) => ({
-                    label: user.username,
-                    value: user.id,
-                  }))}
+                  options={users
+                    ?.filter((user) => !excludedUserIds.includes(user.id))
+                    .map((user) => ({
+                      label: user.username,
+                      value: user.id,
+                    }))}
                   onChange={(value) => {
                     setSelectedMatch((prev) => {
                       const baseArray = Array.isArray(prev.tbd_user_ids)
                         ? prev.tbd_user_ids
-                        : []
+                        : [];
 
-                      const updated = [...baseArray]
+                      const updated = [...baseArray];
 
                       updated[index] = {
                         tiesheetplayer_id: tu.id,
-                        user_id: value,          
-                      }
+                        user_id: value,
+                      };
 
                       return {
                         ...prev,
                         tbd_user_ids: updated,
-                      }
-                    })
+                      };
+                    });
                   }}
                 />
-              ))
-          }
+
+                <button
+                    type="button"
+                    onClick={() => {
+                      setTiesheetPlayer(tu.id)
+                      setDeleteTBD(true)
+                    }}
+                    className="mt-7 p-2 text-gray-400 hover:text-red-600"
+                  >
+                    ✕
+                  </button>
+            </div>
+              );
+            })
+        }
 
         {
           viewMode === "create" && 

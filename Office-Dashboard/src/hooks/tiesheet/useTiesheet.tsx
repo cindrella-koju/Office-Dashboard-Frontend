@@ -261,7 +261,8 @@ export const useTiesheet = () => {
 
     useEffect(() => {
         if(viewMode !== "edit") return;
-
+        
+        console.log("This is working")
         const tiesheetplayer = tiesheet.filter(user => user.id === selectedMatchId);
         setTiesheetUser(tiesheetplayer[0]?.player_info || []);
     },[viewMode])
@@ -295,6 +296,12 @@ export const useTiesheet = () => {
     const deleteTiesheet = async(tiesheetId : string) => {
         await tiesheetServices.deleteTiesheet(tiesheetId, showToast);
         fetchTiesheet()
+    }
+
+    const deleteTiesheetTBD = async(tiesheetplayerId : string) => {
+        await tiesheetServices.deleteTiesheetPlayer(tiesheetplayerId, showToast);
+        fetchTiesheet();
+        setViewMode("edit")
     }
 
     const deleteMatch = async( matchId: string) => {
@@ -393,6 +400,7 @@ export const useTiesheet = () => {
         setTiesheet,
         setSelectedFilterRound,
 
-        tiesheetUser
+        tiesheetUser,
+        deleteTiesheetTBD
     }
 }

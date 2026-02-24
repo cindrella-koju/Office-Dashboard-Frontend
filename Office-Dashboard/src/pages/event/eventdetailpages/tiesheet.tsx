@@ -66,7 +66,8 @@ export default function Tiesheet(){
         rounds,
         setTiesheet,
         setSelectedFilterRound,
-        tiesheetUser
+        tiesheetUser,
+        deleteTiesheetTBD
     } = useTiesheet()
 
     const [player1, setplayer1] = useState<PlayerInfoType | undefined>(undefined)
@@ -77,7 +78,10 @@ export default function Tiesheet(){
     const [showDeleteTiesheet, setShowDeleteTiesheet] = useState<boolean>(false)
     const [deleteMatchId, setDeleteMatchId] = useState<string | undefined>(undefined)
     const [players, setPlayers] = useState<PlayerInfoType[] | undefined>(undefined)
-    
+    const [deleteTBD, setDeleteTBD] = useState<boolean>(false)
+    const [tiesheetPlayer, setTiesheetPlayer] = useState<string | null>(null)
+
+    console.log("Tiesheet Player ID:", tiesheetPlayer)
     const getTodayDate = () => {
         const today = new Date();
         const year = today.getFullYear();
@@ -253,6 +257,8 @@ export default function Tiesheet(){
                         handleClose={handleClose}
                         groupInfo={groupInfo}
                         tiesheetUser={tiesheetUser}
+                        setTiesheetPlayer={setTiesheetPlayer}
+                        setDeleteTBD={setDeleteTBD}
                     />
                 )
                 }
@@ -318,6 +324,21 @@ export default function Tiesheet(){
                             setScoreView("edit")
                             deleteMatch(deleteMatchId)
                             setShowDeleteMatch(false)
+                        }}
+                    />
+                }
+                {
+                    tiesheetPlayer &&
+                    <ConfirmationModal
+                        isOpen = {deleteTBD}
+                        title="Delete"
+                        message="Are you sure you want to delete TBD?"
+                        onCancel={() => {
+                            setDeleteTBD(false)
+                        }}
+                        onConfirm={() => {
+                            deleteTiesheetTBD(tiesheetPlayer)
+                            setDeleteTBD(false)
                         }}
                     />
                 }

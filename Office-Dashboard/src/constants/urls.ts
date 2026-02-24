@@ -104,3 +104,6 @@ export const RETRIEVE_RECENT_FIVE_EVENT = `${BASE_URL}/event/recent`
 // Profile page url
 export const PROFILE_PAGE = `${BASE_URL}/user/profile`
 export const CHANGE_PASSWORD = `${BASE_URL}/user/changepassword`
+
+// TiesheetPlayer
+export const DELETE_TIESHEET_PLAYER_ID = (tiesheetplayerId: string)  => `${BASE_URL}/event/tiesheet/player/${tiesheetplayerId}`

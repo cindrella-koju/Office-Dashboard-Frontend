@@ -1,6 +1,6 @@
 import type { SelectedMatch } from "../components/Model/TiesheetModel";
 import type { ToastType } from "../components/Toast";
-import { CREATE_MATCH, CREATE_TIESHEET, DELETE_MATCH, DELETE_TIESHEET, EDIT_MATCH, GET_TIESHEET_BY_ID, RETRIEVE_MATCH, RETRIEVE_MATCH_BY_TIESHEET_ID, RETRIEVE_OVERALL_TIESHEET, RETRIEVE_OVERALL_TIESHEET_BY_ROUND, RETRIEVE_STANDING_COLUMN, RETRIEVE_TIESHEET, RETRIEVE_TIESHEET_BY_STAGE, RETRIEVE_TODAY_TIESHEET, UPDATE_TIESHEET } from "../constants/urls"
+import { CREATE_MATCH, CREATE_TIESHEET, DELETE_MATCH, DELETE_TIESHEET, DELETE_TIESHEET_PLAYER_ID, EDIT_MATCH, GET_TIESHEET_BY_ID, RETRIEVE_MATCH, RETRIEVE_MATCH_BY_TIESHEET_ID, RETRIEVE_OVERALL_TIESHEET, RETRIEVE_OVERALL_TIESHEET_BY_ROUND, RETRIEVE_STANDING_COLUMN, RETRIEVE_TIESHEET, RETRIEVE_TIESHEET_BY_STAGE, RETRIEVE_TODAY_TIESHEET, UPDATE_TIESHEET } from "../constants/urls"
 import type { StandingColumnType } from "../type/standingcolumn.type";
 import type { AddMatchProps, TiesheetType } from "../type/tiesheet.type";
 import { authFetch } from "./authHeaders";
@@ -218,6 +218,28 @@ export const deleteMatch = async(id : string, showToast: (msg: string, type?: To
         showToast(data?.message || "Match Deleted successfully!", "success");
         return data;
     } catch (error) {
+        showToast((error as Error).message, "error");
+        throw error;
+    }
+}
+
+export const deleteTiesheetPlayer = async(tiesheetplayerId : string, showToast: (msg: string, type?: ToastType)=> void) => {
+    try{
+        const res = await authFetch(`${DELETE_TIESHEET_PLAYER_ID(tiesheetplayerId)}`,{
+            method : "DELETE"
+        })
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          const message = data?.detail || "Failed to Delete Tiesheet Player";
+          showToast(message, "error");
+          return Promise.reject(new Error(message));
+        }
+    
+        showToast(data?.message || "Tiesheet Player Deleted successfully!", "success");
+        return data;
+    }  catch (error) {
         showToast((error as Error).message, "error");
         throw error;
     }
