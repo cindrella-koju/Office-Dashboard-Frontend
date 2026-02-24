@@ -1,3 +1,5 @@
+import { IoShieldSharp } from "react-icons/io5";
+
 interface PlayerAvatarProps {
   username: string;
   isWinner: boolean;
@@ -37,8 +39,8 @@ export default function PlayerAvatar({
   const shapeClass = variant === 'circle' ? 'rounded-full' : 'rounded-lg';
 
   return (
-    <div className={`${getSizeClass()} ${shapeClass} flex items-center justify-center font-bold shadow-md ${getColorClass()}`}>
-      {username.substring(0, 2).toUpperCase()}
+    <div className={`${getSizeClass()} ${shapeClass} flex items-center justify-center font-bold shadow-md ${username != "TBD" ? getColorClass() : "bg-gradient-to-br from-gray-400 to-gray-600 text-white"}`}>
+      { username != "TBD" ? username.substring(0, 2).toUpperCase() : <IoShieldSharp size={20}/>}
     </div>
   );
 }

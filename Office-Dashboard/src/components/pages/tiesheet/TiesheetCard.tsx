@@ -62,7 +62,7 @@ export default function TiesheetCard({
 
       <div className="flex flex-1">
         <div className="flex-1 p-4 flex items-center justify-center">
-          {players.length === 2 ? (
+          {players.length <= 2 ? (
             <OneVsOneMatch player1={players[0]} player2={players[1]} handleMatchDetailView={handleMatchDetailView}/>
           ) : (
             <MultiPlayerMatch players={players} handleMatchDetailView={handleMatchDetailView}/>

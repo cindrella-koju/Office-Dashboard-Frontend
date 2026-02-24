@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { usePermissions, type EventPermission } from "../userPermission"
-import { type TiesheetType } from "../../type/tiesheet.type";
+import { type PlayerInfoType, type TiesheetType } from "../../type/tiesheet.type";
 import * as tiesheetServices from "../../services/tiesheet.service";
 import type { Round } from "../../type/group.type";
 import { getRoundByEvent } from "../../services/round.service";
@@ -49,6 +49,7 @@ export const useTiesheet = () => {
     const [selectedUsers, setSelectedUsers] = useState<
         { id: string; name: string }[]
     >([])
+    const [tiesheetUser, setTiesheetUser] = useState<PlayerInfoType[]>([])
     
     const [scoreView, setScoreView] = useState<ModelType>(null);
     // For Match
@@ -68,7 +69,9 @@ export const useTiesheet = () => {
         players: [],
         scheduled_date: getTodayDate(),
         scheduled_time: "",
-        status: "scheduled"
+        tbd_number : "",
+        status: "scheduled",
+        tbd_user_ids :[]
     })
 
     const fetchTiesheet = async() => {
@@ -77,6 +80,7 @@ export const useTiesheet = () => {
             setLoading(true)
             const data = await tiesheetServices.getTiesheet(eventId)
             setTiesheet(data)
+            // setTiesheetUser(data.player_info)
         } catch(err:any){
             setError(err.message)
         } finally{
@@ -242,6 +246,8 @@ export const useTiesheet = () => {
             scheduled_date: matchDetails.scheduled_date,
             scheduled_time: matchDetails.scheduled_time,
             status: matchDetails.status,
+            tbd_number : matchDetails.tbd_number,
+            tbd_user_ids : matchDetails.tbd_user_ids
         })
 
         setSelectedUsers(
@@ -252,6 +258,13 @@ export const useTiesheet = () => {
         )
         }
     }, [viewMode , matchDetails, rounds, standingColumns])
+
+    useEffect(() => {
+        if(viewMode !== "edit") return;
+
+        const tiesheetplayer = tiesheet.filter(user => user.id === selectedMatchId);
+        setTiesheetUser(tiesheetplayer[0]?.player_info || []);
+    },[viewMode])
 
       /* Reset players & date/time when round changes */
     useEffect(() => {
@@ -276,6 +289,7 @@ export const useTiesheet = () => {
     const updateTiesheet = async(matchId : string, payload: SelectedMatch) => {
         await tiesheetServices.updateTiesheet(matchId, payload, showToast);
         fetchTiesheet()
+        setTiesheetUser([])
     }
 
     const deleteTiesheet = async(tiesheetId : string) => {
@@ -342,6 +356,7 @@ export const useTiesheet = () => {
         qualifierUser,
         standingColumns,
         groupInfo,
+        setGroupInfo,
         matchDetails,
         users,
         loading,
@@ -376,6 +391,8 @@ export const useTiesheet = () => {
 
         selectedFilterRound,
         setTiesheet,
-        setSelectedFilterRound
+        setSelectedFilterRound,
+
+        tiesheetUser
     }
 }

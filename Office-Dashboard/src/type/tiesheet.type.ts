@@ -25,9 +25,11 @@ export interface ColumnType {
 }
 
 export interface PlayerInfoType{
-  user_id : string,
+  id : string,
+  user_id : string | null,
   is_winner : boolean,
-  username : string,
+  is_tbd : boolean,
+  username : string | null,
 }
 
 export interface AddMatchProps{

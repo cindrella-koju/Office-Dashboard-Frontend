@@ -13,7 +13,6 @@ interface OneVsOneMatchProps {
 
 export default function OneVsOneMatch({ player1, player2,handleMatchDetailView }: OneVsOneMatchProps) {
 
-
   return (
     <div className="flex items-center justify-center gap-6 w-full" onClick={handleMatchDetailView}>
       {/* Player 1 */}
@@ -21,7 +20,7 @@ export default function OneVsOneMatch({ player1, player2,handleMatchDetailView }
         player1.is_winner ? 'bg-green-50 border border-green-200' : 'bg-gray-50'
       }`}>
         <PlayerAvatar 
-          username={player1.username}
+          username={player1.username ? player1.username:"TBD"}
           isWinner={player1.is_winner}
           size="lg"
           playerIndex={0}
@@ -30,7 +29,7 @@ export default function OneVsOneMatch({ player1, player2,handleMatchDetailView }
         <span className={`mt-2 text-sm font-medium ${
           player1.is_winner ? 'text-gray-900' : 'text-gray-600'
         }`}>
-          {player1.username}
+          {player1.username ? player1.username : "TBD"}
         </span>
         {player1.is_winner && (
           <span className="text-xs text-green-600 font-medium mt-1">Winner</span>
@@ -43,25 +42,25 @@ export default function OneVsOneMatch({ player1, player2,handleMatchDetailView }
       </div>
 
       {/* Player 2 */}
-      <div className={`flex-1 flex flex-col items-center p-4 rounded-xl ${
-        player2.is_winner ? 'bg-green-50 border border-green-200' : 'bg-gray-50'
-      }`}>
-        <PlayerAvatar 
-          username={player2.username}
-          isWinner={player2.is_winner}
-          size="lg"
-          playerIndex={1}
-          variant="circle"
-        />
-        <span className={`mt-2 text-sm font-medium ${
-          player2.is_winner ? 'text-gray-900' : 'text-gray-600'
-        }`}>
-          {player2.username}
-        </span>
-        {player2.is_winner && (
-          <span className="text-xs text-green-600 font-medium mt-1">Winner</span>
-        )}
-      </div>
+        <div className={`flex-1 flex flex-col items-center p-4 rounded-xl ${
+            player2.is_winner ? 'bg-green-50 border border-green-200' : 'bg-gray-50'
+          }`}>
+            <PlayerAvatar 
+              username={player2.username ? player2.username : "TBD"}
+              isWinner={player2.is_winner}
+              size="lg"
+              playerIndex={1}
+              variant="circle"
+            />
+            <span className={`mt-2 text-sm font-medium ${
+              player2.is_winner ? 'text-gray-900' : 'text-gray-600'
+            }`}>
+              {player2.username ? player2.username : "TBD"}
+            </span>
+            {player2.is_winner && (
+              <span className="text-xs text-green-600 font-medium mt-1">Winner</span>
+            )}
+        </div>
     </div>
   );
 }

@@ -60,11 +60,13 @@ export default function Tiesheet(){
 
         matchInfo,
         groupInfo,
+        setGroupInfo,
 
         selectedFilterRound,
         rounds,
         setTiesheet,
-        setSelectedFilterRound
+        setSelectedFilterRound,
+        tiesheetUser
     } = useTiesheet()
 
     const [player1, setplayer1] = useState<PlayerInfoType | undefined>(undefined)
@@ -91,28 +93,32 @@ export default function Tiesheet(){
             players: [],
             scheduled_date: getTodayDate(),
             scheduled_time: "",
-            status: "scheduled"
+            status: "scheduled",
+            tbd_number: "",
+            tbd_user_ids : []
         })
         setGroupName(null)
         setMatchDetails(null)
         setUsers([])
         setRoundID("")
         setViewMode(null)
+        setGroupInfo([])
     }
 
     const handleSubmit = async(e:React.FormEvent) => {
         e.preventDefault()
 
-        if (selectedMatch.players.length < 2) {
-            alert("Please select at least 2 players")
-            return
-        }
+        // if (selectedMatch.players.length < 2) {
+        //     alert("Please select at least 2 players")
+        //     return
+        // }
 
         const payload : SelectedMatch = {
             ...selectedMatch,
             status: selectedMatch.status.toLowerCase() as SelectedMatch["status"]
         }
 
+        console.log("Tiesheet Payload : ", payload)
         if (viewMode === "create"){ 
             await createTiesheet(payload)
         }
@@ -246,6 +252,7 @@ export default function Tiesheet(){
                         handleSubmit={handleSubmit}
                         handleClose={handleClose}
                         groupInfo={groupInfo}
+                        tiesheetUser={tiesheetUser}
                     />
                 )
                 }

@@ -1,6 +1,6 @@
 interface FormFieldProps {
   label: string
-  value: string
+  value: string | number
   onChange: (val: string) => void
   placeholder?: string
   required?: boolean

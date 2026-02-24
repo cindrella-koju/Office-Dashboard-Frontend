@@ -159,7 +159,7 @@ export const createMatch = async( payload : AddMatchProps, showToast: (msg: stri
 export const updateTiesheet = async(matchId : string, payload : SelectedMatch,showToast: (msg: string, type?: ToastType) => void) => {
     try{
         const res = await authFetch(`${UPDATE_TIESHEET(matchId)}`,{
-            method: "PATCH",
+            method: "PUT",
             body: JSON.stringify(payload),
         })
 

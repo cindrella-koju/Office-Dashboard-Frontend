@@ -5,6 +5,7 @@ import FormField from "../pages/shared/FormField"
 import type { ModelType } from "../../type/main.type"
 import Button from "../ui/Button"
 import { useTiesheet, type TiesheetQualifierResponse } from "../../hooks/tiesheet/useTiesheet"
+import type { PlayerInfoType } from "../../type/tiesheet.type"
 
 interface selectedUser{
   id : string,
@@ -27,7 +28,8 @@ interface TiesheetProps {
   users : TiesheetQualifierResponse [] | undefined;
   handleSubmit : (e:React.FormEvent) => void;
   handleClose : () => void;
-  groupInfo : RoundResponse[]
+  groupInfo : RoundResponse[];
+  tiesheetUser : PlayerInfoType[]
 }
 
 interface ColumnValue {
@@ -49,6 +51,13 @@ export interface SelectedMatch {
   scheduled_time: string
   status: "scheduled" | "completed" | "ongoing"
   player_columns?: PlayerColumnData[]
+  tbd_number : number | string
+  tbd_user_ids : TBDUserIds[]
+}
+
+export interface TBDUserIds{
+  tiesheetplayer_id : string,
+  user_id : string
 }
 
 export interface RoundResponse {
@@ -71,7 +80,8 @@ export default function TiesheetModel({
   users,
   handleSubmit,
   handleClose,
-  groupInfo
+  groupInfo,
+  tiesheetUser
 }: TiesheetProps) {
   const {
     rounds,
@@ -190,9 +200,9 @@ export default function TiesheetModel({
             </label>
 
             <div className="flex flex-wrap gap-2">
-              {selectedUsers.map(user => (
+              {selectedUsers.map((user, idx) => (
                 <span
-                  key={user.id}
+                  key={idx}
                   className="px-3 py-1 text-sm bg-blue-100 text-blue-700 rounded-full"
                 >
                   {user.name}
@@ -202,7 +212,58 @@ export default function TiesheetModel({
           </div>
         )}
 
+        {
+            viewMode === "edit" &&
+            tiesheetUser
+              .filter((tu) => tu.user_id === null)
+              .map((tu, index) => (
+                <SelectField
+                  key={tu.id}
+                  label={`TBD User ${index + 1}`}
+                  value={selectedMatch.tbd_user_ids?.[index]?.user_id ?? ""}
+                  options={users?.map((user) => ({
+                    label: user.username,
+                    value: user.id,
+                  }))}
+                  onChange={(value) => {
+                    setSelectedMatch((prev) => {
+                      const baseArray = Array.isArray(prev.tbd_user_ids)
+                        ? prev.tbd_user_ids
+                        : []
 
+                      const updated = [...baseArray]
+
+                      updated[index] = {
+                        tiesheetplayer_id: tu.id,
+                        user_id: value,          
+                      }
+
+                      return {
+                        ...prev,
+                        tbd_user_ids: updated,
+                      }
+                    })
+                  }}
+                />
+              ))
+          }
+
+        {
+          viewMode === "create" && 
+            <FormField
+              label="Number of TBD"
+              type="text"
+              placeholder="Enter the number of TBD"
+              value={selectedMatch.tbd_number}
+              onChange={val => 
+                setSelectedMatch(prev => ({
+                  ...prev,
+                  tbd_number: Number(val)
+                }))
+              }
+            />
+        }
+        
         {/* Match Date */}
         <FormField
           label="Match Date"
