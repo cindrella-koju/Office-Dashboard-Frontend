@@ -262,7 +262,7 @@ export const useTiesheet = () => {
         stage_id: roundId,
         group_id : groupId ? groupId : "",
         players: [],
-        scheduled_date: "",
+        scheduled_date: selectedMatch.scheduled_date,
         scheduled_time: ""
         }))
         setSelectedUsers([])
