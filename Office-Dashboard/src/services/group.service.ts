@@ -1,6 +1,6 @@
 import type { RoundResponse } from "../components/Model/TiesheetModel";
 import type { ToastType } from "../components/Toast";
-import { CREATE_GROUP, DELETE_GROUP, DELETE_GROUP_MEMBER, GET_QUALIFIER_NOT_IN_GROUP, GET_QUALIFIER_NOT_IN_GROUP_FOR_EDIT, RETRIEVE_GROUP_AND_MEMBERS, RETRIEVE_GROUP_ID_NAME_BY_ROUND, RETRIEVE_GROUP_MEMBER_ID_NAME, UPDATE_GROUP, UPDATE_GROUP_TABLE } from "../constants/urls"
+import { CREATE_GROUP, DELETE_GROUP, DELETE_GROUP_MEMBER, GET_QUALIFIER_NOT_IN_GROUP, GET_QUALIFIER_NOT_IN_GROUP_FOR_EDIT, RETRIEVE_GROUP_AND_MEMBERS, RETRIEVE_GROUP_AND_MEMBERS_WITH_ROUND, RETRIEVE_GROUP_ID_NAME_BY_ROUND, RETRIEVE_GROUP_MEMBER_ID_NAME, UPDATE_GROUP, UPDATE_GROUP_TABLE } from "../constants/urls"
 import type { TiesheetQualifierResponse } from "../hooks/tiesheet/useTiesheet";
 import type { Participant, PayloadType, Stage } from "../type/group.type";
 import { authFetch } from "./authHeaders";
@@ -19,6 +19,18 @@ export const getGroup = async(eventId : string ):Promise<Stage[]> => {
     }
 }
 
+export const getGroupByRound = async(eventId : string, stageId : string ):Promise<Stage[]> => {
+    try{
+        const response = await authFetch(RETRIEVE_GROUP_AND_MEMBERS_WITH_ROUND(eventId, stageId));
+        if(!response.ok){
+            throw new Error("Retrieve Group Detail By Round Request Failed")
+        }
+        return (await response.json()) as Stage[]
+    } catch(err){
+        console.error("Error fetching Group Detail By Round:", err)
+        throw err; 
+    }
+}
 export const getGroupMemberIdName = async(groupId : string) : Promise<TiesheetQualifierResponse[]> => {
     try{
         const response = await authFetch(RETRIEVE_GROUP_MEMBER_ID_NAME(groupId));

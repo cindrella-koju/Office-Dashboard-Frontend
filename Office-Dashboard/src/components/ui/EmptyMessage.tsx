@@ -7,9 +7,10 @@ import{ RoleContext} from "../../context/RoleContext";
 interface EmptyMessageProps{
     message : string,
     submessage? : string,
-    icon? : React.ReactNode
+    icon? : React.ReactNode,
+    warning? : string
 }
-export default function EmptyMessage({message, submessage,icon}:EmptyMessageProps){
+export default function EmptyMessage({message, submessage,icon, warning}:EmptyMessageProps){
     const role =  useContext(RoleContext);
     const rolename = role?.rolename;
 
@@ -30,6 +31,9 @@ export default function EmptyMessage({message, submessage,icon}:EmptyMessageProp
                     {submessage}
                 </p>
             )}
+            <p className="text-red-500">
+                {warning}
+            </p>
 
         </Card>
     )

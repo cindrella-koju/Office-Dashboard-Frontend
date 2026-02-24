@@ -11,6 +11,7 @@ export const DELETE_EVENT = (eventId: string) => `${BASE_URL}/event/${eventId}`
 export const RETRIEVE_EVENT = (page : number, limit : number) => `${BASE_URL}/event?page=${page}&limit=${limit}`
 export const RETRIEVE_EVENT_BY_STATUS = (status : string,page : number, limit : number) => `${BASE_URL}/event?status=${status}&page=${page}&limit=${limit}`
 export const RETRIEVE_GROUP_AND_MEMBERS  = (eventId: string ) => `${BASE_URL}/event/group/event/${eventId}`
+export const RETRIEVE_GROUP_AND_MEMBERS_WITH_ROUND  = (eventId: string, stageId: string ) => `${BASE_URL}/event/group/event/${eventId}?stage_id=${stageId}`
 
 // API for Group
 export const CREATE_GROUP = (eventId : string) => `${BASE_URL}/event/group?event_id=${eventId}`

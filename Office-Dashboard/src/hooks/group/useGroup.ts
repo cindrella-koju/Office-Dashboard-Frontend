@@ -24,7 +24,7 @@ export const useGroup = () => {
     const [popUpDelete, setPopUpDelete] = useState<boolean>(false)
     const [deleteType, setDeleteType] = useState<"group" | "member" | null>(null)
     const [filterRounds, setFilterRounds] = useState<RoundData[]>()
-    const [selectedFilterRound,setSelectedFilterRound] = useState<Round | null>(null)
+    const [selectedFilterRound,setSelectedFilterRound] = useState<Round | null>({ id: "all", name: "All" })
     const [eachGroupData,setEachGroupData] = useState<EachGroupDetail>({
         group_id : "",
         name : "",
@@ -65,6 +65,23 @@ export const useGroup = () => {
         }
     }
 
+    const fetchGroupByRound = async() => {
+        if (!eventId) return;
+        if (!selectedFilterRound?.id) return;
+
+        try{
+            setLoading(true);
+            const data = await groupService.getGroupByRound(eventId, selectedFilterRound?.id);
+            if(data.length == 0){
+                setSelectedFilterRound({ id: "all", name: "All" })
+            }
+            setGroupData(data)
+        } catch(err:any){
+            setError(err.message)
+        } finally{
+            setLoading(false)
+        }
+    }
     const fetchFilterRound = async() => {
         if (!eventId) return;
 
@@ -72,7 +89,6 @@ export const useGroup = () => {
             setLoading(true);
             const data = await getRoundHavingGroup(eventId);
             setFilterRounds(data)
-            setSelectedFilterRound(data[0])
         } catch(err:any){
             setError(err.message)
         } finally{
@@ -136,6 +152,14 @@ export const useGroup = () => {
         fetchFilterRound()
     },[])
 
+    useEffect(() => {
+        if(selectedFilterRound?.id === "all"){
+            fetchGroup()
+        }else{
+            fetchGroupByRound()
+        }
+    },[selectedFilterRound])
+
     const handleUserCellChange = (columnField: string, value: string) => {
         if (!editedUserData) return;
         const updatedUser = { ...editedUserData };
@@ -155,22 +179,32 @@ export const useGroup = () => {
     const createGroup = async( payload: PayloadType) => {
         if (!eventId) return;
         await groupService.createGroup(eventId, payload, showToast)
-        fetchGroup()
+        fetchGroup();
+        fetchGroupByRound();
+        fetchFilterRound();
+        setFormData({
+            group_name: "",
+            round_id: "",
+            participants_ids : [] as string[],
+        })
+        setParticipants([])
     } 
 
     const updateGroup = async( groupId:string, payload:PayloadType) => {
         await groupService.updateGroup(groupId,payload, showToast)
-        fetchGroup()
+        fetchGroupByRound();
+        fetchFilterRound();
     }
 
     const deleteGroup = async(group_id : string) => {
         await groupService.deleteGroup(group_id,showToast)
-        fetchGroup()
+        fetchGroupByRound();
+        fetchFilterRound();
     }
 
     const deleteGroupMember = async(group_id : string, user_id : string) => {
         await groupService.deleteGroupMember(user_id,group_id,showToast)
-        fetchGroup()
+        fetchGroupByRound()
     }
 
     const handleSave = async (groupId : string) => {

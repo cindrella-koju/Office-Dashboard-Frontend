@@ -56,10 +56,10 @@ export default function Groups(){
         setEditingUserId,
         setEditedUserData,
 
-        setGroupData,
         selectedFilterRound,
-        setSelectedFilterRound,
-        filterRounds
+        filterRounds,
+            setGroupData,
+            setSelectedFilterRound,
     } = useGroup()
 
     const handleSubmit = async ( e : React.FormEvent) => {
@@ -107,7 +107,7 @@ export default function Groups(){
                         <div className="p-4 sm:p-6">
                             <Filters<Stage[]>
                                 dafaultVal = {selectedFilterRound}
-                                filters={rounds}
+                                filters={filterRounds}
                                 label="Select Round"
                                 setSelectVal={setGroupData}
                                 onSelectFilter={setSelectedFilterRound}
@@ -116,7 +116,6 @@ export default function Groups(){
                                 limit={10}
                                 setStatus={setSelectedFilterRound}
                                 allUrl="yes"
-
                             />
                         </div>
                     </Card>
@@ -160,7 +159,12 @@ export default function Groups(){
 
                 {
                     groupdata && groupdata.length === 0 && (
-                        <EmptyMessage message="No Group Yet" submessage="Create Group to see them appear hear" icon={<MdGroups size={80} />}/>
+                        <EmptyMessage 
+                            message="No Group Yet" 
+                            submessage="Create Group to see them appear hear" 
+                            warning="This group was created before the event’s round. To make it visible, please create and configure columns for this round first."
+                            icon={<MdGroups size={80} />}
+                        />
                     )
                 }
 
