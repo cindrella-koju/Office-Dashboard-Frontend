@@ -10,6 +10,7 @@ import { IoPeople } from "react-icons/io5";
 import { useQualifier } from "../../../hooks/qualifier/useQualifier";
 import { useState } from "react";
 import ConfirmationModal from "../../../components/Model/ConfirmationPopUp";
+import { IoAddCircle } from "react-icons/io5";
 
 
 
@@ -21,6 +22,7 @@ export default function Qualifier() {
         viewMode,
         handleSearchChange,
         handleOpenAddModal,
+        handleOpenAddModalForRound,
         searchQuery,
         modelType,
         setModelType,
@@ -29,6 +31,8 @@ export default function Qualifier() {
         createQualifier,
         roundId,
         setRoundId,
+        roundName,
+        setRoundName,
         selected,
         setSelected, 
         participants,
@@ -43,7 +47,7 @@ export default function Qualifier() {
 
     const [popUpDelete, setPopUpDelete] = useState<boolean>(false)
     const [ selectedQualifier, setSelectedQualifier] = useState<UserCardData | null>(null)
-    const [ roundName, setRoundName ] = useState<string | null>(null)
+    const [ deleteRoundName, setDeleteRoundName ] = useState<string | null>(null)
 
     const gridClassName = viewMode === "grid" 
         ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4"
@@ -120,6 +124,15 @@ export default function Qualifier() {
                                         <span className="ml-3 text-sm font-normal text-gray-500">
                                             ({filteredQualifiers.length} {filteredQualifiers.length === 1 ? 'qualifier' : 'qualifiers'})
                                         </span>
+                                        {permissions.canCreate && (
+                                            <button
+                                                onClick={() => handleOpenAddModalForRound(round.round_name)}
+                                                className="ml-3 text-indigo-500 hover:text-indigo-600 transition-colors"
+                                                title="Add qualifier for this stage"
+                                            >
+                                                <IoAddCircle size={28} />
+                                            </button>
+                                        )}
                                     </h2>
 
                                     <div className={gridClassName}>
@@ -131,7 +144,7 @@ export default function Qualifier() {
                                                 hoverColor="blue"
                                                 setPopUpDelete={setPopUpDelete}
                                                 onClick = {() => {
-                                                    setRoundName(round.round_name)
+                                                    setDeleteRoundName(round.round_name)
                                                     setSelectedQualifier(q)
                                                 }}
                                             />
@@ -152,6 +165,8 @@ export default function Qualifier() {
                         handleSubmit={handleSubmit}
                         roundId={roundId}
                         setRoundId={setRoundId}
+                        roundName={roundName}
+                        setRoundName={setRoundName}
                         participants={participants}
                     />
                 )}
@@ -161,7 +176,7 @@ export default function Qualifier() {
                     <ConfirmationModal
                         isOpen={popUpDelete}
                         title="Delete"
-                        message={`Are you sure you want to delete ${selectedQualifier.username} from round ${roundName}`}
+                        message={`Are you sure you want to delete ${selectedQualifier.username} from round ${deleteRoundName}`}
                         onCancel={() => setPopUpDelete(false)}
                         onConfirm={() => {
                         deleteQualifier(selectedQualifier.qualifier_id ? selectedQualifier.qualifier_id : "")

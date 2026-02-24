@@ -23,6 +23,7 @@ export const useQualifier = () => {
     const [searchQuery, setSearchQuery] = useState<string>('');
     const [modelType, setModelType] = useState<ModelType>(null);
     const [roundId, setRoundId] = useState<string>("");
+    const [roundName, setRoundName] = useState<string>("");
     const [selected, setSelected] = useState<string[]>([])
 
     const fetchRound = async() => {
@@ -43,7 +44,8 @@ export const useQualifier = () => {
         try{
             setLoading(true);
             const data = await qualifierServices.getQualifier(eventID)
-            setQualifiers(data)
+            // Reverse to show recent rounds at top
+            setQualifiers(data.reverse())
         } catch(err:any){
             setError(err.message)
         } finally{
@@ -81,9 +83,21 @@ export const useQualifier = () => {
         setModelType("create")
     }, []);
 
+    const handleOpenAddModalForRound = useCallback((stageName: string) => {
+        const matchingRound = rounds.find(r => r.name === stageName);
+        if (matchingRound) {
+            setRoundId(matchingRound.id);
+            setRoundName(stageName);
+            setModelType("create");
+        }
+    }, [rounds]);
+
     useEffect(() => {
-        setParticipants([])
-        setRoundId("")
+        if(modelType === null) {
+            setParticipants([])
+            setRoundId("")
+            setRoundName("")
+        }
     },[modelType])
 
     useEffect(() => {
@@ -125,6 +139,7 @@ export const useQualifier = () => {
         handleViewModeChange,
         handleSearchChange,
         handleOpenAddModal,
+        handleOpenAddModalForRound,
         getFilteredQualifiers,
         deleteQualifier,
         hasAnyQualifiers,
@@ -132,6 +147,8 @@ export const useQualifier = () => {
         participants,
         roundId,
         setRoundId,
+        roundName,
+        setRoundName,
         createQualifier,
         selected,
         setSelected,

@@ -75,12 +75,21 @@ export default function Tiesheet(){
     const [showDeleteTiesheet, setShowDeleteTiesheet] = useState<boolean>(false)
     const [deleteMatchId, setDeleteMatchId] = useState<string | undefined>(undefined)
     const [players, setPlayers] = useState<PlayerInfoType[] | undefined>(undefined)
+    
+    const getTodayDate = () => {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
+    
     const handleClose = () => {
         setSelectedMatch({
             stage_id: "",
             group_id :"",
             players: [],
-            scheduled_date: "",
+            scheduled_date: getTodayDate(),
             scheduled_time: "",
             status: "scheduled"
         })

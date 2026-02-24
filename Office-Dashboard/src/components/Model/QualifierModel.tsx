@@ -13,11 +13,13 @@ interface QualifierModelType {
   setSelected : Dispatch<SetStateAction<string[]>>;
   roundId : string;
   setRoundId : Dispatch<SetStateAction<string>>;
+  roundName?: string;
+  setRoundName: Dispatch<SetStateAction<string>>;
   participants : User[]
 }
 
 
-export default function QualifierModule({ selected,setModelType, setSelected, handleSubmit, roundId, setRoundId, participants }: QualifierModelType) {
+export default function QualifierModule({ selected,setModelType, setSelected, handleSubmit, roundId, setRoundId, roundName, setRoundName, participants }: QualifierModelType) {
 
   const {
     rounds,
@@ -34,22 +36,30 @@ export default function QualifierModule({ selected,setModelType, setSelected, ha
             Round <span className="text-red-500">*</span>
           </label>
 
-          <select
-            value={roundId}
-            onChange={e => {
-              setRoundId(e.target.value)
-              setSelected([])
-            }}
-            required
-            className="w-full border rounded-lg px-4 py-2"
-          >
-            <option value="">Select Round</option>
-            {rounds?.map(r => (
-              <option key={r.id} value={r.id}>
-                {r.name}
-              </option>
-            ))}
-          </select>
+          {roundName ? (
+            <div className="w-full border rounded-lg px-4 py-2 bg-gray-100 text-gray-700 font-medium">
+              {roundName}
+            </div>
+          ) : (
+            <select
+              value={roundId}
+              onChange={e => {
+                setRoundId(e.target.value)
+                const round = rounds?.find(r => r.id === e.target.value)
+                if (round) setRoundName(round.name)
+                setSelected([])
+              }}
+              required
+              className="w-full border rounded-lg px-4 py-2"
+            >
+              <option value="">Select Round</option>
+              {rounds?.map(r => (
+                <option key={r.id} value={r.id}>
+                  {r.name}
+                </option>
+              ))}
+            </select>
+          )}
         </div>
 
         {/* Players */}

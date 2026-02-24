@@ -54,11 +54,19 @@ export const useTiesheet = () => {
     // For Match
     const [matchInfo, setMatchInfo] = useState<MatchInfo[]>([])
 
+    const getTodayDate = () => {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
+
     const [selectedMatch, setSelectedMatch] = useState<SelectedMatch>({
         stage_id: "",
         group_id :"",
         players: [],
-        scheduled_date: "",
+        scheduled_date: getTodayDate(),
         scheduled_time: "",
         status: "scheduled"
     })
