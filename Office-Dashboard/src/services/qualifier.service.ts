@@ -1,3 +1,4 @@
+import type { User } from "../components/Model/ParticipantsModel";
 import type { ToastType } from "../components/Toast";
 import { ADD_QUALIFIER, DELETE_QUALIFIER, RETRIEVE_QUALIFIER_BY_EVENT, RETRIEVE_QUALIFIER_BY_ROUND, RETRIEVE_USER_PARTICIPANT_NOT_IN_QUALIFIER } from "../constants/urls";
 import type { TiesheetQualifierResponse } from "../hooks/tiesheet/useTiesheet";
@@ -30,13 +31,13 @@ export const getQualifierByRound = async(roundID : string) : Promise<TiesheetQua
     }
 }
 
-export const getUserNotInQualifier = async(eventId : string, roundID : string) :Promise<Participant[]> => {
+export const getUserNotInQualifier = async(eventId : string, roundID : string) :Promise<User[]> => {
     try{
         const response = await authFetch(RETRIEVE_USER_PARTICIPANT_NOT_IN_QUALIFIER(eventId, roundID))
         if(!response.ok){
             throw new Error("Retrieve User Not In Qualifier Request Failed")
         }
-        return (await response.json()) as Participant[]
+        return (await response.json()) as User[]
     } catch(err){
         console.error("Error fetching User Not In Qualifier Detail:", err)
         throw err; 

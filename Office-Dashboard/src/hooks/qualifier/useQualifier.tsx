@@ -45,7 +45,7 @@ export const useQualifier = () => {
             setLoading(true);
             const data = await qualifierServices.getQualifier(eventID)
             // Reverse to show recent rounds at top
-            setQualifiers(data.reverse())
+            setQualifiers(data)
         } catch(err:any){
             setError(err.message)
         } finally{

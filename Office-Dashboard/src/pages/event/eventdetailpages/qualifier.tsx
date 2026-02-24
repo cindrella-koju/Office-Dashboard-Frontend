@@ -38,7 +38,8 @@ export default function Qualifier() {
         participants,
         deleteQualifier
     } = useQualifier()
-    
+
+    console.log("Qualifier Detail:", qualifiers)
     const handleSubmit =  async (e: React.FormEvent) => {
         e.preventDefault()
         await createQualifier(roundId, { user_id: selected })
