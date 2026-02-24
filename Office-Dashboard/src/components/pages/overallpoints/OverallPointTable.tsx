@@ -9,6 +9,7 @@ export default function OverallPointTable({ users, tablehead }: OverAllPointsTab
       <EmptyMessage message="No Overall Points yet"/>
     );
   }
+  console.log("USers:", users)
 
   return (
     <Table

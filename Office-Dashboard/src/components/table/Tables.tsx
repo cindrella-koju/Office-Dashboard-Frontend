@@ -56,6 +56,7 @@ export default function Table({
   tablefor,
   setOnDelete
 }: TableProps) {
+  const userId = localStorage.getItem("user_id")
   const navigate = useNavigate();
   const permissionMap = {
     Event: {
@@ -90,7 +91,7 @@ export default function Table({
     if (title) {
       localStorage.setItem("eventTitle", title);
     }
-    navigate("/event/participants");
+    navigate("/event/groups");
   };
 
   return (
@@ -120,7 +121,7 @@ export default function Table({
             {tabledata.map((row, index) => (
               <tr
                 key={row.id ?? index}
-                className="hover:bg-gray-50 transition"
+                className={`hover:bg-gray-50 transition ${row.user_id === userId ? "bg-green-100" : ""}`}
               >
                 {tablehead.map((head) => (
                   <td key={head} className="px-6 py-4 text-sm text-gray-700">

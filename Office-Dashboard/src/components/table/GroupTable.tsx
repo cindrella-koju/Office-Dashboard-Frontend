@@ -18,6 +18,7 @@ export default function GroupTable({
     handleDeleteGroup,
     handleDeleteMember
 }:GroupTableProps){
+    const userId = localStorage.getItem("user_id")
     return(
         <div className="space-y-8">
             {
@@ -66,6 +67,7 @@ export default function GroupTable({
                                                         <th className="px-4 py-3 text-left font-semibold tracking-wide">Username</th>
                                                         {
                                                             columnFields.map((field, idx) => (
+
                                                                 <th key={idx} className="px-4 py-3 text-left font-semibold tracking-wide capitalize">{field}</th>
                                                             ))
                                                         }
@@ -82,7 +84,8 @@ export default function GroupTable({
                                                             const originalMember = group.members.find(m => m.user_id === user.user_id);
 
                                                             return(
-                                                                <tr key={userIndex} className="hover:bg-blue-50 transition-colors duration-150">
+                                                                <tr key={userIndex} className={`hover:bg-blue-50 transition-colors duration-150 ${user.user_id === userId ? "bg-green-100" : ""}`}>
+                                                                    {/* console.log("UserId:") */}
                                                                     <td className="px-4 py-3 font-medium text-gray-900">{user.username}</td>
                                                                     {
                                                                         isEditingCell && editedUserData ? (

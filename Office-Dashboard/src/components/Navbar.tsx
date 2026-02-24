@@ -27,7 +27,7 @@ export default function NavBar() {
     navItems.push({ icon: <FaUsers />, label: "Users", to: "/user" })
   }
   if(pageaccess?.event_page){
-    navItems.push({ icon: <FaTrophy />, label: "Event", to: "/event" })
+    navItems.push({ icon: <FaTrophy />, label: "Events", to: "/event" })
   }
   if(pageaccess?.profile_page){
     navItems.push({ icon: <CgProfile />, label: "Profile", to: "/profile" })
