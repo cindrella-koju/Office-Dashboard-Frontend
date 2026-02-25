@@ -65,6 +65,7 @@ export interface TBDUserIds{
 
 export interface EditUserInfo{
   old_user_tiesheet_id : string,
+  old_user_id : string,
   new_user_id : string
 }
 
@@ -293,9 +294,18 @@ export default function TiesheetModel({
                                 : [];
 
                               const updated = [...baseArray];
-
+                              
+                              while (updated.length <= index) {
+                                updated.push({
+                                  old_user_tiesheet_id: "",
+                                  old_user_id: "",
+                                  new_user_id: "",
+                                });
+                              }
+                              
                               updated[index] = {
                                 old_user_tiesheet_id : tu.id!,
+                                old_user_id : tu.user_id ?? "",
                                 new_user_id: value,
                               };
 

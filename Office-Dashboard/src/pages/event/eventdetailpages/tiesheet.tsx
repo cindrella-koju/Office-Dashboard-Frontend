@@ -119,7 +119,8 @@ export default function Tiesheet(){
 
         const payload : SelectedMatch = {
             ...selectedMatch,
-            status: selectedMatch.status.toLowerCase() as SelectedMatch["status"]
+            status: selectedMatch.status.toLowerCase() as SelectedMatch["status"],
+            tbd_number : selectedMatch.tbd_number === "" ?  0 : Number(selectedMatch.tbd_number)
         }
 
         if (viewMode === "create"){ 
