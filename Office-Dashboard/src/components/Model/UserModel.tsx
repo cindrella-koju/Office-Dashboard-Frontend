@@ -24,6 +24,7 @@ export default function UserModel({ mode, formData, handleChange, onClose, roles
                     placeholder="Enter a username"
                     value={formData.username}
                     onChange={handleChange}
+                    required={mode === "create"}
                 />
 
                 <InputField
@@ -33,6 +34,7 @@ export default function UserModel({ mode, formData, handleChange, onClose, roles
                     placeholder="Enter your fullname"
                     value={formData.fullname}
                     onChange={handleChange}
+                    required={mode === "create"}
                 />
 
                 <InputField
@@ -42,6 +44,7 @@ export default function UserModel({ mode, formData, handleChange, onClose, roles
                     placeholder="Enter your email"
                     value={formData.email}
                     onChange={handleChange}
+                    required={mode === "create"}
                 />
                 
                 {
@@ -56,6 +59,7 @@ export default function UserModel({ mode, formData, handleChange, onClose, roles
                             isPasswordVisible = {showPassword}
                             showPasswordToggle
                             togglePasswordVisibility={togglePasswordVisibility}
+                            required
                         />
                     )
                 }
@@ -69,7 +73,7 @@ export default function UserModel({ mode, formData, handleChange, onClose, roles
                     }))}
                     name="role_id"
                     onChange={(value) => setFormData(prev => ({ ...prev, role_id: value }))}
-                    required
+                    required={mode === "create"}
                 />
 
                 <div className="flex justify-end mt-6">

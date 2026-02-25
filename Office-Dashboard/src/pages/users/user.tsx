@@ -55,6 +55,14 @@ export default function UserPage() {
     else if (userMode === "edit" && editUser) await updateUser(editUser.id, getChangedFields());
     setUserMode(null);
     setEditUser(undefined);
+    setUserDetail({
+      id: "",
+      username: "",
+      fullname: "",
+      email: "",
+      role_id: "",
+      password: "",
+    })
   };
 
   

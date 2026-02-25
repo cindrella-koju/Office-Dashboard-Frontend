@@ -11,6 +11,7 @@ interface InputFieldProps {
   showPasswordToggle?: boolean;
   isPasswordVisible?: boolean;
   togglePasswordVisibility?: () => void;
+  required? : boolean
 }
 
 const InputField: React.FC<InputFieldProps> = ({
@@ -23,11 +24,12 @@ const InputField: React.FC<InputFieldProps> = ({
   showPasswordToggle = false,
   isPasswordVisible,
   togglePasswordVisibility,
+  required
 }) => {
   return (
     <div>
       <label className="block text-sm font-semibold text-gray-700 mb-1.5 tracking-wide">
-        {label}
+        {label} {required && <span className="text-red-500">*</span>}
       </label>
       <div className="relative">
         <input
@@ -39,6 +41,7 @@ const InputField: React.FC<InputFieldProps> = ({
           className="w-full text-sm px-3 py-2.5 pr-10 border-2 border-gray-200 rounded-xl 
                      focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent
                      transition-all duration-200 placeholder:text-gray-400"
+          required={required}
         />
         {showPasswordToggle && togglePasswordVisibility && (
           <span
