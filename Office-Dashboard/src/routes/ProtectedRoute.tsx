@@ -1,8 +1,8 @@
 import { type ReactNode, useContext } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import { RoleContext } from "../context/RoleContext";
-import { useAuth } from "../hooks/useAuth";
 import { EventRoleContext } from "../context/EventRoleContext";
+import { useAuth } from "../hooks/useAuth";
 
 interface ProtectedRouteProps {
   children: ReactNode;
@@ -11,18 +11,22 @@ interface ProtectedRouteProps {
 
 const ProtectedRoute = ({ children, accessKey }: ProtectedRouteProps) => {
   const location = useLocation();
-  const userrole = localStorage.getItem("role")
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isLoading } = useAuth();
+  const userrole = localStorage.getItem("role") ?? "member";
+
+  if (isLoading) return <div>Loading...</div>;
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace state={{ from: location }} />;
   }
 
 
-  const isEventRoute = location.pathname.startsWith("/event/");
-  const roleContext = isEventRoute && !["admin", "superadmin"].includes(userrole ? userrole : "member")
-    ? useContext(EventRoleContext)
-    : useContext(RoleContext);
+  const roleContext1 = useContext(RoleContext);
+  const roleContext2 = useContext(EventRoleContext);
+
+  const roleContext = location.pathname.startsWith("/event/") && !["admin", "superadmin"].includes(userrole)
+    ? roleContext2
+    : roleContext1;
 
   const pageAccess = roleContext?.roleaccesspage;
 
