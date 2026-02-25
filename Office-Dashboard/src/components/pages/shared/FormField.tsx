@@ -1,10 +1,11 @@
 interface FormFieldProps {
   label: string
   value: string | number
-  onChange: (val: string) => void
+  onChange?: (val: string) => void
   placeholder?: string
   required?: boolean
   type?: string
+  disable? : boolean
 }
 
 export default function FormField({
@@ -13,7 +14,8 @@ export default function FormField({
   onChange,
   placeholder,
   required,
-  type = "text"
+  type = "text",
+  disable
 }: FormFieldProps) {
   return (
     <div className="mb-4">
@@ -26,8 +28,9 @@ export default function FormField({
         className="w-full border border-gray-300 rounded-lg px-4 py-2"
         placeholder={placeholder}
         value={value}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={(e) => onChange && onChange(e.target.value)}
         required={required}
+        disabled={disable}
       />
     </div>
   )

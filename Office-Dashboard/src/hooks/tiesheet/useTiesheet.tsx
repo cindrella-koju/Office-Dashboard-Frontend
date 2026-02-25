@@ -71,7 +71,8 @@ export const useTiesheet = () => {
         scheduled_time: "",
         tbd_number : "",
         status: "scheduled",
-        tbd_user_ids :[]
+        tbd_user_ids :[],
+        edit_user_info : []
     })
 
     const fetchTiesheet = async() => {
@@ -247,7 +248,8 @@ export const useTiesheet = () => {
             scheduled_time: matchDetails.scheduled_time,
             status: matchDetails.status,
             tbd_number : matchDetails.tbd_number,
-            tbd_user_ids : matchDetails.tbd_user_ids
+            tbd_user_ids : matchDetails.tbd_user_ids,
+            edit_user_info : matchDetails.edit_user_info
         })
 
         setSelectedUsers(
@@ -262,7 +264,6 @@ export const useTiesheet = () => {
     useEffect(() => {
         if(viewMode !== "edit") return;
         
-        console.log("This is working")
         const tiesheetplayer = tiesheet.filter(user => user.id === selectedMatchId);
         setTiesheetUser(tiesheetplayer[0]?.player_info || []);
     },[viewMode])

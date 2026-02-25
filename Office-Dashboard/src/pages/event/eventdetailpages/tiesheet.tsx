@@ -81,7 +81,6 @@ export default function Tiesheet(){
     const [deleteTBD, setDeleteTBD] = useState<boolean>(false)
     const [tiesheetPlayer, setTiesheetPlayer] = useState<string | null>(null)
 
-    console.log("Tiesheet Player ID:", tiesheetPlayer)
     const getTodayDate = () => {
         const today = new Date();
         const year = today.getFullYear();
@@ -99,7 +98,8 @@ export default function Tiesheet(){
             scheduled_time: "",
             status: "scheduled",
             tbd_number: "",
-            tbd_user_ids : []
+            tbd_user_ids : [],
+            edit_user_info : []
         })
         setGroupName(null)
         setMatchDetails(null)
@@ -122,12 +122,12 @@ export default function Tiesheet(){
             status: selectedMatch.status.toLowerCase() as SelectedMatch["status"]
         }
 
-        console.log("Tiesheet Payload : ", payload)
         if (viewMode === "create"){ 
             await createTiesheet(payload)
         }
         if (viewMode === "edit") {
             if(!selectedMatchId) return;
+            console.log("Update Tiesheet Payload:", payload)
             await updateTiesheet(selectedMatchId,payload)
         }
         handleClose()  
