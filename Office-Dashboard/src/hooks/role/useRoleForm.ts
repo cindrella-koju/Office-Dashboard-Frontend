@@ -81,14 +81,6 @@ export function useRoleForm( eachdetail?: any) {
     }
   }
 
-//   const submit = async () => {
-//     if (modelType === "create") {
-//       await roleService.createRole(permissionDetail)
-//     } else {
-//       await roleService.updateRole(eachdetail.id, permissionDetail)
-//     }
-//   }
-
   const reset = () => setPermissionDetail(defaultState)
 
   return {

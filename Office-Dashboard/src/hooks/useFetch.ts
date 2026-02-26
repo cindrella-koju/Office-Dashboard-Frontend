@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { getAuthHeaders, authFetch } from "../services/authHeaders";
+import { authFetch } from "../services/authHeaders";
 
 // Re-export getAuthHeaders for backward compatibility
 export { getAuthHeaders } from "../services/authHeaders";

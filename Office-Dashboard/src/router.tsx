@@ -5,7 +5,6 @@ import LoginPage from "./pages/LoginPage";
 import NavBar from "./components/Navbar";
 import ProfilePage from "./pages/ProfilePage";
 import EventPage from "./pages/event/event";
-import ScoreBoard from "./pages/event/scoreboard/scoreboard";
 import UserPage from "./pages/users/user";
 import GroupPage from "./pages/event/eventdetailpages/group";
 import Rounds from "./pages/event/eventdetailpages/rounds";
@@ -46,14 +45,6 @@ export const router = createBrowserRouter([
     element: (
       <ProtectedRoute accessKey="event_page">
         <EventPage />
-      </ProtectedRoute>
-    ),
-  },
-  { 
-    path: "/scoreboard",
-    element: (
-      <ProtectedRoute accessKey="event_page">
-        <ScoreBoard />
       </ProtectedRoute>
     ),
   },

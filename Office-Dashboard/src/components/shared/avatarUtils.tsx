@@ -13,25 +13,21 @@ const AVATAR_COLORS = [
     'bg-gradient-to-br from-emerald-400 to-emerald-600',
 ];
 
-/**
- * Get initials from username
- */
+
+//Get initials from username
 export const getInitials = (username: string): string => {
     const parts = username.trim().split(' ');
     return parts.map(p => p[0]?.toUpperCase() || '').join('').slice(0, 2);
 };
 
-/**
- * Get a truly random color that changes every time
- */
+ //Get a truly random color that changes every time
 export const getRandomAvatarColor = (): string => {
     const index = Math.floor(Math.random() * AVATAR_COLORS.length);
     return AVATAR_COLORS[index];
 };
 
-/**
- * Get avatar color by index (for sequential coloring)
- */
+//Get avatar color by index (for sequential coloring)
+ 
 export const getAvatarColorByIndex = (index: number): string => {
     return AVATAR_COLORS[index % AVATAR_COLORS.length];
 };

@@ -53,19 +53,19 @@ export const useGroup = () => {
         setRoundId(eachGroupData.stage_id);
     }, [eachGroupData]);
 
-    const fetchGroup = async() => {
-        if (!eventId) return;
+    // const fetchGroup = async() => {
+    //     if (!eventId) return;
 
-        try{
-            setLoading(true);
-            const data = await groupService.getGroup(eventId);
-            setGroupData(data)
-        } catch(err:any){
-            setError(err.message)
-        } finally{
-            setLoading(false)
-        }
-    }
+    //     try{
+    //         setLoading(true);
+    //         const data = await groupService.getGroup(eventId);
+    //         setGroupData(data)
+    //     } catch(err:any){
+    //         setError(err.message)
+    //     } finally{
+    //         setLoading(false)
+    //     }
+    // }
 
     const fetchGroupByRound = async() => {
         if (!eventId) return;
@@ -150,9 +150,8 @@ export const useGroup = () => {
     }
 
     useEffect(() => {
-        fetchGroup();
         fetchRounds();
-        fetchFilterRound()
+        fetchFilterRound();
     },[])
 
     useEffect(() => {

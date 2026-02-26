@@ -28,7 +28,7 @@ export const useAddMAtch = (
             match_id: "",
             match_name: "",
             userDetail: players.map((p) => ({
-                user_id: p.user_id,
+                user_id: p.user_id ? p.user_id : "",
                 points: "",
                 winner: false,
             })),
@@ -107,10 +107,10 @@ export const useAddMAtch = (
             {
                 match_name: "",
                 userDetail: players.map((p) => ({
-                user_id: p.user_id,
-                points: "",
-                winner: false,
-            })),
+                    user_id: p.user_id ?? "",
+                    points: "",
+                    winner: false,
+                })),
             },
             ],
         }));
