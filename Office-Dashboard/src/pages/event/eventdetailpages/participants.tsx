@@ -8,6 +8,7 @@ import { useParticipants } from "../../../hooks/participants/useParticipants";
 import type React from "react";
 import { useState } from "react";
 import ConfirmationModal from "../../../components/Model/ConfirmationPopUp";
+import { useParams } from "react-router-dom";
 
 // Re-export getInitials for backward compatibility
 export { getInitials } from "../../../components/shared";
@@ -29,6 +30,7 @@ const transformToUserCard = (participant: ParticipantsInfo): UserCardData => ({
 });
 
 export default function Participants() {
+    const { eventId }= useParams();
     const{
         permissions,
         participants,
@@ -43,7 +45,7 @@ export default function Participants() {
         setModelType,
         createParticipants,
         deleteParticipants
-    } = useParticipants()
+    } = useParticipants(eventId ? eventId : "")
     const [popUpDelete, setPopUpDelete] = useState<boolean>(false);
     const [participantId, setParticipantId] = useState<string>("")
     const [selectedUser, setSelectedUser ] = useState<string>("")

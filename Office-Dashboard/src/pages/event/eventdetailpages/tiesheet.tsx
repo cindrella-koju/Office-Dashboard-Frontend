@@ -14,9 +14,13 @@ import { type PlayerInfoType, type TiesheetType } from "../../../type/tiesheet.t
 import ConfirmationModal from "../../../components/Model/ConfirmationPopUp";
 import Card from "../../../components/ui/Card";
 import Filters from "../../../components/Filters";
+import { useParams, useSearchParams } from "react-router-dom";
 
 
 export default function Tiesheet(){
+    const { eventId } = useParams()
+    const [searchParams] = useSearchParams();        // for query string
+    const todaysGame = Boolean(searchParams.get("todays-game"));
     const {
         permissions,
         setViewMode,
@@ -24,7 +28,6 @@ export default function Tiesheet(){
         handleEditMatch,
         tiesheet,
         viewMode, 
-        eventId,
         showMatchDetail,
         showDelete,
         setShowMatchDetail,
@@ -68,7 +71,7 @@ export default function Tiesheet(){
         setSelectedFilterRound,
         tiesheetUser,
         deleteTiesheetTBD
-    } = useTiesheet()
+    } = useTiesheet(todaysGame)
 
     const [player1, setplayer1] = useState<PlayerInfoType | undefined>(undefined)
     const [player2, setplayer2] = useState<PlayerInfoType | undefined>(undefined)
@@ -148,7 +151,7 @@ export default function Tiesheet(){
                     }
                 />
                 {
-                    selectedFilterRound && rounds &&
+                    selectedFilterRound && rounds && todaysGame === false &&
                     <Card className="mb-6 sm:mb-8 p-4 sm:p-6">
                         <div className="p-4 sm:p-6">
                             <Filters<TiesheetType[]>

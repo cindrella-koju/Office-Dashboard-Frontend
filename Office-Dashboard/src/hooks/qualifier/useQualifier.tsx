@@ -10,9 +10,8 @@ import { useToast } from "../../context/ToastContext";
 import type { User } from "../../components/Model/ParticipantsModel";
 
 
-export const useQualifier = () => {
+export const useQualifier = ( eventID : string ) => {
     const { showToast } = useToast()
-    const eventID = localStorage.getItem("eventId");
     const permissions = usePermissions<EventPermission>({withinevent: true});
     const [rounds,setRounds] = useState<Round[]>([])
     const [loading, setLoading ] = useState(true)

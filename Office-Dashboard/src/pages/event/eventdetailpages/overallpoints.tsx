@@ -6,9 +6,10 @@ import Filters from "../../../components/Filters";
 import { useOverallPoints} from "../../../hooks/useOverallPoints";
 import type { OverallPointResponse } from "../../../type/overallpoint.type";
 import { Pagination } from "../../../components/Pagination";
+import { useParams } from "react-router-dom";
 
 export default function OverallPoints() {
-  const eventId = localStorage.getItem("eventId");
+  const { eventId }= useParams();
 
   const {
     rounds,
@@ -23,7 +24,7 @@ export default function OverallPoints() {
     totalPage,
     setCurrentPage,
     setLimit
-  } = useOverallPoints(eventId);
+  } = useOverallPoints(eventId ? eventId : "");
 
   return (
     <PageLayout sidebar={<EventNavBar />}>

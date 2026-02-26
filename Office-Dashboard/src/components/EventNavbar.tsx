@@ -1,4 +1,4 @@
-import { FaTrophy, FaCalendarDay, FaChartBar, FaCampground } from "react-icons/fa";
+import { FaTrophy, FaCalendarDay, FaChartBar, FaCampground, FaHome } from "react-icons/fa";
 import { CgProfile } from "react-icons/cg";
 import { MdGroups, MdLeaderboard, MdOutlineSportsScore } from "react-icons/md";
 import Sidebar from "./layout/Sidebar";
@@ -18,6 +18,7 @@ const logoConfig = {
 export default function EventNavBar() {
   const location = useLocation();
   const userrole = localStorage.getItem("role")
+  const eventId = localStorage.getItem("eventId")
   
   // Decide which context to use based on the URL
   const isEventRoute = location.pathname.startsWith("/event/");
@@ -28,34 +29,35 @@ export default function EventNavBar() {
 
   const eventNavItems = []
 
+  eventNavItems.push({ icon: <FaHome />, label: "Home", to: "/home" })
   if(pageaccess?.group_page){
-    eventNavItems.push({ icon: <MdGroups />, label: "Groups", to: "/event/groups" })
+    eventNavItems.push({ icon: <MdGroups />, label: "Groups", to: `/event/${eventId}/groups` })
   }
   if(pageaccess?.round_config_page){
-    eventNavItems.push({ icon: <FaCampground />, label: "Rounds", to: "/event/rounds" })
+    eventNavItems.push({ icon: <FaCampground />, label: "Rounds", to: `/event/${eventId}/rounds` })
   }
   if(pageaccess?.tiesheet_page){
-    eventNavItems.push({ icon: <FaTrophy />, label: "Tiesheet", to: "/event/tiesheet" })
+    eventNavItems.push({ icon: <FaTrophy />, label: "Tiesheet", to: `/event/${eventId}/tiesheet` })
   }
   if(pageaccess?.qualifier_page){
-    eventNavItems.push({ icon: <MdLeaderboard />, label: "Qualifier", to: "/event/qualifier" })
+    eventNavItems.push({ icon: <MdLeaderboard />, label: "Qualifier", to: `/event/${eventId}/qualifier` })
   }
   if(pageaccess?.participants_page){
-    eventNavItems.push({ icon: <CgProfile />, label: "Participants", to: "/event/participants" })
+    eventNavItems.push({ icon: <CgProfile />, label: "Participants", to: `/event/${eventId}/participants` })
   }
   if(pageaccess?.column_config_page){
-    eventNavItems.push({ icon: <FaChartBar />, label: "Configure Column", to: "/event/standing-column" })
+    eventNavItems.push({ icon: <FaChartBar />, label: "Configure Column", to: `/event/${eventId}/config-column` })
   }
   if(pageaccess?.event_role_page){
-    eventNavItems.push({ icon: <RiAdminFill />, label: "Event Role", to: "/event/role" })
+    eventNavItems.push({ icon: <RiAdminFill />, label: "Event Role", to: `/event/${eventId}/role` })
   }
   if(pageaccess?.group_stage_standing_page){
-    eventNavItems.push({ icon: <MdOutlineSportsScore />, label: "Group Stage Standing", to: "/event/overall-points" })
+    eventNavItems.push({ icon: <MdOutlineSportsScore />, label: "Group Stage Standing", to: `/event/${eventId}/overall-points` })
   }
   if(pageaccess?.todays_game_page){
-    eventNavItems.push({ icon: <FaCalendarDay />, label: "Todays Game", to: "/event/todays-game" })
+    eventNavItems.push({ icon: <FaCalendarDay />, label: "Todays Game", to: `/event/${eventId}/today?todays-game=true` })
   }
-  eventNavItems.push({ icon: <FaTrophy />, label: "Events", to: "/event" })
+
   
   return <Sidebar items={eventNavItems} logo={logoConfig} />;
 }

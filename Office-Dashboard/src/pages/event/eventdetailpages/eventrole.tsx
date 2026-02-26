@@ -12,8 +12,10 @@ import { RiAdminFill } from "react-icons/ri";
 import Filters from "../../../components/Filters";
 import type { EventRoleResponse } from "../../../type/eventrole.type";
 import { Pagination } from "../../../components/Pagination";
+import { useParams } from "react-router-dom";
 
 export default function EventRole() {
+    const { eventId }= useParams();
     const {
         permissions,
         mode,
@@ -41,7 +43,7 @@ export default function EventRole() {
         limit,
         setLimit,
         totalPage
-    } = useEventRole()
+    } = useEventRole( eventId ? eventId : "")
 
     const handleSubmit = async(e:React.FormEvent) => {
         e.preventDefault()

@@ -324,7 +324,9 @@ export default function TiesheetModel({
                 {tiesheetUser
                   .filter((tu) => tu.user_id === null)
                   .map((tu, index) => {
-
+                    const userCount = tiesheetUser.filter(tu => tu.user_id !== null).length;
+                    const TbdCount = tiesheetUser.filter(tu => tu.user_id === null).length;
+                    console.log("Number of user:",userCount, TbdCount)
                     const currentValue =
                       selectedMatch.tbd_user_ids?.[index]?.user_id;
 
@@ -370,16 +372,21 @@ export default function TiesheetModel({
                           }}
                         />
 
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setTiesheetPlayer(tu.id);
-                            setDeleteTBD(true);
-                          }}
-                          className="mt-7 p-2 text-gray-400 hover:text-red-600"
-                        >
-                          ✕
-                        </button>
+                        {
+                          userCount >= 1 && TbdCount > 1 && (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setTiesheetPlayer(tu.id);
+                                setDeleteTBD(true);
+                              }}
+                              className="mt-7 p-2 text-gray-400 hover:text-red-600"
+                            >
+                              ✕
+                            </button>
+
+                          )
+                        }
                       </div>
                     );
                   })}
@@ -391,7 +398,7 @@ export default function TiesheetModel({
         {
             <FormField
               label="Number of TBD"
-              type="text"
+              type="number"
               placeholder="Enter the number of TBD"
               value={selectedMatch.tbd_number}
               onChange={val => 

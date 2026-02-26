@@ -16,7 +16,7 @@ export default function MatchHeader({
   const getStatusLabel = () => {
     if (status === "scheduled") return "Scheduled";
     if (status === "completed") return "Completed";
-    if (status === "ongoing") return "Live";
+    if (status === "ongoing") return "Ongoing";
     return status;
   };
 

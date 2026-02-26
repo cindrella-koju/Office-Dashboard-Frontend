@@ -91,7 +91,7 @@ export default function Table({
     if (title) {
       localStorage.setItem("eventTitle", title);
     }
-    navigate("/event/groups");
+    navigate(`/event/${id}/groups`);
   };
 
   return (

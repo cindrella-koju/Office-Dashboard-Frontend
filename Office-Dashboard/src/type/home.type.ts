@@ -9,6 +9,7 @@ export interface HomePageResponse {
 export type StatusEnum = "draft" | "active" | "completed";
 
 export interface HomePageEventResponse {
+  id : string;
   title: string;
   description?: string | null;   
   startdate: Date;              

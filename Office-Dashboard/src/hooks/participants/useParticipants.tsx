@@ -7,9 +7,8 @@ import type { ModelType } from "../../type/main.type";
 import { type User } from "../../components/Model/ParticipantsModel";
 import { useToast } from "../../context/ToastContext";
 
-export const useParticipants = () => {
+export const useParticipants = (eventID : string) => {
     const { showToast } = useToast()
-    const eventID = localStorage.getItem("eventId");
     const [participants, setParticipants] = useState<EventParticipants>()
     const permissions = usePermissions<EventPermission>({withinevent : true});
     const [loading, setLoading] = useState(true)

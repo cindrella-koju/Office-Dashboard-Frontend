@@ -16,7 +16,7 @@ export interface TiesheetQualifierResponse {
   id: string
   username: string
 }
-export const useTiesheet = () => {
+export const useTiesheet = ( todaysGame : boolean | null ) => {
     const {showToast } = useToast()
     const eventId = localStorage.getItem("eventId");
     const permissions = usePermissions<EventPermission>({withinevent : true})
@@ -102,7 +102,20 @@ export const useTiesheet = () => {
             setLoading(false)
         }
     }
- 
+    
+    const fetchTodayTiesheet = async () => {
+        if (!eventId) return;
+        try {
+            setLoading(true);
+            const data = await tiesheetServices.getTodayTiesheet(eventId);
+            setTiesheet(data);
+        } catch (err: any) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const fetchRound = async() => {
         if(!eventId) return;
         try{
@@ -285,35 +298,59 @@ export const useTiesheet = () => {
 
     const createTiesheet = async(payload:SelectedMatch) => {
         await tiesheetServices.createTiesheet(payload, showToast);
-        fetchTiesheet();
+        if(todaysGame){
+            fetchTodayTiesheet()
+        } else {
+            fetchTiesheet()
+        };
     }
 
     const updateTiesheet = async(matchId : string, payload: SelectedMatch) => {
         await tiesheetServices.updateTiesheet(matchId, payload, showToast);
-        fetchTiesheet()
+        if(todaysGame){
+            fetchTodayTiesheet()
+        } else {
+            fetchTiesheet()
+        }
         setTiesheetUser([])
     }
 
     const deleteTiesheet = async(tiesheetId : string) => {
         await tiesheetServices.deleteTiesheet(tiesheetId, showToast);
-        fetchTiesheet()
+        if(todaysGame){
+            fetchTodayTiesheet()
+        } else {
+            fetchTiesheet()
+        }
     }
 
     const deleteTiesheetTBD = async(tiesheetplayerId : string) => {
         await tiesheetServices.deleteTiesheetPlayer(tiesheetplayerId, showToast);
-        fetchTiesheet();
+        if(todaysGame){
+            fetchTodayTiesheet()
+        } else {
+            fetchTiesheet()
+        }
         setViewMode("edit")
     }
 
     const deleteMatch = async( matchId: string) => {
         await tiesheetServices.deleteMatch( matchId, showToast);
-        fetchTiesheet()
+        if(todaysGame){
+            fetchTodayTiesheet()
+        } else {
+            fetchTiesheet()
+        }
     }
 
     useEffect(() => {
-        fetchTiesheet()
+        if(todaysGame){
+            fetchTodayTiesheet()
+        } else {
+            fetchTiesheet()
+        }
         fetchRound()
-    },[])
+    },[todaysGame])
     
     useEffect(() => {
         fetchQualifierByRound()
@@ -341,7 +378,11 @@ export const useTiesheet = () => {
         if(selectedFilterRound && selectedFilterRound.id != "all"){
             fetchTiesheetByStage()
         }else{
-            fetchTiesheet()
+            if(todaysGame){
+                fetchTodayTiesheet()
+            } else {
+                fetchTiesheet()
+            }
         }
     },[scoreView, selectedFilterRound])
     

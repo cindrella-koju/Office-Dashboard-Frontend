@@ -10,9 +10,8 @@ import { type EventRole, type EventRoleDetail } from "../type/eventrole.type";
 import * as EventRoleServices from "../services/eventrole.service";
 import extractHeaders from "../utils/extractHeader";
 
-export const useEventRole = () => {
+export const useEventRole = (eventID : string ) => {
     const { showToast } = useToast()
-    const eventID = localStorage.getItem("eventId");
     const permissions = usePermissions<EventPermission>({withinevent: true});
     const [mode, setMode] = useState<ModelType>(null)
     const [participant, setParticipants] = useState<EventParticipants>()

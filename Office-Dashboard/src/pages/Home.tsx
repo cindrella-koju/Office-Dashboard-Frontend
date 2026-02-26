@@ -8,6 +8,7 @@ import type {
   HomePageResponse,
   StatusEnum,
 } from "../type/home.type";
+import { useNavigate } from "react-router-dom";
 
 export default function Home() {
   const { event, pagedetail, loading, error } = useHome();
@@ -71,6 +72,14 @@ const HomeDetail = ({
   pagedetail,
 }: HomeDetailProps) => {
   const normalizedRole = role.toLowerCase();
+  const navigate = useNavigate();
+  const handleClick = (id: string, title?: string) => {
+    localStorage.setItem("eventId", id);
+    if (title) {
+      localStorage.setItem("eventTitle", title);
+    }
+    navigate(`/event/${id}/groups`);
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 p-6 md:p-8">
@@ -162,6 +171,7 @@ const HomeDetail = ({
                     status={e.status}
                     duration={formattedDuration}
                     role={role}
+                    onClick = {() => handleClick(e.id, e.title)}
                   />
                 );
               })}
@@ -201,11 +211,13 @@ const Event = ({
   status,
   duration,
   role,
+  onClick
 }: {
   title: string;
   status: StatusEnum;
   duration: string;
   role: string;
+  onClick : () => void;
 }) => {
   const normalizedRole = role.toLowerCase();
 
@@ -242,6 +254,7 @@ const Event = ({
           ? "grid-rows-[auto_auto_auto_auto] sm:grid-rows-1 sm:grid-cols-[2fr_1fr_1fr_1fr]"
           : "grid-rows-[auto_auto_auto] sm:grid-rows-1 sm:grid-cols-[2fr_1fr_1fr]"
       } py-4 px-2 -mx-2 rounded-xl hover:bg-gray-50 transition-all duration-200 items-center gap-2 sm:gap-0`}
+      onClick={onClick}
     >
       {/* Title */}
       <div className="flex items-center gap-3">

@@ -11,10 +11,12 @@ import { useQualifier } from "../../../hooks/qualifier/useQualifier";
 import { useState } from "react";
 import ConfirmationModal from "../../../components/Model/ConfirmationPopUp";
 import { IoAddCircle } from "react-icons/io5";
+import { useParams } from "react-router-dom";
 
 
 
 export default function Qualifier() {
+    const {eventId }= useParams();
     const {
         permissions,
         qualifiers,
@@ -37,7 +39,7 @@ export default function Qualifier() {
         setSelected, 
         participants,
         deleteQualifier
-    } = useQualifier()
+    } = useQualifier(eventId ? eventId : "")
 
     console.log("Qualifier Detail:", qualifiers)
     const handleSubmit =  async (e: React.FormEvent) => {

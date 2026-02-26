@@ -12,6 +12,7 @@ import { useEffect } from "react";
 import ConfirmationModal from "../../../components/Model/ConfirmationPopUp";
 import Filters from "../../../components/Filters";
 import type { Group } from "../../../type/group.type";
+import { useParams } from "react-router-dom";
 
 export interface Stage{
     stage_id : string,
@@ -20,7 +21,7 @@ export interface Stage{
 }
 
 export default function Groups(){
-    const eventId = localStorage.getItem("eventId")
+    const {eventId }= useParams();
     const {
         groupdata,
         permissions,
@@ -58,8 +59,8 @@ export default function Groups(){
 
         selectedFilterRound,
         filterRounds,
-            setGroupData,
-            setSelectedFilterRound,
+        setGroupData,
+        setSelectedFilterRound,
 
     } = useGroup()
 
@@ -161,10 +162,13 @@ export default function Groups(){
                 {
                     groupdata && groupdata.length === 0 && (
                         <EmptyMessage 
-                            message="No Group Yet" 
-                            submessage="Create Group to see them appear hear" 
-                            warning="This group was created before the event’s round. To make it visible, please create and configure columns for this round first."
-                            icon={<MdGroups size={80} />}
+                        message="No Group Yet" 
+                        submessage="Create Group to see them appear here"
+                        {...(permissions.canCreate && {
+                            warning:
+                            "Note: If groups are not visible after creating them, please create and configure columns for this round first."
+                        })}
+                        icon={<MdGroups size={80} />}
                         />
                     )
                 }

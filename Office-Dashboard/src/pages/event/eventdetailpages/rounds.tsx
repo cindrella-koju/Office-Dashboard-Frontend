@@ -13,10 +13,11 @@ import { useRoundForm } from "../../../hooks/round/useRoundForm";
 import RoundModel from "../../../components/Model/RoundModel";
 import type { ModelType } from "../../../type/main.type";
 import ConfirmationModal from "../../../components/Model/ConfirmationPopUp";
+import { useParams } from "react-router-dom";
 
 
 export default function Rounds(){
-    const eventId = localStorage.getItem("eventId");
+    const { eventId }= useParams()
     const permissions = usePermissions<EventPermission>({withinevent :  true})
 
     const {

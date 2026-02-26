@@ -14,7 +14,6 @@ import Qualifier from "./pages/event/eventdetailpages/qualifier";
 import StandingColumn from "./pages/event/eventdetailpages/standingcolumn";
 import Tiesheet from "./pages/event/eventdetailpages/tiesheet";
 import OverallPoints from "./pages/event/eventdetailpages/overallpoints";
-import TodayGame from "./pages/event/eventdetailpages/todaygame";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import RolePage from "./pages/RolePage";
 import SignupPage from "./pages/SignUpPage";
@@ -59,7 +58,7 @@ export const router = createBrowserRouter([
     ),
   },
   { 
-    path: "/event/groups",
+    path: "/event/:eventId/groups",
     element: (
       <ProtectedRoute accessKey="group_page">
         <GroupPage />
@@ -67,7 +66,7 @@ export const router = createBrowserRouter([
     ),
   },
   { 
-    path: "/event/tiesheet",
+    path: "/event/:eventId/tiesheet",
     element: (
       <ProtectedRoute accessKey="tiesheet_page">
         <Tiesheet />
@@ -75,7 +74,7 @@ export const router = createBrowserRouter([
     ),
   },
   { 
-    path: "/event/rounds",
+    path: "/event/:eventId/rounds",
     element: (
       <ProtectedRoute accessKey="round_config_page">
         <Rounds />
@@ -83,7 +82,7 @@ export const router = createBrowserRouter([
     ),
   },
   { 
-    path: "/event/participants",
+    path: "/event/:eventId/participants",
     element: (
       <ProtectedRoute accessKey="participants_page">
         <Participants />
@@ -91,7 +90,7 @@ export const router = createBrowserRouter([
     ),
   },
   { 
-    path: "/event/qualifier",
+    path: "/event/:eventId/qualifier",
     element: (
       <ProtectedRoute accessKey="qualifier_page">
         <Qualifier />
@@ -99,7 +98,7 @@ export const router = createBrowserRouter([
     ),
   },
   { 
-    path: "/event/standing-column",
+    path: "/event/:eventId/config-column",
     element: (
       <ProtectedRoute accessKey="column_config_page">
         <StandingColumn />
@@ -107,7 +106,7 @@ export const router = createBrowserRouter([
     ),
   },
   { 
-    path: "/event/overall-points",
+    path: "/event/:eventId/overall-points",
     element: (
       <ProtectedRoute accessKey="group_stage_standing_page">
         <OverallPoints />
@@ -115,7 +114,7 @@ export const router = createBrowserRouter([
     ),
   },
   { 
-    path: "/event/role",
+    path: "/event/:eventId/role",
     element: (
       <ProtectedRoute accessKey="event_role_page">
         <EventRole />
@@ -123,10 +122,11 @@ export const router = createBrowserRouter([
     ),
   },
   { 
-    path: "/event/todays-game",
+    path: "/event/:eventId/today",
     element: (
       <ProtectedRoute accessKey="todays_game_page">
-        <TodayGame />
+        <Tiesheet/>
+        {/* <TodayGame /> */}
       </ProtectedRoute>
     ),
   },

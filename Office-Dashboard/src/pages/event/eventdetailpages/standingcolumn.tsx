@@ -10,10 +10,11 @@ import type { StandingColumnType } from "../../../type/standingcolumn.type";
 import Filters from "../../../components/Filters";
 import Table from "../../../components/table/Tables";
 import { useStandingColumn } from "../../../hooks/useStandingColumn";
+import { useParams } from "react-router-dom";
 
 
 export default function StandingColumn() {
-  const eventId = localStorage.getItem("eventId");
+  const { eventId }= useParams();
   const permissions = usePermissions({});
 
   const {
@@ -33,7 +34,7 @@ export default function StandingColumn() {
     editColumn,
     columnDetail,
     setColumnDetail,
-  } = useStandingColumn(eventId);
+  } = useStandingColumn(eventId ? eventId : "");
 
   const handleSubmit = async (e:React.FormEvent) => {
     e.preventDefault()
