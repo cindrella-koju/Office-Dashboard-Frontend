@@ -126,14 +126,14 @@ export default function GroupTable({
                                                                                             <>
                                                                                             {
                                                                                                 permissions.canEdit && (
-                                                                                                    <Button size="sm" varient="success" onClick={() => handleEditUser(group.group_id,originalMember)}>
+                                                                                                    <Button size="sm" varient="success" onClick={() => handleEditUser(group.group_id,originalMember, stage.stage_id)}>
                                                                                                         Edit
                                                                                                     </Button>
                                                                                                 )
                                                                                             }
                                                                                             {
                                                                                                 permissions.canDelete && (
-                                                                                                    <Button size="sm" varient="danger" onClick={() => handleDeleteMember(group.group_id,originalMember)}>
+                                                                                                    <Button size="sm" varient="danger" onClick={() => handleDeleteMember(group.group_id,originalMember, stage.stage_id)}>
                                                                                                         Delete
                                                                                                     </Button>
                                                                                                 )

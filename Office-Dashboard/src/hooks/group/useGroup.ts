@@ -14,7 +14,7 @@ export const useGroup = () => {
     const [groupdata, setGroupData] = useState<Stage[]>([])
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [editingUserId, setEditingUserId] = useState<{ groupId: string; userId: string } | null>(null);
+    const [editingUserId, setEditingUserId] = useState<{ groupId: string; userId: string, stageId : string } | null>(null);
     const [editedUserData, setEditedUserData] = useState<GroupMember | null>(null);
     const [modalMode, setModalMode] = useState<ModelType>(null);
     const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null);
@@ -36,6 +36,7 @@ export const useGroup = () => {
     const [formData, setFormData] = useState<FormDataType>({
         group_name: "",
         round_id: "",
+        stage_id : "",
         participants_ids : [] as string[],
     });
 
@@ -46,6 +47,7 @@ export const useGroup = () => {
         group_name: eachGroupData.name,
         round_id: eachGroupData.stage_id,
         participants_ids: eachGroupData.participants_id,
+        stage_id : eachGroupData.stage_id
         });
 
         setRoundId(eachGroupData.stage_id);
@@ -82,6 +84,7 @@ export const useGroup = () => {
             setLoading(false)
         }
     }
+    
     const fetchFilterRound = async() => {
         if (!eventId) return;
 
@@ -143,7 +146,11 @@ export const useGroup = () => {
 
     const updateGroupTable = async( groupId : string, payload:any) => {
         await groupService.updateGroupTable(groupId, payload, showToast );
-        fetchGroup()
+        if(selectedFilterRound?.id === "all"){
+            fetchGroup()
+        }else{
+            fetchGroupByRound()
+        }
     }
 
     useEffect(() => {
@@ -171,40 +178,58 @@ export const useGroup = () => {
         setEditedUserData(updatedUser);
     };
 
-    const handleEditUser = (groupId: string, member: GroupMember) => {
-        setEditingUserId({ groupId, userId: member.user_id });
+    const handleEditUser = (groupId: string, member: GroupMember, stageId : string) => {
+        setEditingUserId({ groupId, userId: member.user_id, stageId : stageId });
         setEditedUserData(JSON.parse(JSON.stringify(member)));
     };
 
     const createGroup = async( payload: PayloadType) => {
         if (!eventId) return;
         await groupService.createGroup(eventId, payload, showToast)
-        fetchGroup();
+        if(selectedFilterRound?.id === "all"){
+            fetchGroup()
+        }else{
+            fetchGroupByRound()
+        }
         fetchGroupByRound();
         fetchFilterRound();
         setFormData({
             group_name: "",
             round_id: "",
+            stage_id : "",
             participants_ids : [] as string[],
         })
         setParticipants([])
     } 
 
-    const updateGroup = async( groupId:string, payload:PayloadType) => {
-        await groupService.updateGroup(groupId,payload, showToast)
-        fetchGroupByRound();
+    const updateGroup = async( groupId:string, stageId : string, payload:PayloadType) => {
+        await groupService.updateGroup(groupId, stageId,payload, showToast)
+        if(selectedFilterRound?.id === "all"){
+            fetchGroup()
+        }else{
+            fetchGroupByRound()
+        }
         fetchFilterRound();
+        setEditingUserId(null); 
     }
 
     const deleteGroup = async(group_id : string) => {
         await groupService.deleteGroup(group_id,showToast)
-        fetchGroupByRound();
+        if(selectedFilterRound?.id === "all"){
+            fetchGroup()
+        }else{
+            fetchGroupByRound()
+        }
         fetchFilterRound();
     }
 
-    const deleteGroupMember = async(group_id : string, user_id : string) => {
-        await groupService.deleteGroupMember(user_id,group_id,showToast)
-        fetchGroupByRound()
+    const deleteGroupMember = async(group_id : string, user_id : string, stage_id : string) => {
+        await groupService.deleteGroupMember(user_id,group_id, stage_id,showToast)
+        if(selectedFilterRound?.id === "all"){
+            fetchGroup()
+        }else{
+            fetchGroupByRound()
+        }
     }
 
     const handleSave = async (groupId : string) => {
@@ -243,13 +268,23 @@ export const useGroup = () => {
         setPopUpDelete(true)
         setDeleteType("group")
         setSelectedGroupId(groupID);
+        if(selectedFilterRound?.id === "all"){
+            fetchGroup()
+        }else{
+            fetchGroupByRound()
+        }
     }
 
-    const handleDeleteMember = (groupId: string, member: GroupMember) => {
+    const handleDeleteMember = (groupId: string, member: GroupMember, stageId : string) => {
         setPopUpDelete(true)
         setDeleteType("member")
-        setEditingUserId({ groupId, userId: member.user_id });
+        setEditingUserId({ groupId, userId: member.user_id, stageId : stageId });
         setEditedUserData(JSON.parse(JSON.stringify(member)));
+        if(selectedFilterRound?.id === "all"){
+            fetchGroup()
+        }else{
+            fetchGroupByRound()
+        }
     }
     useEffect(() => {
         if(!roundId) return;

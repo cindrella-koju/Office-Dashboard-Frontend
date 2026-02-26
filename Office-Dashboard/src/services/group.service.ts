@@ -128,9 +128,9 @@ export const createGroup = async(eventId : string, payload : PayloadType, showTo
     }
 }
 
-export const updateGroup = async(groupID : string, payload : PayloadType, showToast: (msg: string, type?: ToastType) => void) => {
+export const updateGroup = async(groupID : string, stageId : string, payload : PayloadType, showToast: (msg: string, type?: ToastType) => void) => {
     try{
-        const res = await authFetch(`${UPDATE_GROUP(groupID)}`,{
+        const res = await authFetch(`${UPDATE_GROUP(groupID, stageId)}`,{
             method: "PATCH",
             body: JSON.stringify(payload),
         })
@@ -173,9 +173,9 @@ export const deleteGroup = async(group_id : string, showToast: (msg: string, typ
       }
 }
 
-export const deleteGroupMember = async(user_id : string, group_id : string, showToast: (msg: string, type?: ToastType)=> void) => {
+export const deleteGroupMember = async(user_id : string, group_id : string, stage_id : string, showToast: (msg: string, type?: ToastType)=> void) => {
       try {
-        const res = await authFetch(`${DELETE_GROUP_MEMBER(user_id, group_id)}`, {
+        const res = await authFetch(`${DELETE_GROUP_MEMBER(user_id, group_id, stage_id)}`, {
           method: "DELETE",
         });
     

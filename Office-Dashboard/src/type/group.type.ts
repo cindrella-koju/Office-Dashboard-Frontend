@@ -59,11 +59,11 @@ export interface GroupTableProps{
     handleUserCellChange : (columnField: string, value: string) => void,
     handleCancel : () => void,
     handleSave : (groupId : string) => void,
-    handleEditUser : ( groupId: string, member : GroupMember) => void,
+    handleEditUser : ( groupId: string, member : GroupMember, stageId : string) => void,
     handleEditGroup : (groupTd : string ) => void,
     setEachGroupData : Dispatch<SetStateAction<EachGroupDetail>>;
     handleDeleteGroup : (groupTd : string ) => void,
-    handleDeleteMember : ( groupId: string, member : GroupMember) => void,
+    handleDeleteMember : ( groupId: string, member : GroupMember, stageID :  string) => void,
 }
 
 export interface EachGroupDetail{
@@ -77,6 +77,7 @@ export interface EachGroupDetail{
 export interface FormDataType{
     group_name : string,
     round_id : string,
+    stage_id : string,
     participants_ids : string[] 
 }
 

@@ -15,10 +15,10 @@ export const RETRIEVE_GROUP_AND_MEMBERS_WITH_ROUND  = (eventId: string, stageId:
 
 // API for Group
 export const CREATE_GROUP = (eventId : string) => `${BASE_URL}/event/group?event_id=${eventId}`
-export const UPDATE_GROUP = (groupId: string) => `${BASE_URL}/event/group/${groupId}`
+export const UPDATE_GROUP = (groupId: string, stageId : string) => `${BASE_URL}/event/group/${groupId}/stage/${stageId}`
 export const DELETE_GROUP = (groupId: string) => `${BASE_URL}/event/group/${groupId}`
 export const UPDATE_GROUP_TABLE = (groupId: string) => `${BASE_URL}/event/group/${groupId}/members`
-export const DELETE_GROUP_MEMBER = (userId: string, groupId: string) => `${BASE_URL}/event/group/member/${userId}/group/${groupId}`
+export const DELETE_GROUP_MEMBER = (userId: string, groupId: string, stageId : string) => `${BASE_URL}/event/group/member/${userId}/group/${groupId}/stage/${stageId}`
 export const ADD_GROUP_MEMBER = `${BASE_URL}/event/group/player`
 
 // Api to extract group and participants

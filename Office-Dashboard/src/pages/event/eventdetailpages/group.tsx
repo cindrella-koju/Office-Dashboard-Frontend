@@ -78,7 +78,7 @@ export default function Groups(){
         } 
         if(modalMode  === "edit"){
             if(!selectedGroupId) return;
-            updateGroup( selectedGroupId,payload)
+            updateGroup( selectedGroupId, formData.stage_id,payload)
         } 
         setModalMode(null)
     }
@@ -203,7 +203,7 @@ export default function Groups(){
                             setEditedUserData(null)
                         }}
                         onConfirm={() => {
-                        deleteGroupMember(editingUserId.groupId,editingUserId.userId)
+                        deleteGroupMember(editingUserId.groupId,editingUserId.userId,editingUserId.stageId)
                         setPopUpDelete(false)
                         setDeleteType(null)
                         }}
