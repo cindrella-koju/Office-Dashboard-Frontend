@@ -108,7 +108,7 @@ export default function Groups(){
                     <Card className="mb-6 sm:mb-8 p-4 sm:p-6">
                         <div className="p-4 sm:p-6">
                             <Filters<Stage[]>
-                                dafaultVal = {selectedFilterRound}
+                                defaultVal = {selectedFilterRound}
                                 filters={filterRounds}
                                 label="Select Round"
                                 setSelectVal={setGroupData}
@@ -117,7 +117,6 @@ export default function Groups(){
                                 totalPage={5}
                                 limit={10}
                                 setStatus={setSelectedFilterRound}
-                                allUrl="yes"
                             />
                         </div>
                     </Card>

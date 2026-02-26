@@ -24,7 +24,7 @@ export const useGroup = () => {
     const [popUpDelete, setPopUpDelete] = useState<boolean>(false)
     const [deleteType, setDeleteType] = useState<"group" | "member" | null>(null)
     const [filterRounds, setFilterRounds] = useState<RoundData[]>()
-    const [selectedFilterRound,setSelectedFilterRound] = useState<Round | null>({ id: "all", name: "All" })
+    const [selectedFilterRound,setSelectedFilterRound] = useState<Round | null>(null)
     const [eachGroupData,setEachGroupData] = useState<EachGroupDetail>({
         group_id : "",
         name : "",
@@ -70,13 +70,10 @@ export const useGroup = () => {
     const fetchGroupByRound = async() => {
         if (!eventId) return;
         if (!selectedFilterRound?.id) return;
-
+        
         try{
             setLoading(true);
             const data = await groupService.getGroupByRound(eventId, selectedFilterRound?.id);
-            if(data.length == 0){
-                setSelectedFilterRound({ id: "all", name: "All" })
-            }
             setGroupData(data)
         } catch(err:any){
             setError(err.message)
@@ -92,6 +89,9 @@ export const useGroup = () => {
             setLoading(true);
             const data = await getRoundHavingGroup(eventId);
             setFilterRounds(data)
+            if(selectedFilterRound === null){
+                setSelectedFilterRound(data[0])
+            }
         } catch(err:any){
             setError(err.message)
         } finally{
@@ -146,11 +146,7 @@ export const useGroup = () => {
 
     const updateGroupTable = async( groupId : string, payload:any) => {
         await groupService.updateGroupTable(groupId, payload, showToast );
-        if(selectedFilterRound?.id === "all"){
-            fetchGroup()
-        }else{
-            fetchGroupByRound()
-        }
+        fetchGroupByRound()
     }
 
     useEffect(() => {
@@ -160,11 +156,7 @@ export const useGroup = () => {
     },[])
 
     useEffect(() => {
-        if(selectedFilterRound?.id === "all"){
-            fetchGroup()
-        }else{
-            fetchGroupByRound()
-        }
+        fetchGroupByRound()
     },[selectedFilterRound])
 
     const handleUserCellChange = (columnField: string, value: string) => {
@@ -186,11 +178,8 @@ export const useGroup = () => {
     const createGroup = async( payload: PayloadType) => {
         if (!eventId) return;
         await groupService.createGroup(eventId, payload, showToast)
-        if(selectedFilterRound?.id === "all"){
-            fetchGroup()
-        }else{
-            fetchGroupByRound()
-        }
+        fetchGroupByRound()
+        
         fetchGroupByRound();
         fetchFilterRound();
         setFormData({
@@ -204,32 +193,20 @@ export const useGroup = () => {
 
     const updateGroup = async( groupId:string, stageId : string, payload:PayloadType) => {
         await groupService.updateGroup(groupId, stageId,payload, showToast)
-        if(selectedFilterRound?.id === "all"){
-            fetchGroup()
-        }else{
-            fetchGroupByRound()
-        }
+        fetchGroupByRound()
         fetchFilterRound();
         setEditingUserId(null); 
     }
 
     const deleteGroup = async(group_id : string) => {
         await groupService.deleteGroup(group_id,showToast)
-        if(selectedFilterRound?.id === "all"){
-            fetchGroup()
-        }else{
-            fetchGroupByRound()
-        }
+        fetchGroupByRound()
         fetchFilterRound();
     }
 
     const deleteGroupMember = async(group_id : string, user_id : string, stage_id : string) => {
         await groupService.deleteGroupMember(user_id,group_id, stage_id,showToast)
-        if(selectedFilterRound?.id === "all"){
-            fetchGroup()
-        }else{
-            fetchGroupByRound()
-        }
+        fetchGroupByRound()
     }
 
     const handleSave = async (groupId : string) => {
@@ -268,11 +245,7 @@ export const useGroup = () => {
         setPopUpDelete(true)
         setDeleteType("group")
         setSelectedGroupId(groupID);
-        if(selectedFilterRound?.id === "all"){
-            fetchGroup()
-        }else{
-            fetchGroupByRound()
-        }
+        fetchGroupByRound()
     }
 
     const handleDeleteMember = (groupId: string, member: GroupMember, stageId : string) => {
@@ -280,11 +253,7 @@ export const useGroup = () => {
         setDeleteType("member")
         setEditingUserId({ groupId, userId: member.user_id, stageId : stageId });
         setEditedUserData(JSON.parse(JSON.stringify(member)));
-        if(selectedFilterRound?.id === "all"){
-            fetchGroup()
-        }else{
-            fetchGroupByRound()
-        }
+        fetchGroupByRound()
     }
     useEffect(() => {
         if(!roundId) return;
