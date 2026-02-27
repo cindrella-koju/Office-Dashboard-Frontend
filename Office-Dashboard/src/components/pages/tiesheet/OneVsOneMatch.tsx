@@ -21,7 +21,7 @@ export default function OneVsOneMatch({ player1, player2,handleMatchDetailView }
       }`}>
         <PlayerAvatar 
           username={player1.username ? player1.username:"TBD"}
-          isWinner={player1.is_winner}
+          isWinner={player1.is_winner ? player1.is_winner : false}
           size="lg"
           playerIndex={0}
           variant="circle"
@@ -47,7 +47,7 @@ export default function OneVsOneMatch({ player1, player2,handleMatchDetailView }
           }`}>
             <PlayerAvatar 
               username={player2.username ? player2.username : "TBD"}
-              isWinner={player2.is_winner}
+              isWinner={player2.is_winner ? player2.is_winner : false }
               size="lg"
               playerIndex={1}
               variant="circle"
