@@ -5,7 +5,7 @@ import type { Round } from "../type/group.type";
 import type { StandingColumnType } from "../type/standingcolumn.type";
 import extractHeaders from "../utils/extractHeader";
 import type { ColumnDetail } from "../components/Model/StandingColumnModel";
-import { createStandingColumn, updateStandingColumn } from "../services/column.service";
+import { createStandingColumn, deleteStandingColumn, updateStandingColumn } from "../services/column.service";
 import { useToast } from "../context/ToastContext";
 
 export const useStandingColumn = (eventId: string | null) => {
@@ -28,6 +28,7 @@ export const useStandingColumn = (eventId: string | null) => {
     column_field: "",
     default_value: "",
   })
+  const [showDeleteColumn, setShowDeleteColumn] = useState(false);
   const fetchRoundByEvent = async () => {
     if (!eventId) return;
     try {
@@ -105,6 +106,12 @@ export const useStandingColumn = (eventId: string | null) => {
     await updateStandingColumn(id, payload, showToast);
     fetchStandingColumn()
   }
+
+  const deleteColumn = async(id: string) => {
+    await deleteStandingColumn(id, showToast);
+    fetchStandingColumn()
+  }
+
   return {
     round_by_event,
     rounds,
@@ -115,12 +122,15 @@ export const useStandingColumn = (eventId: string | null) => {
     colVal,
     loading,
     error,
+    showDeleteColumn,
+    setShowDeleteColumn,
     setSelectedRound,
     setStandingColumn,
     setViewMode,
     setColVal,
     createColumn,
     editColumn,
+    deleteColumn,
     columnDetail,
     setColumnDetail
   };

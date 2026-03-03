@@ -1,6 +1,6 @@
 import type { ColumnDetail } from "../components/Model/StandingColumnModel";
 import type { ToastType } from "../components/Toast";
-import { ADD_STANDING_COLUMN, EDIT_STANDING_COLUMN } from "../constants/urls";
+import { ADD_STANDING_COLUMN, DELETE_STANDING_COLUMN, EDIT_STANDING_COLUMN } from "../constants/urls";
 import { authFetch } from "./authHeaders";
 
 export const createStandingColumn = async( payload : ColumnDetail, showToast: (msg: string, type?: ToastType) => void ) => {
@@ -42,6 +42,28 @@ export const updateStandingColumn = async(columnId : string, payload : ColumnDet
         }
 
         showToast(data?.message || "Column Detail updated successfully!", "success");
+        return data;
+    } catch (error) {
+        showToast((error as Error).message, "error");
+        throw error;
+    }
+}
+
+export const deleteStandingColumn = async(columnId : string, showToast: (msg: string, type?: ToastType) => void) => {
+    try{
+        const res = await authFetch(`${DELETE_STANDING_COLUMN(columnId)}`,{
+            method : "DELETE",
+        })
+
+        const data = await res.json()
+
+        if (!res.ok) {
+            const message = data?.detail || "Failed to delete Column";
+            showToast(message, "error");
+            return Promise.reject(new Error(message));
+        }
+
+        showToast(data?.message || "Column deleted successfully!", "success");
         return data;
     } catch (error) {
         showToast((error as Error).message, "error");

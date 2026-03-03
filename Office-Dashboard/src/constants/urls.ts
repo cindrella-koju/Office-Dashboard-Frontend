@@ -61,6 +61,7 @@ export const RETRIEVE_OVERALL_TIESHEET_BY_ROUND = (eventId:string, roundId : str
 export const RETRIEVE_STANDING_COLUMN = (roundId : string ) => `${BASE_URL}/event/column?stage_id=${roundId}`
 export const ADD_STANDING_COLUMN = `${BASE_URL}/event/column`
 export const EDIT_STANDING_COLUMN = (column_id : string) => `${BASE_URL}/event/column/${column_id}`
+export const DELETE_STANDING_COLUMN = (column_id : string) => `${BASE_URL}/event/column/${column_id}`
 
 
 export const RETRIEVE_USERS = (page : number, limit : number) =>`${BASE_URL}/user?page=${page}&limit=${limit}`
@@ -104,6 +105,7 @@ export const RETRIEVE_RECENT_FIVE_EVENT = `${BASE_URL}/event/recent`
 // Profile page url
 export const PROFILE_PAGE = `${BASE_URL}/user/profile`
 export const CHANGE_PASSWORD = `${BASE_URL}/user/changepassword`
+export const GET_CURRENT_USER_ROLE = `${BASE_URL}/user/current-role`
 
 // TiesheetPlayer
 export const DELETE_TIESHEET_PLAYER_ID = (tiesheetplayerId: string)  => `${BASE_URL}/event/tiesheet/player/${tiesheetplayerId}`

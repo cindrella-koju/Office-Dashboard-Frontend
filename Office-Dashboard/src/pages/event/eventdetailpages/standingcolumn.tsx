@@ -11,6 +11,7 @@ import Filters from "../../../components/Filters";
 import Table from "../../../components/table/Tables";
 import { useStandingColumn } from "../../../hooks/useStandingColumn";
 import { useParams } from "react-router-dom";
+import ConfirmationModal from "../../../components/Model/ConfirmationPopUp";
 
 
 export default function StandingColumn() {
@@ -26,12 +27,16 @@ export default function StandingColumn() {
     viewMode,
     loading,
     error,
+    showDeleteColumn,
+    setShowDeleteColumn,
     setSelectedRound,
     setStandingColumn,
     setViewMode,
     setColVal,
+    colVal,
     createColumn,
     editColumn,
+    deleteColumn,
     columnDetail,
     setColumnDetail,
   } = useStandingColumn(eventId ? eventId : "");
@@ -89,8 +94,8 @@ export default function StandingColumn() {
                   permissions={permissions}
                   setModelType={setViewMode}
                   setValue={setColVal}
-                  tablefor={null}
-                  setOnDelete={() => { }}
+                  tablefor="WithinEvent"
+                  setOnDelete={setShowDeleteColumn}
                 />
               ) : (
                 <EmptyMessage
@@ -111,6 +116,21 @@ export default function StandingColumn() {
             handleSubmit={handleSubmit}
             columnDetail={columnDetail}
             setColumnDetail={setColumnDetail}
+          />
+        )}
+
+        {colVal && (
+          <ConfirmationModal
+            isOpen={showDeleteColumn}
+            title="Delete Column"
+            message={`Are you sure you want to delete column "${colVal.column_field}"?`}
+            onCancel={() => {
+              setShowDeleteColumn(false);
+            }}
+            onConfirm={() => {
+              deleteColumn(colVal.id);
+              setShowDeleteColumn(false);
+            }}
           />
         )}
       </PageContent>

@@ -1,7 +1,26 @@
 import type { ToastType } from "../components/Toast";
-import { CHANGE_PASSWORD, PROFILE_PAGE } from "../constants/urls"
+import { CHANGE_PASSWORD, GET_CURRENT_USER_ROLE, PROFILE_PAGE } from "../constants/urls"
 import type { ChangePasswordDetail, ProfileDetail, ProfileEditdetail } from "../pages/ProfilePage";
 import { authFetch } from "./authHeaders"
+
+export interface CurrentUserRole {
+    role_id: string;
+    role: string;
+}
+
+export const getCurrentUserRole = async(): Promise<CurrentUserRole | null> => {
+    try {
+        const response = await authFetch(GET_CURRENT_USER_ROLE);
+        if (!response.ok) {
+            // If this endpoint doesn't exist, fall back to profile page
+            return null;
+        }
+        return (await response.json()) as CurrentUserRole;
+    } catch (err) {
+        console.error("Error fetching current user role:", err);
+        return null;
+    }
+}
 
 export const getProfilePage = async():Promise<ProfileDetail> => {
     try{
