@@ -61,6 +61,7 @@ export default function Groups(){
         filterRounds,
         setGroupData,
         setSelectedFilterRound,
+        handleClose
 
     } = useGroup()
 
@@ -147,13 +148,13 @@ export default function Groups(){
                     eventId && modalMode!= null &&(
                         <CreateGroupModal 
                             mode={modalMode}
-                            setIsModalOpen={setModalMode}
                             formData={formData}
                             setFormData={setFormData}
                             roundId={roundId}
                             setRoundId={setRoundId}
                             handleSubmit={handleSubmit}
                             participants={participants ? participants : [] }
+                            handleClose={handleClose}
                         />
                     )
                 }

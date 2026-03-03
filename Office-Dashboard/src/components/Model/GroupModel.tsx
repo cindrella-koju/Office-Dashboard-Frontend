@@ -9,7 +9,7 @@ import { useGroup } from "../../hooks/group/useGroup";
 
 
 export default function CreateGroupModal({
-  mode, setIsModalOpen, setRoundId, formData, setFormData, handleSubmit, participants
+  mode, setRoundId, formData, setFormData, handleSubmit, participants, handleClose
 }:CreateGroupModalProps){
   const {
     rounds,
@@ -18,7 +18,7 @@ export default function CreateGroupModal({
   return(
     <ModalWrapper 
       title={mode === "edit" ? "Edit Group" : "Create New Group"}
-      onClose={() => setIsModalOpen(null)}
+      onClose={handleClose}
     >
       <form onSubmit={handleSubmit}>
           <FormField 

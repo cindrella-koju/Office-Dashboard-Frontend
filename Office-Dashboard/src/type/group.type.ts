@@ -1,5 +1,4 @@
 import type { Dispatch, SetStateAction } from "react";
-import type { ModelType } from "./main.type";
 import type { EventPermission } from "../hooks/userPermission";
 
 
@@ -15,13 +14,13 @@ export interface Participant {
 
 export interface CreateGroupModalProps {
     mode: 'create' | 'edit';
-    setIsModalOpen : Dispatch<SetStateAction<ModelType>>;
     roundId : string | undefined,
     setRoundId : Dispatch<SetStateAction<string | undefined>>;
     formData : FormDataType,
     setFormData : Dispatch<SetStateAction<FormDataType>>;
     handleSubmit : (e:React.FormEvent) => void;
-    participants : Participant[]
+    participants : Participant[];
+    handleClose : () => void;
 }
 
 export interface Stage{

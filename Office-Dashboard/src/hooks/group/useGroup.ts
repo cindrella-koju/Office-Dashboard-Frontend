@@ -193,6 +193,25 @@ export const useGroup = () => {
         await fetchGroupByRound()
     }
 
+    const handleClose = () => {
+        setFormData({
+            group_name: "",
+            round_id: "",
+            stage_id : "",
+            participants_ids : [],
+        })
+        setEachGroupData({
+            group_id : "",
+            name : "",
+            stage_id : "",
+            stage_name : "",
+            participants_id : []
+        })
+
+        setParticipants([])
+        setModalMode(null)
+    }
+
     const handleSave = async (groupId : string) => {
         if (!editedUserData) return;
 
@@ -288,6 +307,7 @@ export const useGroup = () => {
         setGroupData,
         selectedFilterRound,
         setSelectedFilterRound,
-        filterRounds
+        filterRounds,
+        handleClose
     }
 }
