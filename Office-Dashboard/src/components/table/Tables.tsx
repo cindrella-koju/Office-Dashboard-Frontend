@@ -84,7 +84,7 @@ export default function Table({
   const showActions = editpermission() || deletepermission();
 
 
-  const hasActionColumn = showActions;
+  const hasActionColumn = showActions || showView;
 
   const handleClick = (id: string, title?: string) => {
     localStorage.setItem("eventId", id);
@@ -122,7 +122,7 @@ export default function Table({
               <tr
                 key={row.id ?? index}
                 className={`hover:bg-gray-50 transition ${row.user_id === userId ? "bg-green-100" : ""}`}
-                onClick={showView ? () => handleClick(row.id, row.title) : undefined}
+                
               >
                 {tablehead.map((head) => (
                   <td key={head} className="px-6 py-4 text-sm text-gray-700">
@@ -137,7 +137,7 @@ export default function Table({
                 {hasActionColumn && (
                   <td className="px-6 py-4">
                     <div className="flex justify-end gap-2">
-                      {/* {showView  && (
+                      {showView  && (
                         <Button
                           varient="success"
                           size="sm"
@@ -145,7 +145,7 @@ export default function Table({
                         >
                           View
                         </Button>
-                      )} */}
+                      )}
 
                       { editpermission() && (
                         <Button

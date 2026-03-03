@@ -10,6 +10,7 @@ interface ParticipantsModuleType {
   setSelected : Dispatch<SetStateAction<string[]>>,
   setModelType : Dispatch<SetStateAction<ModelType>>;
   handleSubmit : (e:React.FormEvent) => void;
+  eventID : string,
 }
 
 export interface User {
@@ -17,12 +18,12 @@ export interface User {
   username: string
 }
 
-export default function ParticipantsModule({ selected, setSelected, setModelType, handleSubmit }: ParticipantsModuleType) {
+export default function ParticipantsModule({ selected, setSelected, setModelType, handleSubmit, eventID }: ParticipantsModuleType) {
 
 
   const {
     users
-  } = useParticipants()
+  } = useParticipants(eventID)
 
 
 

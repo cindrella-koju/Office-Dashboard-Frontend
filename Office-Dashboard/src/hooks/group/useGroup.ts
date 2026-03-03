@@ -53,19 +53,6 @@ export const useGroup = () => {
         setRoundId(eachGroupData.stage_id);
     }, [eachGroupData]);
 
-    // const fetchGroup = async() => {
-    //     if (!eventId) return;
-
-    //     try{
-    //         setLoading(true);
-    //         const data = await groupService.getGroup(eventId);
-    //         setGroupData(data)
-    //     } catch(err:any){
-    //         setError(err.message)
-    //     } finally{
-    //         setLoading(false)
-    //     }
-    // }
 
     const fetchGroupByRound = async() => {
         if (!eventId) return;
@@ -89,8 +76,8 @@ export const useGroup = () => {
             setLoading(true);
             const data = await getRoundHavingGroup(eventId);
             setFilterRounds(data)
-            if(selectedFilterRound === null){
-                setSelectedFilterRound(data[0])
+            if (!selectedFilterRound) {
+                setSelectedFilterRound(data[0]);
             }
         } catch(err:any){
             setError(err.message)
@@ -177,10 +164,8 @@ export const useGroup = () => {
     const createGroup = async( payload: PayloadType) => {
         if (!eventId) return;
         await groupService.createGroup(eventId, payload, showToast)
-        fetchGroupByRound()
-        
-        fetchGroupByRound();
-        fetchFilterRound();
+        await fetchFilterRound();
+        await fetchGroupByRound();
         setFormData({
             group_name: "",
             round_id: "",
@@ -192,20 +177,20 @@ export const useGroup = () => {
 
     const updateGroup = async( groupId:string, stageId : string, payload:PayloadType) => {
         await groupService.updateGroup(groupId, stageId,payload, showToast)
-        fetchGroupByRound()
-        fetchFilterRound();
+        await fetchFilterRound();
+        await fetchGroupByRound()
         setEditingUserId(null); 
     }
 
     const deleteGroup = async(group_id : string) => {
         await groupService.deleteGroup(group_id,showToast)
-        fetchGroupByRound()
-        fetchFilterRound();
+        await fetchFilterRound();
+        await fetchGroupByRound()
     }
 
     const deleteGroupMember = async(group_id : string, user_id : string, stage_id : string) => {
         await groupService.deleteGroupMember(user_id,group_id, stage_id,showToast)
-        fetchGroupByRound()
+        await fetchGroupByRound()
     }
 
     const handleSave = async (groupId : string) => {
@@ -245,6 +230,7 @@ export const useGroup = () => {
         setDeleteType("group")
         setSelectedGroupId(groupID);
         fetchGroupByRound()
+        fetchFilterRound()
     }
 
     const handleDeleteMember = (groupId: string, member: GroupMember, stageId : string) => {
@@ -258,6 +244,7 @@ export const useGroup = () => {
         if(!roundId) return;
         fetchQualifierNotInGroupInGroup(roundId)
     },[roundId])
+
     return{
         rounds,
         groupdata,

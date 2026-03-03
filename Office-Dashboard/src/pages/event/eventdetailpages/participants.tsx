@@ -100,12 +100,13 @@ export default function Participants() {
                 />
 
                 {/* Add Participant Modal */}
-                { modelType!=null && (
+                { modelType!=null && eventId && (
                     <ParticipantsModule 
                         selected={selected}
                         setSelected={setSelected}
                         setModelType={setModelType}
                         handleSubmit={handleSubmit}
+                        eventID={eventId}
                     />
                 )}
 

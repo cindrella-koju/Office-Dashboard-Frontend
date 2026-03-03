@@ -98,6 +98,6 @@ export const useEvent = () => {
         totalPage,
         setCurrentPage,
         setLimit,
-        setStatus,
+        setStatus
     };
 };

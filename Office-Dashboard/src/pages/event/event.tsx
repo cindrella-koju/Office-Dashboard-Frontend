@@ -70,6 +70,7 @@ export default function EventPage() {
     }
     setEventMode(null)
     setEditEvent(undefined)
+    closeFunction()
   }
 
   const onClose = () => {
