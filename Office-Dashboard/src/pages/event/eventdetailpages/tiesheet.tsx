@@ -131,7 +131,6 @@ export default function Tiesheet(){
         }
         if (viewMode === "edit") {
             if(!selectedMatchId) return;
-            console.log("Update Tiesheet Payload:", payload)
             await updateTiesheet(selectedMatchId,payload)
         }
         handleClose()  

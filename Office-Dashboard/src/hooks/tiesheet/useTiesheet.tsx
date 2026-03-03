@@ -279,7 +279,7 @@ export const useTiesheet = ( todaysGame : boolean | null ) => {
         
         const tiesheetplayer = tiesheet.filter(user => user.id === selectedMatchId);
         setTiesheetUser(tiesheetplayer[0]?.player_info || []);
-    },[viewMode])
+    },[viewMode, tiesheet, selectedMatchId])
 
       /* Reset players & date/time when round changes */
     useEffect(() => {
@@ -330,7 +330,7 @@ export const useTiesheet = ( todaysGame : boolean | null ) => {
             fetchTodayTiesheet()
         } else {
             fetchTiesheet()
-        }
+        } 
         setViewMode("edit")
     }
 

@@ -78,10 +78,7 @@ export interface MatchHeaderProps {
   onAddScore? :() => void;
   permissions: EventPermission;
   tiesheetId: string;
-  player1: PlayerInfoType;
-  player2: PlayerInfoType;
-  player3? : PlayerInfoType;
-  player4? : PlayerInfoType;
+  players: PlayerInfoType[];
   onClick : () => void;
   onDeleteTiesheet : () => void;
 }

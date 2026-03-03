@@ -96,7 +96,7 @@ export default function TiesheetModel({
 }: TiesheetProps) {
   const {
     rounds,
-  } = useTiesheet()
+  } = useTiesheet(null)
 
   const statusOptions = [
     { label: "Scheduled", value: "scheduled" },
@@ -326,7 +326,6 @@ export default function TiesheetModel({
                   .map((tu, index) => {
                     const userCount = tiesheetUser.filter(tu => tu.user_id !== null).length;
                     const TbdCount = tiesheetUser.filter(tu => tu.user_id === null).length;
-                    console.log("Number of user:",userCount, TbdCount)
                     const currentValue =
                       selectedMatch.tbd_user_ids?.[index]?.user_id;
 
@@ -373,7 +372,7 @@ export default function TiesheetModel({
                         />
 
                         {
-                          userCount >= 1 && TbdCount > 1 && (
+                          (userCount >= 2 || TbdCount > 1) && (
                             <button
                               type="button"
                               onClick={() => {

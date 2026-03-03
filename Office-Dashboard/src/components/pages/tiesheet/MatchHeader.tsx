@@ -1,4 +1,5 @@
 import type { MatchHeaderProps } from "../../../type/tiesheet.type";
+import { useToast } from "../../../context/ToastContext";
 
 export default function MatchHeader({
   groupName,
@@ -10,8 +11,11 @@ export default function MatchHeader({
   permissions,
   onClick,
   onDeleteTiesheet,
+  players
 }: MatchHeaderProps) {
+  const { showToast } = useToast();
 
+  const hasTBD = players?.some(player => player.user_id === null) ?? false;
 
   const getStatusLabel = () => {
     if (status === "scheduled") return "Scheduled";
@@ -56,6 +60,10 @@ export default function MatchHeader({
         <button
           className="text-xs font-medium text-blue-600 hover:text-blue-800 hover:underline transition-colors"
           onClick={() => {
+            if (hasTBD) {
+              showToast("Cannot edit score when there is a TBD player", "error");
+              return;
+            }
             onClick();
             onEditScore?.();
           }}
@@ -65,10 +73,14 @@ export default function MatchHeader({
       )}
 
       {
-        permissions.canEdit  && (
+        permissions.canEdit && (
           <button
             className="text-xs font-medium text-blue-600 hover:text-blue-800 hover:underline transition-colors"
             onClick={ () => {
+              if (hasTBD) {
+                showToast("Cannot add match when there is a TBD player", "error");
+                return;
+              }
               onClick();
               onAddScore?.();
             }}

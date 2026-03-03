@@ -54,8 +54,7 @@ export default function TiesheetCard({
         status = {status}
         permissions={permissions}
         tiesheetId={tiesheetId}
-        player1={players[0]}
-        player2={players[1]}
+        players={players}
         onClick ={onClick}
         onDeleteTiesheet={onDeleteTiesheet}
       />
