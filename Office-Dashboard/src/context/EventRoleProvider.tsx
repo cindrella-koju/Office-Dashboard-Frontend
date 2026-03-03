@@ -1,12 +1,15 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { getPermissionWithinEvent, getPermissionWithinEventByUser } from "../services/eventprovider.service";
 import { EventRoleContext } from "./EventRoleContext";
 
-const EVENT_ROLE_REFRESH_INTERVAL = 15000; // Refresh every 15 seconds for faster updates
+const EVENT_ROLE_REFRESH_INTERVAL = 30000;
 
 export const EventRoleProvider = ({children} : { children: React.ReactNode }) => {
     const [eventRoleDetail, setEventRoleDetail] = useState(null);
     const [loading, setLoading] = useState(true);
+
+    const isRequestInProgressRef = useRef(false);
+    const isTabVisibleRef = useRef(true);
 
     const fetchEventRoleDetail = useCallback(async () => {
         const userId = localStorage.getItem("user_id");
@@ -16,6 +19,9 @@ export const EventRoleProvider = ({children} : { children: React.ReactNode }) =>
             setLoading(false);
             return;
         }
+
+        if (isRequestInProgressRef.current) return;
+        isRequestInProgressRef.current = true;
 
         try {
             let data;
@@ -30,6 +36,7 @@ export const EventRoleProvider = ({children} : { children: React.ReactNode }) =>
             setEventRoleDetail(null);
         } finally {
             setLoading(false);
+            isRequestInProgressRef.current = false;
         }
     }, []);
 
@@ -38,24 +45,39 @@ export const EventRoleProvider = ({children} : { children: React.ReactNode }) =>
         fetchEventRoleDetail();
     }, [fetchEventRoleDetail]);
 
-    // Periodic refresh to catch permission changes
+    // Periodic refresh - only when tab is visible
     useEffect(() => {
         const userId = localStorage.getItem("user_id");
         if (!userId) return;
 
-        // Initial check after a short delay
         const initialCheck = setTimeout(() => {
             fetchEventRoleDetail();
-        }, 2000);
+        }, 3000);
 
         const intervalId = setInterval(() => {
-            fetchEventRoleDetail();
+            if (isTabVisibleRef.current) {
+                fetchEventRoleDetail();
+            }
         }, EVENT_ROLE_REFRESH_INTERVAL);
 
         return () => {
             clearTimeout(initialCheck);
             clearInterval(intervalId);
         };
+    }, [fetchEventRoleDetail]);
+
+    // Track tab visibility - don't poll when tab is hidden
+    useEffect(() => {
+        const handleVisibilityChange = () => {
+            isTabVisibleRef.current = document.visibilityState === 'visible';
+            if (isTabVisibleRef.current) {
+                const userId = localStorage.getItem("user_id");
+                if (userId) fetchEventRoleDetail();
+            }
+        };
+
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+        return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
     }, [fetchEventRoleDetail]);
 
     // Listen for storage events and role updates

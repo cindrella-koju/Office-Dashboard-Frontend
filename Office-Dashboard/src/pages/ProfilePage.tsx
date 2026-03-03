@@ -5,6 +5,7 @@ import { RiAdminFill } from "react-icons/ri";
 import EditProfileModel from "../components/Model/EditProfileModel";
 import { useProfile } from "../hooks/useProfile";
 import ChangePasswordModel from "../components/Model/ChangePasswordModel";
+import LoadingSpinner from "../components/ui/LoadingSpinner";
 
 export interface ProfileDetail {
   id: string;
@@ -32,8 +33,9 @@ export interface ChangePasswordDetail{
 }
 
 const Loading = () => (
-  <div className="flex items-center justify-center py-12">
-    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600" />
+  <div className="flex items-center justify-center py-12 gap-3">
+    <LoadingSpinner size="md" />
+    <span className="text-gray-500">Loading profile...</span>
   </div>
 );
 

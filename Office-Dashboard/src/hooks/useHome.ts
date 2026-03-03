@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useCallback } from "react"
 import{ type HomePageResponse, type HomePageEventResponse } from "../type/home.type"
 import { getHomePage, getHomePageEvent } from "../services/home.service"
 
@@ -8,34 +8,36 @@ export const useHome = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    const fetchHomeDetail = async() => {
+    const fetchHomeDetail = useCallback(async () => {
         try {
-            setLoading(true)
+            setLoading(true);
             const data = await getHomePage();
             setPageDetail(data);
-        } catch (err:any) {
-            setError(err.detail)
-        } finally{
-            setLoading(false)
+            setError(null);
+        } catch (err: any) {
+            setError(err.detail || err.message || "Failed to load page details");
+        } finally {
+            setLoading(false);
         }
-    }
-    const fetchHomeEventDetail = async() => {
+    }, []);
+
+    const fetchHomeEventDetail = useCallback(async () => {
         try {
-            setLoading(true)
             const data = await getHomePageEvent();
             setEvent(data);
-        } catch (err:any) {
-            setError(err.detail)
-        } finally{
-            setLoading(false)
+        } catch (err: any) {
+            setError(err.detail || err.message || "Failed to load events");
         }
-    }
-    useEffect(() => {
-        fetchHomeDetail()
-        fetchHomeEventDetail()
-    },[])
+    }, []);
 
-    return{
+    useEffect(() => {
+        Promise.all([
+            fetchHomeDetail(),
+            fetchHomeEventDetail()
+        ]);
+    }, [fetchHomeDetail, fetchHomeEventDetail]);
+
+    return {
         event,
         pagedetail,
         loading,

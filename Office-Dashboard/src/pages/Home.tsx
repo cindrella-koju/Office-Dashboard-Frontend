@@ -9,6 +9,7 @@ import type {
   StatusEnum,
 } from "../type/home.type";
 import { useNavigate } from "react-router-dom";
+import PageLoader from "../components/ui/PageLoader";
 
 export default function Home() {
   const { event, pagedetail, loading, error } = useHome();
@@ -19,10 +20,7 @@ export default function Home() {
       <div className="md:flex">
         <NavBar />
         <main className="flex-1 overflow-y-auto h-screen flex items-center justify-center bg-gray-100">
-          <div className="flex flex-col items-center gap-4">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600" />
-            <p className="text-gray-500">Loading...</p>
-          </div>
+          <PageLoader message="Loading dashboard..." />
         </main>
       </div>
     );

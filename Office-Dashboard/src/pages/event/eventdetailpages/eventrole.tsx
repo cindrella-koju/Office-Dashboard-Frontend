@@ -13,6 +13,7 @@ import Filters from "../../../components/Filters";
 import type { EventRoleResponse } from "../../../type/eventrole.type";
 import { Pagination } from "../../../components/Pagination";
 import { useParams } from "react-router-dom";
+import LoadingSpinner from "../../../components/ui/LoadingSpinner";
 
 export default function EventRole() {
     const { eventId }= useParams();
@@ -96,12 +97,13 @@ export default function EventRole() {
                         eventRole && (
                             <div className="max-h-[500px] lg:max-h-[800px] overflow-y-auto">
                                 {loading ? (
-                                    <div className="flex items-center justify-center py-12">
-                                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600" />
+                                    <div className="flex items-center justify-center py-12 gap-3">
+                                        <LoadingSpinner size="md" />
+                                        <span className="text-gray-500">Loading event roles...</span>
                                     </div>
                                 ) : error ? (
                                     <div className="text-center py-12 text-red-500">
-                                    Error loading standing columns: {error}
+                                    Error loading event roles: {error}
                                     </div>
                                 ) : eventRole.length > 0 ? (
                                     <Table

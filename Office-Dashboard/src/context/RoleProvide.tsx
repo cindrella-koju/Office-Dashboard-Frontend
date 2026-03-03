@@ -1,10 +1,10 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { roleService } from "../services/role.service";
 import { RoleContext } from "./RoleContext";
 import { useAuth } from "../hooks/useAuth";
 import { getCurrentUserRole } from "../services/profile.service";
 
-const ROLE_REFRESH_INTERVAL = 15000; // Refresh every 15 seconds for faster role updates
+const ROLE_REFRESH_INTERVAL = 30000;
 
 export const RoleProvider = ({ children }: { children: React.ReactNode }) => {
   const { roleId, isAuthenticated } = useAuth();
@@ -12,13 +12,18 @@ export const RoleProvider = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = useState(true);
   const [currentRoleId, setCurrentRoleId] = useState<string | null>(roleId);
 
-  // Fetch role details based on roleId
+  const isRequestInProgressRef = useRef(false);
+  const isTabVisibleRef = useRef(true);
+
   const fetchRoleDetail = useCallback(async (roleIdToFetch: string | null) => {
     if (!roleIdToFetch) {
       setRoleInfo(null);
       setLoading(false);
       return;
     }
+
+    if (isRequestInProgressRef.current) return;
+    isRequestInProgressRef.current = true;
 
     try {
       const data = await roleService.getRoleDetail(roleIdToFetch);
@@ -28,15 +33,18 @@ export const RoleProvider = ({ children }: { children: React.ReactNode }) => {
       setRoleInfo(null);
     } finally {
       setLoading(false);
+      isRequestInProgressRef.current = false;
     }
   }, []);
 
-  // Check if user's role has changed by fetching from the backend
+  // Check if user's role has changed
   const checkAndUpdateRole = useCallback(async () => {
-    if (!isAuthenticated) return;
+    if (!isAuthenticated || !isTabVisibleRef.current) return;
+
+    // Prevent concurrent checks
+    if (isRequestInProgressRef.current) return;
 
     try {
-      // Try the dedicated current-role endpoint
       const currentRole = await getCurrentUserRole();
       
       if (currentRole && currentRole.role_id) {
@@ -44,31 +52,20 @@ export const RoleProvider = ({ children }: { children: React.ReactNode }) => {
         
         // If role_id has changed, update localStorage and fetch new permissions
         if (currentRole.role_id !== storedRoleId) {
-          // Update localStorage with new role info
           localStorage.setItem("role_id", currentRole.role_id);
           localStorage.setItem("role", currentRole.role);
-          
-          // Update state and fetch new role details
           setCurrentRoleId(currentRole.role_id);
           await fetchRoleDetail(currentRole.role_id);
-          
-          // Dispatch custom event for other components
           window.dispatchEvent(new CustomEvent('roleUpdated'));
           return;
         }
       }
-      
-      // If no role change detected, just refresh current role permissions
-      // This handles the case where role_id is same but permissions might have changed
+
       if (currentRoleId) {
         await fetchRoleDetail(currentRoleId);
       }
     } catch (error) {
       console.error("Failed to check role update:", error);
-      // Fallback: just refresh current role details
-      if (currentRoleId) {
-        await fetchRoleDetail(currentRoleId);
-      }
     }
   }, [isAuthenticated, currentRoleId, fetchRoleDetail]);
 
@@ -78,17 +75,19 @@ export const RoleProvider = ({ children }: { children: React.ReactNode }) => {
     fetchRoleDetail(roleId);
   }, [roleId, fetchRoleDetail]);
 
-  // Periodic refresh to catch role and permission changes made by superadmin
+  // Periodic refresh - only when tab is visible
   useEffect(() => {
     if (!isAuthenticated) return;
 
     // Initial check after a short delay
     const initialCheck = setTimeout(() => {
       checkAndUpdateRole();
-    }, 2000);
+    }, 3000);
 
     const intervalId = setInterval(() => {
-      checkAndUpdateRole();
+      if (isTabVisibleRef.current) {
+        checkAndUpdateRole();
+      }
     }, ROLE_REFRESH_INTERVAL);
 
     return () => {
@@ -97,10 +96,25 @@ export const RoleProvider = ({ children }: { children: React.ReactNode }) => {
     };
   }, [isAuthenticated, checkAndUpdateRole]);
 
+  // Track tab visibility - don't poll when tab is hidden
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      isTabVisibleRef.current = document.visibilityState === 'visible';
+      
+      // Refresh when tab becomes visible again
+      if (isTabVisibleRef.current && isAuthenticated) {
+        checkAndUpdateRole();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, [isAuthenticated, checkAndUpdateRole]);
+
   // Listen for storage events (when role changes in another tab)
   useEffect(() => {
     const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'role_id' && e.newValue) {
+      if (e.key === 'role_id' && e.newValue && e.newValue !== currentRoleId) {
         setCurrentRoleId(e.newValue);
         fetchRoleDetail(e.newValue);
       }
@@ -108,9 +122,9 @@ export const RoleProvider = ({ children }: { children: React.ReactNode }) => {
 
     window.addEventListener('storage', handleStorageChange);
     return () => window.removeEventListener('storage', handleStorageChange);
-  }, [fetchRoleDetail]);
+  }, [currentRoleId, fetchRoleDetail]);
 
-  // Listen for custom role update event (triggered when admin changes user's role)
+  // Listen for custom role update event
   useEffect(() => {
     const handleRoleUpdate = () => {
       const newRoleId = localStorage.getItem("role_id");

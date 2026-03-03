@@ -14,6 +14,7 @@ import RoundModel from "../../../components/Model/RoundModel";
 import type { ModelType } from "../../../type/main.type";
 import ConfirmationModal from "../../../components/Model/ConfirmationPopUp";
 import { useParams } from "react-router-dom";
+import LoadingSpinner from "../../../components/ui/LoadingSpinner";
 
 
 export default function Rounds(){
@@ -70,12 +71,13 @@ export default function Rounds(){
                         rounds &&
                         <div className="max-h-[500px] lg:max-h-[800px] overflow-y-auto">
                             {loading ? (
-                            <div className="flex items-center justify-center py-12">
-                                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600" />
+                            <div className="flex items-center justify-center py-12 gap-3">
+                                <LoadingSpinner size="md" />
+                                <span className="text-gray-500">Loading rounds...</span>
                             </div>
                             ) : error ? (
                             <div className="text-center py-12 text-red-500">
-                                Error loading users: {error}
+                                Error loading rounds: {error}
                             </div>
                             ) : (
                             <Table

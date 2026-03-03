@@ -18,6 +18,7 @@ import { useEventForm } from "../../hooks/event/useEventForm";
 import EventModel from "../../components/Model/EventModel";
 import ConfirmationModal from "../../components/Model/ConfirmationPopUp";
 import { Pagination } from "../../components/Pagination";
+import LoadingSpinner from "../../components/ui/LoadingSpinner";
 
 export default function EventPage() {
 
@@ -121,8 +122,9 @@ export default function EventPage() {
         <Card className="p-4 sm:p-6">
           <div className="max-h-[500px] lg:max-h-[600px] overflow-y-auto">
             {loading ? (
-              <div className="flex items-center justify-center py-12">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600" />
+              <div className="flex items-center justify-center py-12 gap-3">
+                <LoadingSpinner size="md" />
+                <span className="text-gray-500">Loading events...</span>
               </div>
             ) : error ? (
               <div className="text-center py-12 text-red-500">

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import type { AddUser, UserDetailResponse } from "../type/user.type";
 import type { Round } from "../type/group.type";
 import * as userService from "../services/user.service";
@@ -23,11 +23,21 @@ export const useUser = () => {
     const [totalPage, setTotalPage] = useState<number>(1);
     const [role, setRole] = useState<StatusProps | null>(null);
 
+    // Request deduplication
+    const isRequestInProgressRef = useRef({
+        users: false,
+        roles: false,
+        allRoles: false
+    });
+
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
     };
 
-    const fetchUsers = async() => {
+    const fetchUsers = useCallback(async() => {
+        if (isRequestInProgressRef.current.users) return;
+        isRequestInProgressRef.current.users = true;
+        
         try{
             setLoading(true);
             const data = await userService.getUser(currentPage, limit);
@@ -35,15 +45,20 @@ export const useUser = () => {
             setUsers(data);
             setTableHead(extractHeaders(data.items))
             setTotalPage(data.total_pages)
+            setError(null);
         } catch(err:any){
-            setError(err.message)
+            setError(err.message || "Failed to load users")
         } finally{
-            setLoading(false)
+            setLoading(false);
+            isRequestInProgressRef.current.users = false;
         }
-    }
+    }, [currentPage, limit]);
 
-    const fetchUsersByRole = async() => {
+    const fetchUsersByRole = useCallback(async() => {
         if(!role) return;
+        if (isRequestInProgressRef.current.users) return;
+        isRequestInProgressRef.current.users = true;
+        
         try{
             setLoading(true);
             const data = await userService.getUserByRole(role.id, currentPage, limit);
@@ -51,69 +66,78 @@ export const useUser = () => {
             setUsers(data);
             setTableHead(extractHeaders(data.items))
             setTotalPage(data.total_pages)
+            setError(null);
         } catch(err:any){
-            setError(err.message)
+            setError(err.message || "Failed to load users by role")
         } finally{
-            setLoading(false)
+            setLoading(false);
+            isRequestInProgressRef.current.users = false;
         }
-    }
+    }, [role, currentPage, limit]);
 
-    const fetchRoleIdNameNotInEvent = async() => {
+    const fetchRoleIdNameNotInEvent = useCallback(async() => {
+        if (isRequestInProgressRef.current.roles) return;
+        isRequestInProgressRef.current.roles = true;
+        
         try{
-            setLoading(true);
             const data = await roleService.getRoleNotInEvent();
             setRounds(data)
             if(data.length > 0 ) setSelectedRole(data[0])
         }catch(err:any){
-            setError(err.message)
+            console.error("Failed to fetch roles:", err.message)
         } finally{
-            setLoading(false)
+            isRequestInProgressRef.current.roles = false;
         }
-    }
+    }, []);
 
-    const fetchAllRoleIdName = async() => {
+    const fetchAllRoleIdName = useCallback(async() => {
+        if (isRequestInProgressRef.current.allRoles) return;
+        isRequestInProgressRef.current.allRoles = true;
+        
         try{
-            setLoading(true);
             const data = await roleService.getAllRole()
             setRoles(data)
-            // if(data.length > 0 ) setSelectedRole(data[0])
         }catch(err:any){
-            setError(err.message)
+            console.error("Failed to fetch all roles:", err.message)
         } finally{
-            setLoading(false)
+            isRequestInProgressRef.current.allRoles = false;
         }
-    }
+    }, []);
 
 
     const createUser = async (payload: AddUser) => {
         await userService.createUser(payload, showToast);
-        fetchUsers();
-        fetchRoleIdNameNotInEvent();
+        await fetchUsers();
+        await fetchRoleIdNameNotInEvent();
     };
 
     const updateUser = async (id: string, payload: Partial<AddUser>) => {
         await userService.updateUser(id, payload,showToast);
-        fetchUsers();
+        await fetchUsers();
     };
 
     const deleteUser = async (id : string) => {
         await userService.deleteUser(id,showToast);
-        fetchUsers()
+        await fetchUsers();
     }
 
+    // Initial data fetch - run in parallel for faster loading
     useEffect(() => {
-        fetchRoleIdNameNotInEvent();
-        fetchUsers();
-        fetchAllRoleIdName();
+        Promise.all([
+            fetchRoleIdNameNotInEvent(),
+            fetchUsers(),
+            fetchAllRoleIdName()
+        ]);
     }, []);
 
+    // Fetch users when pagination or role filter changes
     useEffect(() => {
-        if(role && role.id != "all"){
+        if(role && role.id !== "all"){
             fetchUsersByRole()
-        }else{
+        } else {
             fetchUsers()
         }
-    },[currentPage,limit, role])
+    }, [currentPage, limit, role, fetchUsers, fetchUsersByRole]);
 
     return {
         users,
